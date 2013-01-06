@@ -1,0 +1,4 @@
+vida
+====
+
+Vizualizacia Distribuovanych Algoritmov
