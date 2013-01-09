@@ -1,4 +1,4 @@
-import java.io.File;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -8,19 +8,15 @@ public class Graph {
 	public ArrayList<Vertex> vertices;
 	public ArrayList<Edge> edges;
 	
-	public Graph(String from)
+	public Graph()
 	{
 		vertices = new ArrayList<Vertex>();
 		edges = new ArrayList<Edge>();
-		nacitaj(from);
 	}
 	
-	public void nacitaj(String from)
+	public void read(Scanner input)
 	{
-		File file = new File(from);
-		Scanner input = null;
 		try {
-			input = new Scanner(file);
 			int n=input.nextInt(),m=input.nextInt();
 			for(int i=0; i<n; i++)
 			{
@@ -37,10 +33,15 @@ public class Graph {
 		{
 			e.printStackTrace();
 		}
-		finally
-		{
-			if(input!=null) input.close(); 
-		}
+	}
+	
+	public void print(PrintStream output)
+	{
+		output.println(vertices.size() +  " " + edges.size());
+		for(int i=0; i<vertices.size(); i++)
+			output.println(vertices.get(i).x + " " + vertices.get(i).y);
+		for(int i=0; i<edges.size(); i++)
+			output.println(edges.get(i).from + " " + edges.get(i).to);
 	}
 
 }
