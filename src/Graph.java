@@ -16,6 +16,8 @@ public class Graph {
 	
 	public void read(Scanner input)
 	{
+		vertices = new ArrayList<Vertex>();
+		edges = new ArrayList<Edge>();
 		try {
 			int n=input.nextInt(),m=input.nextInt();
 			for(int i=0; i<n; i++)
@@ -26,7 +28,7 @@ public class Graph {
 			for(int i=0; i<m; i++)
 			{
 				int f=input.nextInt(),t=input.nextInt();
-				edges.add(new Edge(f,t));
+				edges.add(new Edge(Math.min(f, t),Math.max(f, t)));
 			}
 		} 
 		catch (Exception e) 
