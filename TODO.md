@@ -1,4 +1,5 @@
 
+
 >potrebujeme si dohodnut format sprav, zatial rozumne vyzera nasledovna schema:
 >
 > __"? zvysok riadku su zvysne casti spravy"__ 
