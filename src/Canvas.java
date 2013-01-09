@@ -6,6 +6,7 @@ public class Canvas extends JPanel {
 
 	public Canvas()
 	{
+		
 	}
 	
 	public void drawVertex(Graphics g, Vertex v)
