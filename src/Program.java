@@ -3,15 +3,22 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 public class Program extends Thread{
-		String alias;
+		Vertex vertex;
+		int id;
+		ArrayList<Integer> ports;
+		
 		Process process;
 		InputStream output;
 		OutputStream input;
-		public Program(String alias){
+		public Program(Vertex v, int id, int portNumber){
 			super();
-			this.alias = alias;
+			vertex = v;
+			this.id = id;
+			ports = new	ArrayList<Integer>();
+			for(int i = 0; i<portNumber; ++i) ports.add(i);
 		}
 		
 		@Override
@@ -21,7 +28,10 @@ public class Program extends Thread{
 				BufferedReader out = new BufferedReader(new InputStreamReader(output));
 				String line;
 				while ((line = out.readLine()) != null) {
-					send(new Message(alias, "?", line));
+					if (line.charAt(0) == '@'){
+						String[] parts = line.split(":",2);
+						send(new Message(Integer.parseInt(parts[0].trim()), parts[1].trim()));
+					}
 		        }
 		        out.close();
 			} catch (Exception e) {
@@ -38,18 +48,19 @@ public class Program extends Thread{
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			this.start();
 		}
 		public void kill(){
 			this.interrupt();
 			process.destroy();			
 		}
 		public void send(Message message){
-			System.out.println("Message from "+message.from+" on port "+message.fromPort+" :"+message.content);
+			message.port = ports.indexOf(message.port);
+			vertex.send(message);			
 		}
 		public void recieve(Message message){
-			System.out.println("Message from "+message.from + " to " + message.to + " @ " + message.fromPort + " : " + message.content);
 			PrintWriter in = new PrintWriter(input);
-			in.println("@ " + message.fromPort + " : " + message.content);
+			in.println("@ " + ports.get(message.port) + " : " + message.content);
 			in.flush();
 		}
 }
