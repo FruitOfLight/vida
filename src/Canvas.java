@@ -41,7 +41,6 @@ public class Canvas extends JPanel {
 		@Override
 		public void mouseDragged(MouseEvent mouse)
 		{
-			System.out.println(xp+" "+yp);
 			repaintBetween(GUI.graph.vertices.get(begin).x, GUI.graph.vertices.get(begin).y, xp, yp);
 			xp=mouse.getX(); yp=mouse.getY();
 			repaintBetween(GUI.graph.vertices.get(begin).x, GUI.graph.vertices.get(begin).y, xp, yp);
