@@ -52,7 +52,7 @@ public class Menu {
                     }
                 }
 				break;
-			case 3:
+			case 4:
 				System.exit(0);
 				return;
 			default:
