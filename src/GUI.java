@@ -62,7 +62,9 @@ public class GUI {
             addElement(frame, menu, 0, 0, 800, 25);
             
             canvas = new Canvas();
-            canvas.addMouseListener(new Canvas.CanvasListener());
+            Canvas.CanvasListener listener = new Canvas.CanvasListener();
+            canvas.addMouseListener(listener);
+            canvas.addMouseMotionListener(listener);
             addElement(frame, canvas, 0, 25, 500, 500);
             
 			frame.setSize(800,600);

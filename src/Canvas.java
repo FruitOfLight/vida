@@ -2,18 +2,21 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JPanel;
 
 public class Canvas extends JPanel {
 
+	static int begin=-1;
+	static int xp=300,yp=300;
+	
 	public Canvas()
 	{
 	}
 	
-	static class CanvasListener implements MouseListener
+	static class CanvasListener implements MouseListener, MouseMotionListener
 	{
-		MouseEvent begin=null;
 		
 		@Override
 		public void mouseClicked(MouseEvent mouse)
@@ -24,17 +27,29 @@ public class Canvas extends JPanel {
 		@Override
 		public void mousePressed(MouseEvent mouse)
 		{
-			begin=mouse;
+			begin=findVertex(mouse.getX(),mouse.getY());
 		}
 		
 		@Override
 		public void mouseReleased(MouseEvent mouse)
 		{
-			GUI.canvas.addEdge(begin, mouse);
+			GUI.canvas.addEdge(begin, findVertex(mouse.getX(),mouse.getY()));
+			GUI.canvas.repaint();
+			begin=-1; xp=0; yp=0;
+		}
+		
+		@Override
+		public void mouseDragged(MouseEvent mouse)
+		{
+			System.out.println(xp+" "+yp);
+			repaintBetween(GUI.graph.vertices.get(begin).x, GUI.graph.vertices.get(begin).y, xp, yp);
+			xp=mouse.getX(); yp=mouse.getY();
+			repaintBetween(GUI.graph.vertices.get(begin).x, GUI.graph.vertices.get(begin).y, xp, yp);
 		}
 		
 		@Override public void mouseEntered(MouseEvent mouse) {}
 		@Override public void mouseExited(MouseEvent mouse) {}
+		@Override public void mouseMoved(MouseEvent mouse) {}
 	}
 	
 	static public void addVertex(MouseEvent mouse)
@@ -51,11 +66,10 @@ public class Canvas extends JPanel {
 		GUI.canvas.repaint(x-10, y-10, 20, 20);
 	}
 	
-	static public void addEdge(MouseEvent begin, MouseEvent end)
+	static public void addEdge(int from, int to)
 	{
 		//TODO ak je zapnute prehravanie, zrusit
-		int from=findVertex(begin.getX(), begin.getY()),to=findVertex(end.getX(), end.getY());
-		if(from==-1 || to==-1) return ;
+		if(from==-1 || to==-1 || from==to) return ;
 		boolean exists=false;
 		for(int i=0; i<GUI.graph.edges.size(); i++)
 		{
@@ -64,9 +78,8 @@ public class Canvas extends JPanel {
 		}
 		if(exists) return ;
 		GUI.graph.edges.add(new Edge(Math.min(from, to), Math.max(from, to)));
-		GUI.canvas.repaint(Math.min(begin.getX(), end.getX())-10, Math.min(begin.getY(), end.getY())-10,
-				Math.max(begin.getX(), end.getX())-Math.min(begin.getX(), end.getX())+10,
-				Math.max(begin.getY(), end.getY())-Math.min(begin.getY(), end.getY())+10);
+		repaintBetween(GUI.graph.vertices.get(from).x,GUI.graph.vertices.get(from).y
+				,GUI.graph.vertices.get(to).x,GUI.graph.vertices.get(to).y);
 	}
 	
 	static public int findVertex(int x, int y)
@@ -93,12 +106,25 @@ public class Canvas extends JPanel {
 		g.drawLine(from.x, from.y, to.x, to.y);
 	}
 	
+	static public void repaintBetween(int x1, int y1, int x2, int y2)
+	{
+		if(x1>x2) {int p=x1; x1=x2; x2=p;}
+		if(y1>y2) {int p=y1; y1=y2; y2=p;}
+		GUI.canvas.repaint(x1-10, y1-10, x2-x1+20, y2-y1+20);
+	}
+	
 	@Override
 	public void paintComponent(Graphics g)
 	{
         super.paintComponent(g);
         g.setColor(new Color(255, 255, 255));
         g.fillRect(0, 25, 500, 500);
+        //vykresli polhranu ak existuje
+        if(begin!=-1)
+        {
+        	g.setColor(new Color(0,0,0));
+        	g.drawLine(GUI.graph.vertices.get(begin).x,GUI.graph.vertices.get(begin).y,xp,yp);
+        }
         // vykresli hrany
         for(int i=0; i<GUI.graph.edges.size(); i++)
         {
