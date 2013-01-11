@@ -1,6 +1,8 @@
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
 
-public class Vertex {
+public class Vertex implements Drawable {
 
     int x, y;
     ArrayList<Edge> edges;
@@ -19,6 +21,13 @@ public class Vertex {
 
     void recieve(Message message) {
         program.recieve(message);
+    }
+
+    public void draw(Graphics g) {
+        g.setColor(new Color(0, 0, 0));
+        g.fillOval(x - 6, y - 6, 12, 12);
+        g.setColor(new Color(0, 255, 0));
+        g.fillOval(x - 5, y - 5, 10, 10);
     }
 
 }
