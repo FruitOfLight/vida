@@ -33,28 +33,8 @@ public class Graph implements Drawable {
             g.setColor(new Color(0, 0, 0));
             g.drawLine(begin.x, begin.y, xlast, ylast);
         }
-        // vykresli hrany
-        for (int i = 0; i < edges.size(); i++) {
-            Vertex from = edges.get(i).from;
-            Vertex to = edges.get(i).to;
-            drawEdge(g, from, to);
-        }
-        // vykresli vrcholy
-        for (int i = 0; i < vertices.size(); i++) {
-            drawVertex(g, vertices.get(i));
-        }
-    }
-
-    public void drawVertex(Graphics g, Vertex v) {
-        g.setColor(new Color(0, 0, 0));
-        g.fillOval(v.x - 6, v.y - 6, 12, 12);
-        g.setColor(new Color(0, 255, 0));
-        g.fillOval(v.x - 5, v.y - 5, 10, 10);
-    }
-
-    public void drawEdge(Graphics g, Vertex from, Vertex to) {
-        g.setColor(new Color(0, 0, 0));
-        g.drawLine(from.x, from.y, to.x, to.y);
+        for (Edge edge : edges) edge.draw(g);
+        for (Vertex vertex : vertices) vertex.draw(g);
     }
 
     class GraphListener implements MouseListener, MouseMotionListener {
