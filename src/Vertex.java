@@ -14,10 +14,11 @@ public class Vertex {
 
 	void send(Message message) {
 		// TODO aby posielal listy cez queue, neposielal priamo
+		edges.get(message.port).to.recieve(message);
 	}
 
 	void recieve(Message message) {
-
+		program.recieve(message);
 	}
 
 }
