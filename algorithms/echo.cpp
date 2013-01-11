@@ -31,6 +31,8 @@ void readline(char str[]){
 int main(){
     char ch;
     char str[1000];
+    printf("@ %d : %s\n", 0, "Hello");
+    fflush(stdout);
     while(scanf("%c",&ch)>0) {
         if (ch == '\n') {
             continue;

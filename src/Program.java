@@ -20,25 +20,27 @@ public class Program extends Thread {
 	InputStream output;
 	OutputStream input;
 
-	public Program(Vertex v, int id, int portNumber) {
+	public Program(Vertex v, Model m) {
 		super();
 		vertex = v;
-		this.id = id;
+		vertex.program = this;
+		this.id = 0;
 		ports = new ArrayList<Integer>();
-		for (int i = 0; i < portNumber; ++i)
+		for (int i = 0; i < v.edges.size(); ++i)
 			ports.add(i);
 	}
 
 	@Override
 	public void run() {
 		super.run();
+		System.out.println("bezim "+id);
 		try {
 			BufferedReader out = new BufferedReader(new InputStreamReader(
 					output));
 			String line;
 			while ((line = out.readLine()) != null) {
 				if (line.charAt(0) == '@') {
-					String[] parts = line.split(":", 2);
+					String[] parts = line.substring(1).split(":", 2);
 					send(new Message(Integer.parseInt(parts[0].trim()),
 							parts[1].trim()));
 				}
@@ -62,17 +64,21 @@ public class Program extends Thread {
 	}
 
 	public void kill() {
+		vertex.program = null;
 		this.interrupt();
 		process.destroy();
 	}
 
 	public void send(Message message) {
+		System.err.println("send "+id+ " "+message.port+" "+message.content);
+		
 		// TODO spravit efektivnejsie indexOf
 		message.port = ports.indexOf(message.port);
 		vertex.send(message);
 	}
 
 	public void recieve(Message message) {
+		System.err.println("recieve "+id+ " "+message.port+" "+message.content);
 		PrintWriter in = new PrintWriter(input);
 		in.println("@ " + ports.get(message.port) + " : " + message.content);
 		in.flush();

@@ -17,6 +17,7 @@ public class GUI {
 	static JFileChooser graphSaver;
 	static Canvas canvas;
 	static Graph graph;
+	static Model model;
 	
 	static void addElement(Container to, Component what, int x, int y, int w, int h){
         what.setLocation(x,y);
@@ -28,6 +29,8 @@ public class GUI {
 	static class Window implements Runnable {
 		@Override
 		public void run() {
+			//TODO spravit krajsie
+			
 			final JFrame frame = new JFrame("ViDA");
 	        frame.setLayout(null); 
 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -79,7 +82,9 @@ public class GUI {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		// TODO spravit krajsie
 		graph = new Graph();
+		model = new Model();
 		final Window window = new Window();
         SwingUtilities.invokeLater(window);
 	}

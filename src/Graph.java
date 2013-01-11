@@ -13,8 +13,7 @@ public class Graph {
 		vertices = new ArrayList<Vertex>();
 		edges = new ArrayList<Edge>();
 	}
-	
-	
+		
 	
 	public void read(Scanner input)
 	{
