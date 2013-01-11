@@ -15,7 +15,7 @@ public class Edge implements Drawable{
 
     public void draw(Graphics g) {
         g.setColor(new Color(0, 0, 0));
-        g.drawLine(from.x, from.y, to.x, to.y);
+        g.drawLine(from.getX(), from.getY(), to.getX(), to.getY());
     }
 
 }
