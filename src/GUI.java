@@ -15,7 +15,7 @@ public class GUI {
 	
 	static JFileChooser graphLoader;
 	static JFileChooser graphSaver;
-	static Canvas canvas;
+	static Canvas graphCanvas;
 	static Graph graph;
 	static Model model;
 	
@@ -64,11 +64,9 @@ public class GUI {
                         
             addElement(frame, menu, 0, 0, 800, 25);
             
-            canvas = new Canvas();
-            Canvas.CanvasListener listener = new Canvas.CanvasListener();
-            canvas.addMouseListener(listener);
-            canvas.addMouseMotionListener(listener);
-            addElement(frame, canvas, 0, 25, 500, 500);
+            graphCanvas = new Canvas(graph);
+            graph.setCanvas(graphCanvas);
+            addElement(frame, graphCanvas, 0, 25, 500, 500);
             
             frame.setSize(800,600);
             frame.setResizable(false);
