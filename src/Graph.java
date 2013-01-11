@@ -31,8 +31,9 @@ public class Graph implements Drawable {
         // vykresli polhranu
         if (begin != null) {
             g.setColor(new Color(0, 0, 0));
-            g.drawLine(begin.x, begin.y, xlast, ylast);
+            g.drawLine(begin.getX(), begin.getY(), xlast, ylast);
         }
+        // vykresli vrcholy a hrany
         for (Edge edge : edges) edge.draw(g);
         for (Vertex vertex : vertices) vertex.draw(g);
     }
@@ -61,10 +62,10 @@ public class Graph implements Drawable {
 
         @Override
         public void mouseDragged(MouseEvent mouse) {
-            repaintBetween(begin.x, begin.y, xlast, ylast);
+            repaintBetween(begin.getX(), begin.getY(), xlast, ylast);
             xlast = mouse.getX();
             ylast = mouse.getY();
-            repaintBetween(begin.x, begin.y, xlast, ylast);
+            repaintBetween(begin.getX(), begin.getY(), xlast, ylast);
         }
 
         @Override
@@ -84,13 +85,11 @@ public class Graph implements Drawable {
         // TODO ak je zapnute prehravanie, zrusit
         // TODO este musi vybehnut policko, kde zada ID a tak
         int x = mouse.getX(), y = mouse.getY();
-        for (int i = 0; i < vertices.size(); i++) {
-            int xp = vertices.get(i).x, yp = vertices.get(i).y;
-            if ((x - xp) * (x - xp) + (y - yp) * (y - yp) < 255)
-                return;
-        }
-        vertices.add(new Vertex(x, y));
-        canvas.repaint(x - 10, y - 10, 20, 20);
+        for (Vertex vertex : vertices)
+            if (vertex.isNearPoint(x,y,vertex.getRadius())) return;
+        Vertex vertex = new Vertex(x, y);
+        vertices.add(vertex);    
+        vertex.repaint(canvas);
     }
 
     public void addEdge(Vertex from, Vertex to) {
@@ -107,15 +106,12 @@ public class Graph implements Drawable {
             return;
         edges.add(new Edge(from, to));
         from.edges.add(new Edge(from, to));
-        repaintBetween(from.x, from.y, to.x, to.y);
+        repaintBetween(from.getX(), from.getY(), to.getX(), to.getY());
     }
 
     public Vertex findVertex(int x, int y) {
-        for (int i = 0; i < vertices.size(); i++) {
-            int x1 = vertices.get(i).x, y1 = vertices.get(i).y;
-            if ((x1 - x) * (x1 - x) + (y1 - y) * (y1 - y) <= 100)
-                return vertices.get(i);
-        }
+        for (Vertex vertex : vertices)
+            if (vertex.isOnPoint(x,y)) return vertex;
         return null;
     }
 
@@ -155,7 +151,7 @@ public class Graph implements Drawable {
     public void print(PrintStream output) {
         output.println(vertices.size() + " " + edges.size());
         for (int i = 0; i < vertices.size(); i++)
-            output.println(vertices.get(i).x + " " + vertices.get(i).y);
+            output.println(vertices.get(i).getX() + " " + vertices.get(i).getY());
         // TODO spravit efektivnejsie indexOf
         for (int i = 0; i < edges.size(); i++)
             output.println(vertices.indexOf(edges.get(i).from) + " "

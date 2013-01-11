@@ -4,7 +4,11 @@ import java.util.ArrayList;
 
 public class Vertex implements Drawable {
 
-    int x, y;
+    private int x, y, radius;
+    public int getX() { return x;}
+    public int getY() { return y;}
+    public int getRadius() { return radius;}
+    
     ArrayList<Edge> edges;
     Program program;
 
@@ -12,6 +16,7 @@ public class Vertex implements Drawable {
         edges = new ArrayList<Edge>();
         this.x = x;
         this.y = y;
+        radius = 6;
     }
 
     void send(Message message) {
@@ -25,9 +30,16 @@ public class Vertex implements Drawable {
 
     public void draw(Graphics g) {
         g.setColor(new Color(0, 0, 0));
-        g.fillOval(x - 6, y - 6, 12, 12);
+        g.fillOval(x - radius, y - radius, 2*radius, 2*radius);
         g.setColor(new Color(0, 255, 0));
-        g.fillOval(x - 5, y - 5, 10, 10);
+        g.fillOval(x - radius+1, y - radius+1, 2*radius-2, 2*radius-2);
+    }
+    public boolean isOnPoint(int x1, int y1) {return isNearPoint(x1, y1, 0);}
+    public boolean isNearPoint(int x1, int y1, int distance) {
+        return (x1-x)*(x1-x)+(y1-y)*(y1-y)<(radius+distance)*(radius+distance);
+    }
+    public void repaint(Canvas canvas) {
+        canvas.repaint(x-2*radius,x+2*radius,4*radius,4*radius);        
     }
 
 }
