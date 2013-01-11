@@ -16,5 +16,11 @@ public class Model {
 			v.program = new Program(v, this);
 			v.program.load(path);
 		}
-	}	
+	}
+	
+	void stop(){
+		for (Vertex v : graph.vertices) {
+			v.program.kill();
+		}
+	}
 }
