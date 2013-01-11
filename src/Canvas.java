@@ -21,7 +21,7 @@ public class Canvas extends JPanel {
 		@Override
 		public void mouseClicked(MouseEvent mouse)
 		{
-			GUI.canvas.addVertex(mouse);
+			Canvas.addVertex(mouse);
 		}
 		
 		@Override
@@ -33,7 +33,7 @@ public class Canvas extends JPanel {
 		@Override
 		public void mouseReleased(MouseEvent mouse)
 		{
-			GUI.canvas.addEdge(begin, findVertex(mouse.getX(),mouse.getY()));
+			Canvas.addEdge(begin, findVertex(mouse.getX(),mouse.getY()));
 			GUI.canvas.repaint();
 			begin=-1; xp=0; yp=0;
 		}
@@ -72,11 +72,11 @@ public class Canvas extends JPanel {
 		boolean exists=false;
 		for(int i=0; i<GUI.graph.edges.size(); i++)
 		{
-			int f=GUI.graph.edges.get(i).from,t=GUI.graph.edges.get(i).to;
+			int f=GUI.graph.vertices.indexOf(GUI.graph.edges.get(i).from),t=GUI.graph.vertices.indexOf(GUI.graph.edges.get(i).to);
 			if(f==Math.min(from, to) && t==Math.max(from, to)) exists=true;
 		}
 		if(exists) return ;
-		GUI.graph.edges.add(new Edge(Math.min(from, to), Math.max(from, to)));
+		GUI.graph.edges.add(new Edge(GUI.graph.vertices.get(Math.min(from, to)),GUI.graph.vertices.get(Math.max(from, to))));
 		repaintBetween(GUI.graph.vertices.get(from).x,GUI.graph.vertices.get(from).y
 				,GUI.graph.vertices.get(to).x,GUI.graph.vertices.get(to).y);
 	}
@@ -127,9 +127,9 @@ public class Canvas extends JPanel {
         // vykresli hrany
         for(int i=0; i<GUI.graph.edges.size(); i++)
         {
-        	int from = GUI.graph.edges.get(i).from;
-        	int to = GUI.graph.edges.get(i).to;
-        	drawEdge(g, GUI.graph.vertices.get(from), GUI.graph.vertices.get(to));
+        	Vertex from = GUI.graph.edges.get(i).from;
+        	Vertex to = GUI.graph.edges.get(i).to;
+        	drawEdge(g, from, to);
         }
         //vykresli vrcholy
         for(int i=0; i<GUI.graph.vertices.size(); i++)

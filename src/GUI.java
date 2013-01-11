@@ -58,7 +58,7 @@ public class GUI {
                     }
                 }
             }
-            
+                        
             addElement(frame, menu, 0, 0, 800, 25);
             
             canvas = new Canvas();
@@ -67,7 +67,7 @@ public class GUI {
             canvas.addMouseMotionListener(listener);
             addElement(frame, canvas, 0, 25, 500, 500);
             
-			frame.setSize(800,600);
+            frame.setSize(800,600);
             frame.setResizable(false);
             frame.setVisible(true);
 		}
