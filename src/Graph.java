@@ -14,6 +14,8 @@ public class Graph {
 		edges = new ArrayList<Edge>();
 	}
 	
+	
+	
 	public void read(Scanner input)
 	{
 		vertices = new ArrayList<Vertex>();
@@ -28,7 +30,7 @@ public class Graph {
 			for(int i=0; i<m; i++)
 			{
 				int f=input.nextInt(),t=input.nextInt();
-				edges.add(new Edge(Math.min(f, t),Math.max(f, t)));
+				edges.add(new Edge(vertices.get(Math.min(f, t)),vertices.get(Math.max(f, t))));
 			}
 		} 
 		catch (Exception e) 
@@ -42,8 +44,9 @@ public class Graph {
 		output.println(vertices.size() +  " " + edges.size());
 		for(int i=0; i<vertices.size(); i++)
 			output.println(vertices.get(i).x + " " + vertices.get(i).y);
+		// TODO spravit efektivnejsie indexOf
 		for(int i=0; i<edges.size(); i++)
-			output.println(edges.get(i).from + " " + edges.get(i).to);
+			output.println(vertices.indexOf(edges.get(i).from) + " " + vertices.indexOf(edges.get(i).to));
 	}
 
 }

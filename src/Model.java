@@ -15,6 +15,6 @@ public class Model {
 		for (Vertex v : graph.vertices) {
 			v.program = new Program(v, 0, 0);
 			v.program.load(path);
-		}				
+		}
 	}	
 }

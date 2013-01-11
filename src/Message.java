@@ -1,5 +1,4 @@
 
-
 class Message{
 	int port;
 	String content;
@@ -8,4 +7,10 @@ class Message{
 		this.port=port;
 		this.content = content;
 	}	
+	public Message(Letter letter){
+		//TODO
+		
+	}
+	
 }
+

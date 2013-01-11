@@ -1,12 +1,16 @@
 
+// TODO mozno chceme aby hrana bola one directed
 public class Edge {
 	
-	int from,to;
+	Vertex from,to;
 	
-	public Edge(int from, int to)
+	public Edge(Vertex from, Vertex to)
 	{
 		this.from=from;
 		this.to=to;
+		from.edges.add(this);
+		to.edges.add(this);
 	}
 
 }
+
