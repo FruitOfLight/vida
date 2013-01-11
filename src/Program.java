@@ -14,6 +14,7 @@ public class Program extends Thread {
     Vertex vertex;
     int id;
     ArrayList<Integer> ports;
+    boolean running;
 
     Process process;
     InputStream output;
@@ -23,6 +24,7 @@ public class Program extends Thread {
         super();
         vertex = v;
         vertex.program = this;
+        running = false;
         this.id = 0;
         ports = new ArrayList<Integer>();
         for (int i = 0; i < v.edges.size(); ++i)
@@ -37,6 +39,7 @@ public class Program extends Thread {
             BufferedReader out = new BufferedReader(new InputStreamReader(
                     output));
             String line;
+            running = true;
             while ((line = out.readLine()) != null) {
                 if (line.charAt(0) == '@') {
                     String[] parts = line.substring(1).split(":", 2);
@@ -63,6 +66,7 @@ public class Program extends Thread {
     }
 
     public void kill() {
+        running = false;
         vertex.program = null;
         this.interrupt();
         process.destroy();

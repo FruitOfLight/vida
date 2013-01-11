@@ -96,16 +96,25 @@ public class Graph implements Drawable {
         // TODO ak je zapnute prehravanie, zrusit
         if (from == null || to == null || from.equals(to))
             return;
-        boolean exists = false;
+        Edge edgeFrom = null;
+        Edge edgeTo = null;
         for (int i = 0; i < edges.size(); i++) {
             Vertex f = edges.get(i).from, t = edges.get(i).to;
             if (f.equals(from) && t.equals(to))
-                exists = true;
+                edgeFrom = edges.get(i);
+            if (f.equals(to) && t.equals(from))
+                edgeTo = edges.get(i);
         }
-        if (exists)
-            return;
-        edges.add(new Edge(from, to));
-        from.edges.add(new Edge(from, to));
+        if (edgeFrom==null){
+            edgeFrom = new Edge(from, to);
+            edges.add(edgeFrom);
+        }
+        if (edgeTo==null){
+            edgeTo = new Edge(to, from);
+            edges.add(edgeTo);
+        }
+        Edge.connectOpposite(edgeFrom, edgeTo);
+        //vrcholom hrany nepridavame, hrana sa im prida sama
         repaintBetween(from.getX(), from.getY(), to.getX(), to.getY());
     }
 
