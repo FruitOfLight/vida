@@ -9,7 +9,7 @@ public class Menu {
 
 	static final String[] menuItems = { "Graph", "Model" };
 	static final String[][] allMenuItems = {
-			{ "New", "Open", "Save", "--", "Quit" }, { "Run" }, };
+			{ "New", "Open", "Save", "--", "Quit" }, { "Run", "Stop" }, };
 
 	static void performAction(int r, int c) {
 		switch (r) {
@@ -59,6 +59,9 @@ public class Menu {
 			case 0:
 				GUI.model.graph = GUI.graph;
 				GUI.model.load();
+				break;
+			case 1:
+				GUI.model.stop();
 				break;
 			default:
 				System.out.println("Invalid entry!");
