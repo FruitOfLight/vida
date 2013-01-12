@@ -15,8 +15,10 @@ public class GUI {
     static JFileChooser graphLoader;
     static JFileChooser graphSaver;
     static Canvas graphCanvas;
+    static Canvas queueCanvas;
     static Graph graph;
     static Model model;
+    static LetterQueue letterQueue;
 
     static void addElement(Container to, Component what, int x, int y, int w,
             int h) {
@@ -65,7 +67,13 @@ public class GUI {
 
             graphCanvas = new Canvas(graph);
             graph.setCanvas(graphCanvas);
-            addElement(frame, graphCanvas, 0, 25, 500, 500);
+            graph.setPosition(0, 75, 500, 500);
+            addElement(frame, graphCanvas, 0, 75, 500, 500);
+            
+            queueCanvas = new Canvas(letterQueue);
+            letterQueue.setCanvas(queueCanvas);
+            letterQueue.setPosition(0, 25, 500, 50);
+            addElement(frame, queueCanvas, 0, 25 , 500 , 50);
 
             frame.setSize(800, 600);
             frame.setResizable(false);
@@ -81,6 +89,7 @@ public class GUI {
         // TODO spravit krajsie
         graph = new Graph();
         model = new Model();
+        letterQueue = new LetterQueue();
         final Window window = new Window();
         SwingUtilities.invokeLater(window);
     }
