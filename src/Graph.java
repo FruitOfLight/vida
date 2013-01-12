@@ -157,18 +157,18 @@ public class Graph implements Drawable {
     public void addVertex(MouseEvent mouse) {
         // TODO ak je zapnute prehravanie, zrusit
         // TODO este musi vybehnut policko, kde zada ID a tak
+        int x = mouse.getX(), y = mouse.getY();
+        for (Vertex vertex : vertices) {
+            if (vertex.isNearPoint(x, y, vertex.getRadius())) {
+                return;
+            }
+        }
         Dialog.DialogNewVertex newVertexDialog = new Dialog.DialogNewVertex();
         int ok = JOptionPane.showConfirmDialog(null,
                 newVertexDialog.getPanel(), "New vertex",
                 JOptionPane.OK_CANCEL_OPTION);
         if (ok == JOptionPane.OK_OPTION) {
-            int x = mouse.getX(), y = mouse.getY(), ID = newVertexDialog
-                    .getID();
-            for (Vertex vertex : vertices) {
-                if (vertex.isNearPoint(x, y, vertex.getRadius())) {
-                    return;
-                }
-            }
+            int ID = newVertexDialog.getID();
             Vertex vertex = new Vertex(x, y, ID);
             vertices.add(vertex);
         }
