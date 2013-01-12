@@ -23,14 +23,9 @@ public class Vertex implements Drawable {
 
     void send(Message message) {
         message.edge = edges.get(message.fromPort);
+        message.toPort = message.edge.to.edges.indexOf(message.edge.oppositeEdge); 
         
         
-        /*if (edge.to.program!=null
-                && edge.to.program.running==true){
-            // TODO zasa asi enchceme nezbedny indexOf            
-            message.port = edge.to.edges.indexOf(edge.oppositeEdge); 
-            edge.to.recieve(message);
-        }*/
     }
 
     void recieve(Message message) {

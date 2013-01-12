@@ -89,7 +89,7 @@ public class GUI {
         // TODO spravit krajsie
         graph = new Graph();
         model = new Model();
-        letterQueue = new MessageQueue();
+        letterQueue = MessageQueue.getInstance();
         final Window window = new Window();
         SwingUtilities.invokeLater(window);
     }
