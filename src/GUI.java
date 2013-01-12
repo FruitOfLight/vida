@@ -64,16 +64,8 @@ public class GUI {
             }
 
             addElement(frame, menu, 0, 0, 800, 25);
-
-            graphCanvas = new Canvas(graph);
-            graph.setCanvas(graphCanvas);
-            graph.setPosition(500, 500);
-            addElement(frame, graphCanvas, 0, 75, 500, 500);
-
-            queueCanvas = new Canvas(letterQueue);
-            letterQueue.setCanvas(queueCanvas);
-            letterQueue.setPosition(600, 50);
-            addElement(frame, queueCanvas, 0, 25, 600, 50);
+            addElement(frame, graph.canvas, 0, 75, 500, 500);
+            addElement(frame, MessageQueue.getInstance().canvas, 0, 25, 600, 50);
 
             frame.setSize(800, 600);
             frame.setResizable(false);

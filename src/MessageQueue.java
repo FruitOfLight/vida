@@ -38,21 +38,13 @@ public class MessageQueue implements Drawable {
 
     private MessageQueue() {
         timer = new Timer();
+        canvas = new Canvas(this);
     }
 
     ArrayList<Message> list = new ArrayList<Message>();
     // premenne pre vykreslovanie
     Canvas canvas;
     int width, height;
-
-    public void setCanvas(Canvas canvas) {
-        this.canvas = canvas;
-    }
-
-    public void setPosition(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
 
     void pushMessage(Message message) {
         list.add(message);
@@ -78,6 +70,8 @@ public class MessageQueue implements Drawable {
 
     @Override
     public void draw(Graphics g) {
+        this.width = canvas.getWidth();
+        this.height = canvas.getHeight();
         // TODO
         g.setColor(new Color(0, 0, 0));
         g.drawRect(0, 0, width - 1, height - 1);
