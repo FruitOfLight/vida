@@ -39,11 +39,7 @@ public class Vertex implements Drawable {
     Program program;
 
     public Vertex(int x, int y) {
-        edges = new ArrayList<Edge>();
-        this.x = x;
-        this.y = y;
-        radius = 11;
-        ID = 0;
+        this(x,y,0);
     }
 
     public Vertex(int x, int y, int ID) {

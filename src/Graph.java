@@ -26,11 +26,7 @@ public class Graph implements Drawable {
     public Graph() {
         vertices = new ArrayList<Vertex>();
         edges = new ArrayList<Edge>();
-    }
-
-    public void setPosition(int width, int height) {
-        this.width = width;
-        this.height = height;
+        setCanvas(new Canvas(this));
     }
 
     public void setCanvas(Canvas canvas) {
@@ -44,6 +40,8 @@ public class Graph implements Drawable {
 
     @Override
     public void draw(Graphics g) {
+        this.width = canvas.getWidth();
+        this.height = canvas.getHeight();
         g.setColor(new Color(0, 0, 0));
         g.drawRect(0, 0, width - 1, height - 1);
         // vykresli polhranu
@@ -157,18 +155,18 @@ public class Graph implements Drawable {
     public void addVertex(MouseEvent mouse) {
         // TODO ak je zapnute prehravanie, zrusit
         // TODO este musi vybehnut policko, kde zada ID a tak
+        int x = mouse.getX(), y = mouse.getY();
+        for (Vertex vertex : vertices) {
+            if (vertex.isNearPoint(x, y, vertex.getRadius())) {
+                return;
+            }
+        }
         Dialog.DialogNewVertex newVertexDialog = new Dialog.DialogNewVertex();
         int ok = JOptionPane.showConfirmDialog(null,
                 newVertexDialog.getPanel(), "New vertex",
                 JOptionPane.OK_CANCEL_OPTION);
         if (ok == JOptionPane.OK_OPTION) {
-            int x = mouse.getX(), y = mouse.getY(), ID = newVertexDialog
-                    .getID();
-            for (Vertex vertex : vertices) {
-                if (vertex.isNearPoint(x, y, vertex.getRadius())) {
-                    return;
-                }
-            }
+            int ID = newVertexDialog.getID();
             Vertex vertex = new Vertex(x, y, ID);
             vertices.add(vertex);
         }
@@ -255,6 +253,7 @@ public class Graph implements Drawable {
             y1 = y2;
             y2 = p;
         }
+        // TODO dat namiesto 10 polomer vrcholu
         canvas.repaint(x1 - 10, y1 - 10, x2 - x1 + 20, y2 - y1 + 20);
     }
 
@@ -270,7 +269,7 @@ public class Graph implements Drawable {
             }
             for (int i = 0; i < m; i++) {
                 int f = input.nextInt(), t = input.nextInt();
-                edges.add(new Edge(vertices.get(Math.min(f,t)), vertices.get(Math.max(f,t))));
+                addEdge(vertices.get(f), vertices.get(t));
             }
         } catch (Exception e) {
             e.printStackTrace();

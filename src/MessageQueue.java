@@ -29,6 +29,7 @@ public class MessageQueue implements Drawable {
     
     private MessageQueue(){
         timer = new Timer();
+        canvas = new Canvas(this);
     }
     
     ArrayList<Message> list = new ArrayList<Message>();
@@ -63,6 +64,8 @@ public class MessageQueue implements Drawable {
     }
 
     public void draw(Graphics g) {
+        this.width = canvas.getWidth();
+        this.height = canvas.getHeight();
         // TODO
     	g.setColor(new Color(255, 255, 255));
     	g.fillRect(0, 0, width, height);
