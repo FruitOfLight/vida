@@ -14,12 +14,11 @@ public class MessageQueue implements Drawable {
     ArrayList<Message> list = new ArrayList<Message>();
     //premenne pre vykreslovanie
     Canvas canvas;
-    int x, y, width, height;
+    int width, height;
     
     public void setCanvas(Canvas canvas) {this.canvas = canvas;}
     
-    public void setPosition(int x, int y, int width, int height) {
-    	this.x = x; this.y = y;
+    public void setPosition(int width, int height) {
     	this.width = width; this.height = height;
     }
 
@@ -34,6 +33,8 @@ public class MessageQueue implements Drawable {
     public void draw(Graphics g) {
         // TODO
     	g.setColor(new Color(255, 255, 255));
-    	g.fillRect(x, y, width, height);
+    	g.fillRect(0, 0, width, height);
+    	g.setColor(new Color(0, 0, 0));
+    	g.drawRect(0, 0, width-1, height-1);
     }
 }

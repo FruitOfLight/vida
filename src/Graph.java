@@ -15,7 +15,7 @@ public class Graph implements Drawable {
     public ArrayList<Edge> edges;
     //premenne pre vykreslovanie
     public Canvas canvas;
-    int x, y, width, height;
+    int width, height;
     //premenne pre listenery
     public Vertex begin = null;
     int xlast, ylast;
@@ -26,8 +26,7 @@ public class Graph implements Drawable {
         edges = new ArrayList<Edge>();
     }
     
-    public void setPosition(int x, int y, int width, int height) {
-    	this.x = x; this.y = y;
+    public void setPosition(int width, int height) {
     	this.width = width; this.height = height;
     }
 
@@ -42,7 +41,9 @@ public class Graph implements Drawable {
 
     public void draw(Graphics g) {
     	g.setColor(new Color(255, 255, 255));
-        g.fillRect(x, y, width,	height);
+        g.fillRect(0, 0, width,	height);
+        g.setColor(new Color(0, 0, 0));
+        g.drawRect(0, 0, width-1, height-1);
         // vykresli polhranu
         if (begin != null && !moving && !deleting) {
             g.setColor(new Color(0, 0, 0));
