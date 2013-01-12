@@ -11,6 +11,13 @@ import java.util.ArrayList;
  * neposielajú sa priamo správy, ale listy
  */
 public class MessageQueue implements Drawable {
+    public static MessageQueue getInstance() { return instance; }
+    private static MessageQueue instance = new MessageQueue(); 
+    
+    private MessageQueue(){
+        
+    }
+    
     ArrayList<Message> list = new ArrayList<Message>();
     //premenne pre vykreslovanie
     Canvas canvas;
@@ -24,9 +31,10 @@ public class MessageQueue implements Drawable {
 
     void processNewMessage(Message message) {
         // TODO
+        // nahodna zmena
     }
 
-    void deliverFirstLetter() {
+    void deliverFirstMessage() {
         // TODO
     }
 
