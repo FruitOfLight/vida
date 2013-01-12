@@ -270,8 +270,7 @@ public class Graph implements Drawable {
             }
             for (int i = 0; i < m; i++) {
                 int f = input.nextInt(), t = input.nextInt();
-                edges.add(new Edge(vertices.get(Math.min(f, t)), vertices
-                        .get(Math.max(f, t))));
+                edges.add(new Edge(vertices.get(Math.min(f,t)), vertices.get(Math.max(f,t))));
             }
         } catch (Exception e) {
             e.printStackTrace();
