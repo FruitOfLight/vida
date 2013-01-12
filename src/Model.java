@@ -5,21 +5,28 @@ public class Model {
      * kazdy povie, ci je sef)
      */
 
-    String path = "./algorithms/echo.cpp.bin";
+    String path = "./algorithms/send.cpp.bin";
     Graph graph;
+    boolean running;
 
     Model() {
-
+           running = false;
     }
 
     void load() {
+        MessageQueue.getInstance().model = this;    
+     
         for (Vertex v : graph.vertices) {
             v.program = new Program(v, this);
             v.program.load(path);
         }
+        running = true;
+        MessageQueue.getInstance().timer.schedule(new MessageQueue.TimerEvent(), 0);
     }
 
     void stop() {
+        MessageQueue.getInstance().model = null; 
+        running = false;
         for (Vertex v : graph.vertices) {
             v.program.kill();
         }
