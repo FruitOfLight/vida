@@ -26,7 +26,7 @@ public class Program extends Thread {
         vertex = v;
         vertex.program = this;
         running = false;
-        this.id = 0;
+        this.id = vertex.getID();
         ports = new ArrayList<Integer>();
         for (int i = 0; i < v.edges.size(); ++i)
             ports.add(i);
@@ -44,7 +44,7 @@ public class Program extends Thread {
             while ((line = out.readLine()) != null) {
                 if (line.charAt(0) == '@') {
                     String[] parts = line.substring(1).split(":", 2);
-                    send(Integer.parseInt(parts[0].trim()),parts[1].trim());
+                    send(Integer.parseInt(parts[0].trim()), parts[1].trim());
                 }
             }
             out.close();
@@ -75,22 +75,22 @@ public class Program extends Thread {
     }
 
     // program sa dozvie pociatocne hodnoty, ako napriklad pocet portov
-    public void init(){
+    public void init() {
         // pocet portov a ich hodnoty
-        System.out.print("* ports : "+ports.size());
-        for (int p : ports) System.out.print(" "+p);
-        System.out.println();
-        
-        in.print("* ports : "+ports.size());
-        for (int p : ports) in.print(" "+p);
+        in.print("* ports : " + ports.size());
+        for (int p : ports)
+            in.print(" " + p);
         in.println();
         
+        // id
+        //TODO skontrolovat anonymitu
+        in.println("* id : " + id);
+
         in.flush();
     }
-    
+
     public void send(int port, String content) {
-        System.err.println("send " + id + " " + port + " "
-                + content);
+        System.err.println("send " + id + " " + port + " " + content);
 
         // svoj port zmenim na port vrchola
         // TODO spravit efektivnejsie nez cez indexOf
@@ -101,7 +101,7 @@ public class Program extends Thread {
     public void recieve(Message message) {
         System.err.println("recieve " + id + " " + message.toPort + " "
                 + message.content);
-        
+
         in.println("@ " + ports.get(message.toPort) + " : " + message.content);
         in.flush();
     }
