@@ -9,6 +9,8 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 public class Graph implements Drawable {
 
     public ArrayList<Vertex> vertices;
@@ -41,7 +43,7 @@ public class Graph implements Drawable {
 
     public void draw(Graphics g) {
     	g.setColor(new Color(255, 255, 255));
-        g.fillRect(0, 0, width,	height);
+        g.fillRect(0, 0, width,		height);
         g.setColor(new Color(0, 0, 0));
         g.drawRect(0, 0, width-1, height-1);
         // vykresli polhranu
@@ -133,12 +135,17 @@ public class Graph implements Drawable {
     public void addVertex(MouseEvent mouse) {
         // TODO ak je zapnute prehravanie, zrusit
         // TODO este musi vybehnut policko, kde zada ID a tak
-        int x = mouse.getX(), y = mouse.getY();
-        for (Vertex vertex : vertices)
-            if (vertex.isNearPoint(x,y,vertex.getRadius())) return;
-        Vertex vertex = new Vertex(x, y);
-        vertices.add(vertex);    
-        vertex.repaint(canvas);
+    	Dialog.DialogNewVertex newVertexDialog = new Dialog.DialogNewVertex();
+    	int ok = JOptionPane.showConfirmDialog(null, 
+                newVertexDialog.getPanel(), "New vertex", JOptionPane.OK_CANCEL_OPTION);
+    	if(ok==JOptionPane.OK_OPTION) {
+    		int x = mouse.getX(), y = mouse.getY(), ID = newVertexDialog.getID();
+    		for (Vertex vertex : vertices)
+    			if (vertex.isNearPoint(x,y,vertex.getRadius())) return;
+    		Vertex vertex = new Vertex(x, y, ID);
+    		vertices.add(vertex);    
+    	}
+    	canvas.repaint();
     }
     
     public void deleteVertex(Vertex vertex)
@@ -218,8 +225,8 @@ public class Graph implements Drawable {
         try {
             int n = input.nextInt(), m = input.nextInt();
             for (int i = 0; i < n; i++) {
-                int x = input.nextInt(), y = input.nextInt();
-                vertices.add(new Vertex(x, y));
+                int x = input.nextInt(), y = input.nextInt(), ID = input.nextInt();
+                vertices.add(new Vertex(x, y, ID));
             }
             for (int i = 0; i < m; i++) {
                 int f = input.nextInt(), t = input.nextInt();
@@ -234,7 +241,7 @@ public class Graph implements Drawable {
     public void print(PrintStream output) {
         output.println(vertices.size() + " " + edges.size());
         for (int i = 0; i < vertices.size(); i++)
-            output.println(vertices.get(i).getX() + " " + vertices.get(i).getY());
+            output.println(vertices.get(i).getX() + " " + vertices.get(i).getY() + " " + vertices.get(i).getID());
         // TODO spravit efektivnejsie indexOf
         for (int i = 0; i < edges.size(); i++)
             output.println(vertices.indexOf(edges.get(i).from) + " "
