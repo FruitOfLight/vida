@@ -12,86 +12,86 @@ import javax.swing.SwingUtilities;
 
 public class GUI {
 
-	static JFileChooser graphLoader;
-	static JFileChooser graphSaver;
-	static Canvas graphCanvas;
-	static Canvas queueCanvas;
-	static Graph graph;
-	static Model model;
-	static MessageQueue letterQueue;
+    static JFileChooser graphLoader;
+    static JFileChooser graphSaver;
+    static Canvas graphCanvas;
+    static Canvas queueCanvas;
+    static Graph graph;
+    static Model model;
+    static MessageQueue letterQueue;
 
-	static void addElement(Container to, Component what, int x, int y, int w,
-			int h) {
-		what.setLocation(x, y);
-		what.setSize(w, h);
-		to.add(what);
-	}
+    static void addElement(Container to, Component what, int x, int y, int w,
+            int h) {
+        what.setLocation(x, y);
+        what.setSize(w, h);
+        to.add(what);
+    }
 
-	static class Window implements Runnable {
-		@Override
-		public void run() {
-			// TODO spravit krajsie
+    static class Window implements Runnable {
+        @Override
+        public void run() {
+            // TODO spravit krajsie
 
-			final JFrame frame = new JFrame("ViDA");
-			frame.setLayout(null);
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            final JFrame frame = new JFrame("ViDA");
+            frame.setLayout(null);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-			graphLoader = new JFileChooser("./");
-			graphSaver = new JFileChooser("./");
+            graphLoader = new JFileChooser("./");
+            graphSaver = new JFileChooser("./");
 
-			final JMenuBar menu = new JMenuBar();
+            final JMenuBar menu = new JMenuBar();
 
-			for (int i = 0; i < Menu.menuItems.length; i++) {
-				final JMenu item = new JMenu(Menu.menuItems[i]);
-				menu.add(item);
-				for (int j = 0; j < Menu.allMenuItems[i].length; ++j) {
-					if (Menu.allMenuItems[i][j].equals("--")) {
-						item.addSeparator();
-					} else {
-						final JMenuItem meno = new JMenuItem(
-								Menu.allMenuItems[i][j]);
-						item.add(meno);
-						final int fi = i;
-						final int fj = j;
-						meno.addActionListener(new ActionListener() {
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								Menu.performAction(fi, fj);
-							}
-						});
-					}
-				}
-			}
+            for (int i = 0; i < Menu.menuItems.length; i++) {
+                final JMenu item = new JMenu(Menu.menuItems[i]);
+                menu.add(item);
+                for (int j = 0; j < Menu.allMenuItems[i].length; ++j) {
+                    if (Menu.allMenuItems[i][j].equals("--")) {
+                        item.addSeparator();
+                    } else {
+                        final JMenuItem meno = new JMenuItem(
+                                Menu.allMenuItems[i][j]);
+                        item.add(meno);
+                        final int fi = i;
+                        final int fj = j;
+                        meno.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                Menu.performAction(fi, fj);
+                            }
+                        });
+                    }
+                }
+            }
 
-			addElement(frame, menu, 0, 0, 800, 25);
+            addElement(frame, menu, 0, 0, 800, 25);
 
-			graphCanvas = new Canvas(graph);
-			graph.setCanvas(graphCanvas);
-			graph.setPosition(500, 500);
-			addElement(frame, graphCanvas, 0, 75, 500, 500);
+            graphCanvas = new Canvas(graph);
+            graph.setCanvas(graphCanvas);
+            graph.setPosition(500, 500);
+            addElement(frame, graphCanvas, 0, 75, 500, 500);
 
-			queueCanvas = new Canvas(letterQueue);
-			letterQueue.setCanvas(queueCanvas);
-			letterQueue.setPosition(600, 50);
-			addElement(frame, queueCanvas, 0, 25, 600, 50);
+            queueCanvas = new Canvas(letterQueue);
+            letterQueue.setCanvas(queueCanvas);
+            letterQueue.setPosition(600, 50);
+            addElement(frame, queueCanvas, 0, 25, 600, 50);
 
-			frame.setSize(800, 600);
-			frame.setResizable(false);
-			frame.setVisible(true);
-		}
+            frame.setSize(800, 600);
+            frame.setResizable(false);
+            frame.setVisible(true);
+        }
 
-	}
+    }
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO spravit krajsie
-		graph = new Graph();
-		model = new Model();
-		letterQueue = MessageQueue.getInstance();
-		final Window window = new Window();
-		SwingUtilities.invokeLater(window);
-	}
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        // TODO spravit krajsie
+        graph = new Graph();
+        model = new Model();
+        letterQueue = MessageQueue.getInstance();
+        final Window window = new Window();
+        SwingUtilities.invokeLater(window);
+    }
 
 }

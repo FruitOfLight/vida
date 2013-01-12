@@ -11,44 +11,45 @@ import java.util.ArrayList;
  * neposielajú sa priamo správy, ale listy
  */
 public class MessageQueue implements Drawable {
-	public static MessageQueue getInstance() {
-		return instance;
-	}
+    public static MessageQueue getInstance() {
+        return instance;
+    }
 
-	private static MessageQueue instance = new MessageQueue();
+    private static MessageQueue instance = new MessageQueue();
 
-	private MessageQueue() {
+    private MessageQueue() {
 
-	}
+    }
 
-	ArrayList<Message> list = new ArrayList<Message>();
-	// premenne pre vykreslovanie
-	Canvas canvas;
-	int width, height;
+    ArrayList<Message> list = new ArrayList<Message>();
+    // premenne pre vykreslovanie
+    Canvas canvas;
+    int width, height;
 
-	public void setCanvas(Canvas canvas) {
-		this.canvas = canvas;
-	}
+    public void setCanvas(Canvas canvas) {
+        this.canvas = canvas;
+    }
 
-	public void setPosition(int width, int height) {
-		this.width = width;
-		this.height = height;
-	}
+    public void setPosition(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
 
-	void processNewMessage(Message message) {
-		// TODO
-		// nahodna zmena
-	}
+    void processNewMessage(Message message) {
+        // TODO
+        // nahodna zmena
+    }
 
-	void deliverFirstMessage() {
-		// TODO
-	}
+    void deliverFirstMessage() {
+        // TODO
+    }
 
-	public void draw(Graphics g) {
-		// TODO
-		g.setColor(new Color(255, 255, 255));
-		g.fillRect(0, 0, width, height);
-		g.setColor(new Color(0, 0, 0));
-		g.drawRect(0, 0, width - 1, height - 1);
-	}
+    @Override
+    public void draw(Graphics g) {
+        // TODO
+        g.setColor(new Color(255, 255, 255));
+        g.fillRect(0, 0, width, height);
+        g.setColor(new Color(0, 0, 0));
+        g.drawRect(0, 0, width - 1, height - 1);
+    }
 }
