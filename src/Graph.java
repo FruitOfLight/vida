@@ -57,9 +57,12 @@ public class Graph implements Drawable {
         for (Vertex vertex : vertices) {
             vertex.draw(g);
         }
-        //vykresli spravy
-        for(int i=0; i<messages.list.size(); i++) {
-        	messages.list.get(i).messageDraw(g, (messages.list.size()-i)/(double)(12*(messages.list.size()+1)));
+        // vykresli spravy
+        for (int i = 0; i < messages.list.size(); i++) {
+            messages.list.get(i).messageDraw(
+                    g,
+                    (messages.list.size() - i)
+                            / (double) (12 * (messages.list.size() + 1)));
         }
     }
 
@@ -162,20 +165,47 @@ public class Graph implements Drawable {
         // TODO este musi vybehnut policko, kde zada ID a tak
         int x = mouse.getX(), y = mouse.getY();
         for (Vertex vertex : vertices) {
-            if (vertex.isNearPoint(x, y, vertex.getRadius())) {
+            if (vertex.isNearPoint(x, y, 0)) {
+                Dialog.DialogNewVertex newVertexDialog = new Dialog.DialogNewVertex(vertex.getID());
+                int ok = JOptionPane.showConfirmDialog(null,
+                        newVertexDialog.getPanel(), "Edit vertex",
+                        JOptionPane.OK_CANCEL_OPTION);
+                if (ok == JOptionPane.OK_OPTION) {
+                    vertex.setID(newVertexDialog.getID());
+                }
+                canvas.repaint();
                 return;
             }
         }
-        Dialog.DialogNewVertex newVertexDialog = new Dialog.DialogNewVertex();
-        int ok = JOptionPane.showConfirmDialog(null,
-                newVertexDialog.getPanel(), "New vertex",
-                JOptionPane.OK_CANCEL_OPTION);
-        if (ok == JOptionPane.OK_OPTION) {
-            int ID = newVertexDialog.getID();
-            Vertex vertex = new Vertex(x, y, ID);
-            vertices.add(vertex);
-        }
+        for (Vertex vertex : vertices) {
+            if (vertex.isNearPoint(x, y, vertex.getRadius())) {
+                return;
+            }
+        }           
+
+        int ID = getNewVertexID();
+        Vertex vertex = new Vertex(x, y, ID);
+        vertices.add(vertex);
         canvas.repaint();
+    }
+
+    public int getNewVertexID() {
+        int bound = vertices.size() * 2;
+        if (bound < 10)
+            bound = 10;
+        if (bound > 100 && vertices.size() < 80)
+            bound = 100;
+
+        while (true) {
+            int id = GUI.random.nextInt(bound);
+            boolean good = true;
+            for (Vertex v : vertices)
+                if (v.getID() == id) {
+                    good = false;
+                    break;
+                }
+            if (good) return id;
+        }
     }
 
     public void deleteVertex(Vertex vertex) {

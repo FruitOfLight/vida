@@ -2,6 +2,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -11,11 +12,13 @@ import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 
 public class GUI {
+    static Random random = new Random();
 
     static JFileChooser graphLoader;
     static JFileChooser graphSaver;
-    static Canvas graphCanvas;
-    static Canvas queueCanvas;
+    /*static Canvas graphCanvas; 
+    static Canvas queueCanvas;*/
+    // uz pristupujeme cez graf
     static Graph graph;
     static Model model;
     static MessageQueue letterQueue;

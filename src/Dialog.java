@@ -22,8 +22,8 @@ public class Dialog {
         private JPanel panel = new JPanel();
         private JTextField IDField;
 
-        public DialogNewVertex() {
-            IDField = new JTextField("" + 0);
+        public DialogNewVertex(int defaultID) {
+            IDField = new JTextField("" + defaultID);
             panel.setLayout(new GridLayout(2, 2, 5, 5));
             panel.add(new JLabel("ID: "));
             panel.add(IDField);

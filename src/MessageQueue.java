@@ -23,7 +23,7 @@ public class MessageQueue implements Drawable {
             if (getInstance().model==null) return;
             if (!getInstance().model.running) return;
             getInstance().deliverFirstMessage();
-            getInstance().timer.schedule(new QueueEvent(), 200);
+            getInstance().timer.schedule(new QueueEvent(), 1000);
         }
     }
     

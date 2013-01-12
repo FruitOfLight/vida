@@ -16,9 +16,9 @@ public class Menu {
         case 0:
             switch (c) {
             case 0:
-                GUI.graph.vertices = new ArrayList<Vertex>();
-                GUI.graph.edges = new ArrayList<Edge>();
-                GUI.graphCanvas.repaint();
+                GUI.graph.vertices.clear();
+                GUI.graph.edges.clear();
+                GUI.graph.canvas.repaint();
                 break;
             case 1:
                 int value = GUI.graphLoader.showOpenDialog(null);
@@ -31,7 +31,7 @@ public class Menu {
                     } catch (Exception e) {
                         System.out.println("Exception during opening\n");
                     }
-                    GUI.graphCanvas.repaint();
+                    GUI.graph.canvas.repaint();
                 }
                 break;
             case 2:
