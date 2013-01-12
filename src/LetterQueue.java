@@ -1,3 +1,5 @@
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
 
 /**
@@ -8,8 +10,18 @@ import java.util.ArrayList;
  * 
  * neposielajú sa priamo správy, ale listy
  */
-public class LetterQueue {
+public class LetterQueue implements Drawable {
     ArrayList<Letter> list = new ArrayList<Letter>();
+    //premenne pre vykreslovanie
+    Canvas canvas;
+    int x, y, width, height;
+    
+    public void setCanvas(Canvas canvas) {this.canvas = canvas;}
+    
+    public void setPosition(int x, int y, int width, int height) {
+    	this.x = x; this.y = y;
+    	this.width = width; this.height = height;
+    }
 
     void processNewLetter(Letter letter) {
         list.add(letter);
@@ -19,15 +31,17 @@ public class LetterQueue {
         // TODO
     }
 
-    void draw(Canvas canvas) {
+    public void draw(Graphics g) {
         // TODO
+    	g.setColor(new Color(255, 255, 255));
+    	g.fillRect(x, y, width, height);
     }
 }
 
 class Letter {
     Edge edge;
     String content;
-
+    
     public Letter(Edge edge, String content) {
         this.edge = edge;
         this.content = content;
@@ -36,4 +50,5 @@ class Letter {
     public Letter(Vertex v, Message message) {
         this(v.edges.get(message.port), message.content);
     }
+    
 }
