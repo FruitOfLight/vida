@@ -7,6 +7,8 @@ public class Vertex implements Drawable {
     private int x, y, radius;
     public int getX() { return x;}
     public int getY() { return y;}
+    public void setX(int x) {this.x=x;}
+    public void setY(int y) {this.y=y;}
     public int getRadius() { return radius;}
     
     ArrayList<Edge> edges;
@@ -16,7 +18,7 @@ public class Vertex implements Drawable {
         edges = new ArrayList<Edge>();
         this.x = x;
         this.y = y;
-        radius = 6;
+        radius = 7;
     }
 
     void send(Message message) {

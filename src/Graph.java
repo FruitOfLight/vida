@@ -1,5 +1,7 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -12,8 +14,10 @@ public class Graph implements Drawable {
     public ArrayList<Vertex> vertices;
     public ArrayList<Edge> edges;
     public Canvas canvas;
+    //premenne pre listenery
     public Vertex begin = null;
     int xlast, ylast;
+    boolean moving = false, deleting = false; 
 
     public Graph() {
         vertices = new ArrayList<Vertex>();
@@ -25,11 +29,13 @@ public class Graph implements Drawable {
         GraphListener listener = new GraphListener();
         this.canvas.addMouseListener(listener);
         this.canvas.addMouseMotionListener(listener);
+        this.canvas.addKeyListener(listener);
+        this.canvas.setFocusable(true);
     }
 
     public void draw(Graphics g) {
         // vykresli polhranu
-        if (begin != null) {
+        if (begin != null && !moving && !deleting) {
             g.setColor(new Color(0, 0, 0));
             g.drawLine(begin.getX(), begin.getY(), xlast, ylast);
         }
@@ -38,16 +44,21 @@ public class Graph implements Drawable {
         for (Vertex vertex : vertices) vertex.draw(g);
     }
 
-    class GraphListener implements MouseListener, MouseMotionListener {
+    class GraphListener implements MouseListener, MouseMotionListener, KeyListener {
 
         @Override
         public void mouseClicked(MouseEvent mouse) {
-            addVertex(mouse);
+        	if(!deleting && !moving) addVertex(mouse);
+        	if(deleting) {
+        		Vertex vertex = findVertex(mouse.getX(), mouse.getY());
+        		if(vertex!=null) deleteVertex(vertex);
+        		else deleteEdges(mouse.getX(), mouse.getY());
+        		canvas.repaint();
+        	}
         }
 
         @Override
         public void mousePressed(MouseEvent mouse) {
-            System.out.println("dafug");
             begin = findVertex(mouse.getX(), mouse.getY());
         }
 
@@ -62,10 +73,38 @@ public class Graph implements Drawable {
 
         @Override
         public void mouseDragged(MouseEvent mouse) {
-            repaintBetween(begin.getX(), begin.getY(), xlast, ylast);
-            xlast = mouse.getX();
-            ylast = mouse.getY();
-            repaintBetween(begin.getX(), begin.getY(), xlast, ylast);
+        	if(begin==null) return;
+        	if(!moving) {
+        		repaintBetween(begin.getX(), begin.getY(), xlast, ylast);
+        		xlast = mouse.getX();
+            	ylast = mouse.getY();
+            	repaintBetween(begin.getX(), begin.getY(), xlast, ylast);
+        	}
+        	else {
+        		for(Vertex vertex : vertices) {
+        			if(!vertex.equals(begin) &&
+        					vertex.isNearPoint(mouse.getX(), mouse.getY(), vertex.getRadius())) return;
+        		}
+        		begin.setX(mouse.getX());
+        		begin.setY(mouse.getY());
+        		canvas.repaint();
+        	}
+        }
+        
+        @Override
+        public void keyPressed(KeyEvent key) {
+        	if(key.getKeyCode()==16 && !deleting) moving = true;
+        	if(key.getKeyCode()==17 && !moving) deleting = true;
+        }
+        
+        @Override
+        public void keyReleased(KeyEvent key) {
+        	if(key.getKeyCode()==16) moving = false;
+        	if(key.getKeyCode()==17) deleting = false;
+        }
+        
+        @Override
+        public void keyTyped(KeyEvent key) {
         }
 
         @Override
@@ -90,6 +129,24 @@ public class Graph implements Drawable {
         Vertex vertex = new Vertex(x, y);
         vertices.add(vertex);    
         vertex.repaint(canvas);
+    }
+    
+    public void deleteVertex(Vertex vertex)
+    {
+    	//TODO skontrolovat ci to mazem spravne a vsade kde sa vrchol nachadza
+    	ArrayList<Edge> delete = new ArrayList<Edge>();
+    	for(Edge edge : edges) {
+    		if(edge.from.equals(vertex)) {
+    			edge.from.edges.remove(edge);
+    			delete.add(edge);
+    		}
+    		if(edge.to.equals(vertex)) {
+    			edge.to.edges.remove(edge);
+    			delete.add(edge);
+    		}
+    	}
+    	for(Edge edge : delete) edges.remove(edge);
+    	vertices.remove(vertex);
     }
 
     public void addEdge(Vertex from, Vertex to) {
@@ -122,6 +179,13 @@ public class Graph implements Drawable {
         for (Vertex vertex : vertices)
             if (vertex.isOnPoint(x,y)) return vertex;
         return null;
+    }
+    
+    public void deleteEdges(int x, int y) {
+    	ArrayList<Edge> delete = new ArrayList<Edge>();
+    	for(Edge edge : edges)
+    		if(edge.isNear(x, y)) delete.add(edge);
+    	for(Edge edge : delete) edges.remove(edge);
     }
 
     public void repaintBetween(int x1, int y1, int x2, int y2) {
