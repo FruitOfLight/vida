@@ -10,22 +10,23 @@ public class Model {
     boolean running;
 
     Model() {
-           running = false;
+        running = false;
     }
 
     void load() {
-        MessageQueue.getInstance().model = this;    
-     
+        MessageQueue.getInstance().model = this;
+
         for (Vertex v : graph.vertices) {
             v.program = new Program(v, this);
             v.program.load(path);
         }
         running = true;
-        MessageQueue.getInstance().timer.schedule(new MessageQueue.TimerEvent(), 0);
+        MessageQueue.getInstance().timer.schedule(
+                new MessageQueue.TimerEvent(), 0);
     }
 
     void stop() {
-        MessageQueue.getInstance().model = null; 
+        MessageQueue.getInstance().model = null;
         running = false;
         for (Vertex v : graph.vertices) {
             v.program.kill();
