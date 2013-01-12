@@ -23,7 +23,7 @@ public class MessageQueue implements Drawable {
             if (getInstance().model==null) return;
             if (!getInstance().model.running) return;
             getInstance().deliverFirstMessage();
-            getInstance().timer.schedule(new QueueEvent(), 500);
+            getInstance().timer.schedule(new QueueEvent(), 1000);
         }
     }
     
@@ -32,7 +32,7 @@ public class MessageQueue implements Drawable {
     		if(getInstance().model==null) return;
     		if(!getInstance().model.running) return;
     		getInstance().model.graph.canvas.repaint();
-    		getInstance().timer.schedule(new MessageDrawEvent(), 200);
+    		getInstance().timer.schedule(new MessageDrawEvent(), 100);
     	}
     }
     
