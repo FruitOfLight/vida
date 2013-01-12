@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Model {
     /*
      * TODO parametre ako synchronny? anonymny? synchronne zobudenie.... maju
@@ -30,6 +32,7 @@ public class Model {
     void stop() {
         if (!running) return;
         MessageQueue.getInstance().model = null;
+        MessageQueue.getInstance().list = new ArrayList<Message>();
         running = false;
         for (Vertex v : graph.vertices) {
             v.program.kill();

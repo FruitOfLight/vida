@@ -1,6 +1,5 @@
 import java.io.File;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.JFileChooser;
@@ -62,6 +61,7 @@ public class Menu {
                 break;
             case 1:
                 GUI.model.stop();
+                GUI.graph.canvas.repaint();
                 break;
             default:
                 System.out.println("Invalid entry!");
