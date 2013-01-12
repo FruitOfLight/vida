@@ -19,6 +19,7 @@ public class Program extends Thread {
     Process process;
     InputStream output;
     OutputStream input;
+    PrintWriter in;
 
     public Program(Vertex v, Model m) {
         super();
@@ -58,9 +59,11 @@ public class Program extends Thread {
             process = Runtime.getRuntime().exec(path);
             output = process.getInputStream();
             input = process.getOutputStream();
+            in = new PrintWriter(input);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        this.init();
         this.start();
     }
 
@@ -71,6 +74,20 @@ public class Program extends Thread {
         process.destroy();
     }
 
+    // program sa dozvie pociatocne hodnoty, ako napriklad pocet portov
+    public void init(){
+        // pocet portov a ich hodnoty
+        System.out.print("* ports : "+ports.size());
+        for (int p : ports) System.out.print(" "+p);
+        System.out.println();
+        
+        in.print("* ports : "+ports.size());
+        for (int p : ports) in.print(" "+p);
+        in.println();
+        
+        in.flush();
+    }
+    
     public void send(int port, String content) {
         System.err.println("send " + id + " " + port + " "
                 + content);
@@ -84,7 +101,7 @@ public class Program extends Thread {
     public void recieve(Message message) {
         System.err.println("recieve " + id + " " + message.toPort + " "
                 + message.content);
-        PrintWriter in = new PrintWriter(input);
+        
         in.println("@ " + ports.get(message.toPort) + " : " + message.content);
         in.flush();
     }
