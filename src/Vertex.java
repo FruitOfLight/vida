@@ -57,8 +57,8 @@ public class Vertex implements Drawable {
         MessageQueue.getInstance().pushMessage(message);
     }
 
-    void recieve(Message message) {
-        program.recieve(message);
+    void receive(Message message) {
+        program.receive(message);
     }
 
     @Override

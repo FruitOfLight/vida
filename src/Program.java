@@ -100,8 +100,8 @@ public class Program extends Thread {
         vertex.send(new Message(port, content));
     }
 
-    public void recieve(Message message) {
-        System.err.println("recieve " + id + " " + message.toPort + " "
+    public void receive(Message message) {
+        System.err.println("receive " + id + " " + message.toPort + " "
                 + message.content);
 
         in.println("@ " + ports.get(message.toPort) + " : " + message.content);

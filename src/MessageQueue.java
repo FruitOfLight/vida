@@ -68,7 +68,7 @@ public class MessageQueue implements Drawable {
             list.remove(0);
             return;
         }
-        message.edge.to.recieve(message);
+        message.edge.to.receive(message);
         canvas.repaint();
     }
     
