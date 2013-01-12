@@ -22,14 +22,15 @@ public class Vertex implements Drawable {
     }
 
     void send(Message message) {
-        // TODO aby posielal listy cez queue, neposielal priamo
-        Edge edge = edges.get(message.port);
-        if (edge.to.program!=null
+        message.edge = edges.get(message.fromPort);
+        
+        
+        /*if (edge.to.program!=null
                 && edge.to.program.running==true){
             // TODO zasa asi enchceme nezbedny indexOf            
             message.port = edge.to.edges.indexOf(edge.oppositeEdge); 
             edge.to.recieve(message);
-        }
+        }*/
     }
 
     void recieve(Message message) {

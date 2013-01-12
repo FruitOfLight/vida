@@ -18,7 +18,7 @@ public class GUI {
     static Canvas queueCanvas;
     static Graph graph;
     static Model model;
-    static LetterQueue letterQueue;
+    static MessageQueue letterQueue;
 
     static void addElement(Container to, Component what, int x, int y, int w,
             int h) {
@@ -89,7 +89,7 @@ public class GUI {
         // TODO spravit krajsie
         graph = new Graph();
         model = new Model();
-        letterQueue = new LetterQueue();
+        letterQueue = new MessageQueue();
         final Window window = new Window();
         SwingUtilities.invokeLater(window);
     }

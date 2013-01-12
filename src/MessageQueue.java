@@ -10,8 +10,8 @@ import java.util.ArrayList;
  * 
  * neposielajú sa priamo správy, ale listy
  */
-public class LetterQueue implements Drawable {
-    ArrayList<Letter> list = new ArrayList<Letter>();
+public class MessageQueue implements Drawable {
+    ArrayList<Message> list = new ArrayList<Message>();
     //premenne pre vykreslovanie
     Canvas canvas;
     int x, y, width, height;
@@ -23,8 +23,8 @@ public class LetterQueue implements Drawable {
     	this.width = width; this.height = height;
     }
 
-    void processNewLetter(Letter letter) {
-        list.add(letter);
+    void processNewMessage(Message message) {
+        // TODO
     }
 
     void deliverFirstLetter() {
@@ -36,19 +36,4 @@ public class LetterQueue implements Drawable {
     	g.setColor(new Color(255, 255, 255));
     	g.fillRect(x, y, width, height);
     }
-}
-
-class Letter {
-    Edge edge;
-    String content;
-    
-    public Letter(Edge edge, String content) {
-        this.edge = edge;
-        this.content = content;
-    }
-
-    public Letter(Vertex v, Message message) {
-        this(v.edges.get(message.port), message.content);
-    }
-    
 }

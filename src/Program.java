@@ -43,8 +43,7 @@ public class Program extends Thread {
             while ((line = out.readLine()) != null) {
                 if (line.charAt(0) == '@') {
                     String[] parts = line.substring(1).split(":", 2);
-                    send(new Message(Integer.parseInt(parts[0].trim()),
-                            parts[1].trim()));
+                    send(Integer.parseInt(parts[0].trim()),parts[1].trim());
                 }
             }
             out.close();
@@ -72,20 +71,21 @@ public class Program extends Thread {
         process.destroy();
     }
 
-    public void send(Message message) {
-        System.err.println("send " + id + " " + message.port + " "
-                + message.content);
+    public void send(int port, String content) {
+        System.err.println("send " + id + " " + port + " "
+                + content);
 
-        // TODO spravit efektivnejsie indexOf
-        message.port = ports.indexOf(message.port);
-        vertex.send(message);
+        // svoj port zmenim na port vrchola
+        // TODO spravit efektivnejsie nez cez indexOf
+        port = ports.indexOf(port);
+        vertex.send(new Message(port, content));
     }
 
     public void recieve(Message message) {
-        System.err.println("recieve " + id + " " + message.port + " "
+        System.err.println("recieve " + id + " " + message.toPort + " "
                 + message.content);
         PrintWriter in = new PrintWriter(input);
-        in.println("@ " + ports.get(message.port) + " : " + message.content);
+        in.println("@ " + ports.get(message.toPort) + " : " + message.content);
         in.flush();
     }
 }

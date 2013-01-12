@@ -1,15 +1,12 @@
 class Message {
-    int port;
+    int fromPort;
+    int toPort;
+    Edge edge;
     String content;
 
     public Message(int port, String content) {
-        this.port = port;
+        this.fromPort = port;
         this.content = content;
-    }
-
-    public Message(Letter letter) {
-        // TODO
-
     }
 
 }
