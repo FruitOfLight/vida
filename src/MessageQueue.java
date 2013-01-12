@@ -28,10 +28,12 @@ public class MessageQueue implements Drawable {
     }
     
     static class MessageDrawEvent extends TimerTask {
+    	static int counter = 0;
     	public void run(){
     		if(getInstance().model==null) return;
     		if(!getInstance().model.running) return;
     		getInstance().model.graph.canvas.repaint();
+    		counter++; counter%=10;
     		getInstance().timer.schedule(new MessageDrawEvent(), 100);
     	}
     }

@@ -26,7 +26,7 @@ public class Model {
         running = true;
         MessageQueue.getInstance().timer.schedule(
                 new MessageQueue.QueueEvent(), 0);
-        MessageQueue.getInstance().timer.schedule(new MessageQueue.MessageDrawEvent(), 100);
+        MessageQueue.getInstance().timer.schedule(new MessageQueue.MessageDrawEvent(), 1);
     }
 
     void stop() {

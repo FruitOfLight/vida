@@ -60,9 +60,7 @@ public class Graph implements Drawable {
         // vykresli spravy
         for (int i = 0; i < messages.list.size(); i++) {
             messages.list.get(i).messageDraw(
-                    g,
-                    (messages.list.size() - i)
-                            / (double) (12 * (messages.list.size() + 1)));
+                    g, (i+1)*10-MessageQueue.MessageDrawEvent.counter);
         }
     }
 
