@@ -73,7 +73,7 @@ public class GUI {
             queueCanvas = new Canvas(letterQueue);
             letterQueue.setCanvas(queueCanvas);
             letterQueue.setPosition(600, 50);
-            addElement(frame, queueCanvas, 0, 50 , 600 , 50);
+            addElement(frame, queueCanvas, 0, 25 , 600 , 50);
 
             frame.setSize(800, 600);
             frame.setResizable(false);
