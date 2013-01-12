@@ -67,13 +67,13 @@ public class GUI {
 
             graphCanvas = new Canvas(graph);
             graph.setCanvas(graphCanvas);
-            graph.setPosition(0, 75, 500, 500);
+            graph.setPosition(500, 500);
             addElement(frame, graphCanvas, 0, 75, 500, 500);
             
             queueCanvas = new Canvas(letterQueue);
             letterQueue.setCanvas(queueCanvas);
-            letterQueue.setPosition(0, 25, 500, 50);
-            addElement(frame, queueCanvas, 0, 25 , 500 , 50);
+            letterQueue.setPosition(600, 50);
+            addElement(frame, queueCanvas, 0, 50 , 600 , 50);
 
             frame.setSize(800, 600);
             frame.setResizable(false);

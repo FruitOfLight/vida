@@ -14,12 +14,11 @@ public class LetterQueue implements Drawable {
     ArrayList<Letter> list = new ArrayList<Letter>();
     //premenne pre vykreslovanie
     Canvas canvas;
-    int x, y, width, height;
+    int width, height;
     
     public void setCanvas(Canvas canvas) {this.canvas = canvas;}
     
-    public void setPosition(int x, int y, int width, int height) {
-    	this.x = x; this.y = y;
+    public void setPosition(int width, int height) {
     	this.width = width; this.height = height;
     }
 
@@ -34,7 +33,7 @@ public class LetterQueue implements Drawable {
     public void draw(Graphics g) {
         // TODO
     	g.setColor(new Color(255, 255, 255));
-    	g.fillRect(x, y, width, height);
+    	g.fillRect(0, 0, width, height);
     }
 }
 
