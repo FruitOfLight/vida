@@ -1,6 +1,8 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Fronta pre správy
@@ -17,8 +19,25 @@ public class MessageQueue implements Drawable {
 
     private static MessageQueue instance = new MessageQueue();
 
-    private MessageQueue() {
+    Model model;
+    Timer timer;
 
+    static class TimerEvent extends TimerTask {
+        @Override
+        public void run() {
+            if (getInstance().model == null) {
+                return;
+            }
+            if (!getInstance().model.running) {
+                return;
+            }
+            getInstance().deliverFirstMessage();
+            getInstance().timer.schedule(new TimerEvent(), 500);
+        }
+    }
+
+    private MessageQueue() {
+        timer = new Timer();
     }
 
     ArrayList<Message> list = new ArrayList<Message>();
@@ -35,13 +54,26 @@ public class MessageQueue implements Drawable {
         this.height = height;
     }
 
-    void processNewMessage(Message message) {
-        // TODO
-        // nahodna zmena
+    void pushMessage(Message message) {
+        list.add(message);
     }
 
     void deliverFirstMessage() {
-        // TODO
+        if (list.size() <= 0) {
+            return;
+        }
+        Message message = list.get(0);
+        list.remove(0);
+        if (message.edge.to.program == null
+                || message.edge.to.program.running == false) {
+            System.err
+                    .println("Recipient doesn't exist\n  message was delayed\n");
+            // TODO pozor, aby sa nemenilo poradie na hrane
+            list.add(message);
+            list.remove(0);
+            return;
+        }
+        message.edge.to.recieve(message);
     }
 
     @Override
