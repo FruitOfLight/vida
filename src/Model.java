@@ -14,6 +14,7 @@ public class Model {
     }
 
     void load() {
+        if (running) stop();
         MessageQueue.getInstance().model = this;
 
         for (Vertex v : graph.vertices) {
@@ -27,10 +28,12 @@ public class Model {
     }
 
     void stop() {
+        if (!running) return;
         MessageQueue.getInstance().model = null;
         running = false;
         for (Vertex v : graph.vertices) {
             v.program.kill();
         }
+        MessageQueue.getInstance().clear();
     }
 }
