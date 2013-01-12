@@ -79,8 +79,6 @@ public class MessageQueue implements Drawable {
     @Override
     public void draw(Graphics g) {
         // TODO
-        g.setColor(new Color(255, 255, 255));
-        g.fillRect(0, 0, width, height);
         g.setColor(new Color(0, 0, 0));
         g.drawRect(0, 0, width - 1, height - 1);
     }

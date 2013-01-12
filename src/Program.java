@@ -26,7 +26,7 @@ public class Program extends Thread {
         vertex = v;
         vertex.program = this;
         running = false;
-        this.id = 0;
+        this.id = vertex.getID();
         ports = new ArrayList<Integer>();
         for (int i = 0; i < v.edges.size(); ++i) {
             ports.add(i);
@@ -78,17 +78,15 @@ public class Program extends Thread {
     // program sa dozvie pociatocne hodnoty, ako napriklad pocet portov
     public void init() {
         // pocet portov a ich hodnoty
-        System.out.print("* ports : " + ports.size());
-        for (int p : ports) {
-            System.out.print(" " + p);
-        }
-        System.out.println();
-
         in.print("* ports : " + ports.size());
         for (int p : ports) {
             in.print(" " + p);
         }
         in.println();
+        
+        // id
+        //TODO skontrolovat anonymitu
+        in.println("* id : " + id);
 
         in.flush();
     }
