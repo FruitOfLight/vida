@@ -18,13 +18,22 @@ public class MessageQueue implements Drawable {
     
     Model model;
     Timer timer;
-    static class TimerEvent extends TimerTask{
+    static class QueueEvent extends TimerTask{
         public void run(){
             if (getInstance().model==null) return;
             if (!getInstance().model.running) return;
             getInstance().deliverFirstMessage();
-            getInstance().timer.schedule(new TimerEvent(), 500);
+            getInstance().timer.schedule(new QueueEvent(), 500);
         }
+    }
+    
+    static class MessageDrawEvent extends TimerTask {
+    	public void run(){
+    		if(getInstance().model==null) return;
+    		if(!getInstance().model.running) return;
+    		getInstance().model.graph.canvas.repaint();
+    		getInstance().timer.schedule(new MessageDrawEvent(), 200);
+    	}
     }
     
     private MessageQueue(){
@@ -72,7 +81,7 @@ public class MessageQueue implements Drawable {
     	g.setColor(new Color(0, 0, 0));
     	g.drawRect(0, 0, width-1, height-1);
     	for(int i=0; i<list.size(); i++) {
-    		g.drawString(((Integer)list.get(i).edge.from.getID()).toString(),20+i*25,20);
+    		list.get(i).queueDraw(g, i);
     	}
     }
 }

@@ -82,6 +82,7 @@ public class GUI {
         graph = new Graph();
         model = new Model();
         letterQueue = MessageQueue.getInstance();
+        graph.messages = MessageQueue.getInstance();
         final Window window = new Window();
         SwingUtilities.invokeLater(window);
     }

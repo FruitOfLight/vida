@@ -15,6 +15,7 @@ public class Graph implements Drawable {
 
     public ArrayList<Vertex> vertices;
     public ArrayList<Edge> edges;
+    public MessageQueue messages;
     // premenne pre vykreslovanie
     public Canvas canvas;
     int width, height;
@@ -55,6 +56,10 @@ public class Graph implements Drawable {
         }
         for (Vertex vertex : vertices) {
             vertex.draw(g);
+        }
+        //vykresli spravy
+        for(int i=0; i<messages.list.size(); i++) {
+        	messages.list.get(i).messageDraw(g, (messages.list.size()-1)/(double)messages.list.size());
         }
     }
 
