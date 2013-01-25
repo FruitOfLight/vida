@@ -43,12 +43,12 @@ int main(){
         else if(ch == '*') {
             scanf("%s", str);
             if (!strcmp(str,"ports")){
-                    scanf(" : %d", &portn); 
-                    For(i,portn) scanf("%d", ports+i);
+                scanf(" : %d", &portn); 
+                For(i,portn) scanf("%d", ports+i);
+                printf("@ %d : %s %d\n", ports[rand()%portn], "Hello", randid);
+                fflush(stdout);
             }
             eatline();
-            printf("@ %d : %s %d\n", ports[rand()%portn], "Hello", randid);
-            fflush(stdout);
         }
         else if(ch == '@') {
             int from,to = ports[rand()%portn];

@@ -58,10 +58,16 @@ public class Graph implements Drawable {
             vertex.draw(g);
         }
         // vykresli spravy
-        for (int i = 0; i < messages.list.size(); i++) {
-            messages.list.get(i).messageDraw(
-                    g, (i+1)*10-MessageQueue.MessageDrawEvent.counter);
-        }
+        for (Message message : messages.deadlist)
+            message.messageDraw(g);
+        for (Message message : messages.list)
+            message.messageDraw(g);        
+        /*
+         * for (int i = 0; i < messages.list.size(); i++) {
+         * messages.list.get(i).messageDraw( g,
+         * (i+1)*10-MessageQueue.MessageDrawEvent.counter); }
+         */
+
     }
 
     class GraphListener implements MouseListener, MouseMotionListener,
@@ -164,7 +170,8 @@ public class Graph implements Drawable {
         int x = mouse.getX(), y = mouse.getY();
         for (Vertex vertex : vertices) {
             if (vertex.isNearPoint(x, y, 0)) {
-                Dialog.DialogNewVertex newVertexDialog = new Dialog.DialogNewVertex(vertex.getID());
+                Dialog.DialogNewVertex newVertexDialog = new Dialog.DialogNewVertex(
+                        vertex.getID());
                 int ok = JOptionPane.showConfirmDialog(null,
                         newVertexDialog.getPanel(), "Edit vertex",
                         JOptionPane.OK_CANCEL_OPTION);
@@ -179,7 +186,7 @@ public class Graph implements Drawable {
             if (vertex.isNearPoint(x, y, vertex.getRadius())) {
                 return;
             }
-        }           
+        }
 
         int ID = getNewVertexID();
         Vertex vertex = new Vertex(x, y, ID);
@@ -202,7 +209,8 @@ public class Graph implements Drawable {
                     good = false;
                     break;
                 }
-            if (good) return id;
+            if (good)
+                return id;
         }
     }
 
@@ -271,6 +279,7 @@ public class Graph implements Drawable {
             }
         }
         for (Edge edge : delete) {
+            edge.removeFromVertex();
             edges.remove(edge);
         }
     }

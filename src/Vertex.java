@@ -7,39 +7,21 @@ public class Vertex implements Drawable {
 
     private int x, y, radius, ID;
 
-    public int getID() {
-        return ID;
-    }
-
-    public void setID(int ID) {
-        this.ID = ID;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public int getRadius() {
-        return radius;
-    }
+    //@formatter:off
+    public int getID() { return ID; }
+    public void setID(int ID) { this.ID = ID; }
+    public int getX() { return x; }
+    public int getY() { return y; }
+    public void setX(int x) { this.x = x; }
+    public void setY(int y) { this.y = y; }
+    public int getRadius() { return radius; }
+    //@formatter:on
 
     ArrayList<Edge> edges;
     Program program;
 
     public Vertex(int x, int y) {
-        this(x,y,0);
+        this(x, y, 0);
     }
 
     public Vertex(int x, int y, int ID) {
@@ -51,7 +33,7 @@ public class Vertex implements Drawable {
     }
 
     void send(Message message) {
-    	message.setEdge(edges.get(message.fromPort));
+        message.setEdge(edges.get(message.fromPort));
         message.toPort = message.edge.to.edges
                 .indexOf(message.edge.oppositeEdge);
         MessageQueue.getInstance().pushMessage(message);
@@ -92,6 +74,10 @@ public class Vertex implements Drawable {
 
     public void repaint(Canvas canvas) {
         canvas.repaint(x - 2 * radius, x + 2 * radius, 4 * radius, 4 * radius);
+    }
+    
+    public void removeEdge(Edge edge){
+        edges.remove(edge);
     }
 
 }

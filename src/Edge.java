@@ -58,5 +58,12 @@ public class Edge implements Drawable {
         }
         return (y1 - y) * (y1 - y) + (x1 - x) * (x1 - x);
     }
+    
+    public void removeFromVertex(){
+        if (from == null) return;
+        from.removeEdge(this);
+        from = null;
+        oppositeEdge.removeFromVertex();
+    }
 
 }
