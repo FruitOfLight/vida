@@ -5,6 +5,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+//TODO bugfix, ked program posle na neexistujuci port
+
 /*
  * Trieda starajuca sa o komunikaciu medzi nasim programom a spustenymi procesmi
  * 

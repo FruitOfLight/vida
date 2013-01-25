@@ -22,7 +22,7 @@ public class MessageQueue implements Drawable {
     Model model;
     Timer timer;
     
-    long sendInterval = 1000;
+    long sendInterval = 100;
     long nextSend = 0;
 
     static class QueueEvent extends TimerTask {

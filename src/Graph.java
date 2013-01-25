@@ -7,6 +7,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.Scanner;
 
 import javax.swing.JOptionPane;
@@ -58,10 +59,14 @@ public class Graph implements Drawable {
             vertex.draw(g);
         }
         // vykresli spravy
-        for (Message message : messages.deadlist)
-            message.messageDraw(g);
-        for (Message message : messages.list)
-            message.messageDraw(g);        
+        try{
+            for (Message message : messages.deadlist)
+                message.messageDraw(g);
+            for (Message message : messages.list)
+                message.messageDraw(g);
+        } catch (ConcurrentModificationException e){
+            
+        }
         /*
          * for (int i = 0; i < messages.list.size(); i++) {
          * messages.list.get(i).messageDraw( g,
