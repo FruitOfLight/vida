@@ -6,18 +6,29 @@ import javax.swing.JFileChooser;
 
 public class Menu {
 
-    static final String[] menuItems = { "Graph", "Model" };
+    static final String[] menuItems = { "App", "Graph", "Model" };
     static final String[][] allMenuItems = {
-            { "New", "Open", "Save", "--", "Quit" }, { "Run", "Stop" }, };
+        {"Configure","Quit"}, { "New", "Open", "Save" }, { "Run", "Stop" }, };
 
     static void performAction(int r, int c) {
         switch (r) {
         case 0:
             switch (c) {
             case 0:
-                GUI.graph.vertices.clear();
-                GUI.graph.edges.clear();
-                GUI.graph.canvas.repaint();
+                Dialog.vyhlasSpravu("Nothing to do");
+                break;
+            case 1:
+                System.exit(0);
+                return;
+            default:
+                System.out.println("Invalid entry!");
+            }
+            break;
+            
+        case 1:
+            switch (c) {
+            case 0:
+                GUI.graph.createNew();
                 break;
             case 1:
                 int value = GUI.graphLoader.showOpenDialog(null);
@@ -46,14 +57,11 @@ public class Menu {
                     }
                 }
                 break;
-            case 4:
-                System.exit(0);
-                return;
             default:
                 System.out.println("Invalid entry!");
             }
             break;
-        case 1:
+        case 2:
             switch (c) {
             case 0:
                 GUI.model.graph = GUI.graph;

@@ -94,7 +94,7 @@ public class Program extends Thread {
     }
 
     public void send(int port, String content) {
-        System.err.println("send " + id + " " + port + " " + content);
+        //System.err.println("send " + id + " " + port + " " + content);
 
         // svoj port zmenim na port vrchola
         // TODO spravit efektivnejsie nez cez indexOf
@@ -103,8 +103,8 @@ public class Program extends Thread {
     }
 
     public void receive(Message message) {
-        System.err.println("receive " + id + " " + message.toPort + " "
-                + message.content);
+        //System.err.println("receive " + id + " " + message.toPort + " "
+        //        + message.content);
 
         in.println("@ " + ports.get(message.toPort) + " : " + message.content);
         in.flush();

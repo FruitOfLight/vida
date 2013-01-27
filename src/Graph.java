@@ -59,13 +59,13 @@ public class Graph implements Drawable {
             vertex.draw(g);
         }
         // vykresli spravy
-        try{
+        try {
             for (Message message : messages.deadlist)
                 message.messageDraw(g);
             for (Message message : messages.list)
                 message.messageDraw(g);
-        } catch (ConcurrentModificationException e){
-            
+        } catch (ConcurrentModificationException e) {
+
         }
         /*
          * for (int i = 0; i < messages.list.size(); i++) {
@@ -141,8 +141,12 @@ public class Graph implements Drawable {
                 deleting = true;
             }
             // TODO toto je len provizorne
-            if (key.getKeyCode() == 'P') MessageQueue.getInstance().sendInterval-=(MessageQueue.getInstance().sendInterval>200)?100:10;
-            if (key.getKeyCode() == 'M') MessageQueue.getInstance().sendInterval+=(MessageQueue.getInstance().sendInterval>200)?100:10;
+            if (key.getKeyCode() == 'P')
+                MessageQueue.getInstance().sendInterval -= (MessageQueue
+                        .getInstance().sendInterval > 200) ? 100 : 10;
+            if (key.getKeyCode() == 'M')
+                MessageQueue.getInstance().sendInterval += (MessageQueue
+                        .getInstance().sendInterval > 200) ? 100 : 10;
         }
 
         @Override
@@ -196,10 +200,13 @@ public class Graph implements Drawable {
             }
         }
 
-        int ID = getNewVertexID();
+        addVertex(x, y, getNewVertexID());
+        canvas.repaint();
+    }
+
+    public void addVertex(int x, int y, int ID) {
         Vertex vertex = new Vertex(x, y, ID);
         vertices.add(vertex);
-        canvas.repaint();
     }
 
     public int getNewVertexID() {
@@ -337,6 +344,66 @@ public class Graph implements Drawable {
             output.println(vertices.indexOf(edges.get(i).from) + " "
                     + vertices.indexOf(edges.get(i).to));
         }
+    }
+
+    public void createNew() {
+        Dialog.DialogNewGraph newGraphDialog = new Dialog.DialogNewGraph();
+        int ok = JOptionPane.showConfirmDialog(null, newGraphDialog.getPanel(),
+                "New graph", JOptionPane.OK_CANCEL_OPTION);
+        // { "Empty", "Clique", "Circle", "Grid", "Wheel", "Random" };
+        if (ok == JOptionPane.OK_OPTION) {
+            int d = GUI.graphWidth / 3, n = newGraphDialog.getTF1();
+            int middlex = GUI.graphWidth / 2;
+            int middley = GUI.graphHeight / 2;
+            GUI.graph.vertices.clear();
+            GUI.graph.edges.clear();
+            switch (newGraphDialog.getType()) {
+            case 0:
+                break;
+            case 1:
+                for (int i = 0; i < n; ++i)
+                    addVertex(
+                            middlex + (int) (d * Math.sin(i * 2 * Math.PI / n)),
+                            middley + (int) (d * Math.cos(i * 2 * Math.PI / n)),
+                            getNewVertexID());
+                if (newGraphDialog.getEdges())
+                    for (int i = 0; i < n; ++i)
+                        for (int j = i + 1; j < n; ++j)
+                            addEdge(vertices.get(i), vertices.get(j));
+                break;
+            case 2:
+                for (int i = 0; i < n; ++i)
+                    addVertex(
+                            middlex + (int) (d * Math.sin(i * 2 * Math.PI / n)),
+                            middley + (int) (d * Math.cos(i * 2 * Math.PI / n)),
+                            getNewVertexID());
+                if (newGraphDialog.getEdges())
+                    for (int i = 0; i < n; ++i)
+                        addEdge(vertices.get(i), vertices.get((i + 1) % n));
+                break;
+            case 3:
+                break;
+            case 4:
+                addVertex(middlex, middley, getNewVertexID());
+                for (int i = 0; i < n; ++i)
+                    addVertex(
+                            middlex + (int) (d * Math.sin(i * 2 * Math.PI / n)),
+                            middley + (int) (d * Math.cos(i * 2 * Math.PI / n)),
+                            getNewVertexID());
+                if (newGraphDialog.getEdges())
+                    for (int i = 0; i < n; ++i) {
+                        addEdge(vertices.get(i + 1),
+                                vertices.get((i + 1) % n + 1));
+                        addEdge(vertices.get(0), vertices.get(i + 1));
+                    }
+                break;
+            
+            case 5:
+                break;
+            }
+
+        }
+        canvas.repaint();
     }
 
 }

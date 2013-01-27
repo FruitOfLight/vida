@@ -79,8 +79,6 @@ public class GUI {
             addElement(frame, graph.canvas, 0, queueHeight+menuHeight, graphWidth, graphHeight);
             addElement(frame, MessageQueue.getInstance().canvas, 0, menuHeight, windowWidth, queueHeight);
             
-            
-
             frame.setSize(windowWidth, windowHeight);
             frame.setResizable(false);
             frame.setVisible(true);
