@@ -140,6 +140,9 @@ public class Graph implements Drawable {
             if (key.getKeyCode() == 17 && !moving) {
                 deleting = true;
             }
+            // TODO toto je len provizorne
+            if (key.getKeyCode() == 'P') MessageQueue.getInstance().sendInterval-=(MessageQueue.getInstance().sendInterval>200)?100:10;
+            if (key.getKeyCode() == 'M') MessageQueue.getInstance().sendInterval+=(MessageQueue.getInstance().sendInterval>200)?100:10;
         }
 
         @Override

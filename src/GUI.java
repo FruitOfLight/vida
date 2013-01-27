@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
 
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -77,6 +78,8 @@ public class GUI {
             addElement(frame, menu, 0, 0, windowWidth, menuHeight);
             addElement(frame, graph.canvas, 0, queueHeight+menuHeight, graphWidth, graphHeight);
             addElement(frame, MessageQueue.getInstance().canvas, 0, menuHeight, windowWidth, queueHeight);
+            
+            
 
             frame.setSize(windowWidth, windowHeight);
             frame.setResizable(false);

@@ -138,7 +138,7 @@ public class MessageQueue implements Drawable {
     public void step(long time){
         expectedSize = 50.0;
         if (list.size()*expectedSize>width) expectedSize = width/list.size();
-        size += (expectedSize-size)*0.001*time;  
+        size += (expectedSize-size)*((expectedSize<size)?0.001:0.0001)*time;  
     }
     
     public void draw(Graphics g) {
@@ -149,7 +149,7 @@ public class MessageQueue implements Drawable {
         g.drawRect(0, 0, width - 1, height - 1);
                 
         for (int i = 0; i < list.size(); i++) {
-            list.get(i).queueDraw(g, 5+(int)(size)*i,(int)size);
+            list.get(i).queueDraw(g, 5+(size*i),size);
         }
     }
 }

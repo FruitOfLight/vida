@@ -21,13 +21,13 @@ class Message {
         y = edge.from.getY();
     }
 
-    public void queueDraw(Graphics g, int position, int size) {
+    public void queueDraw(Graphics g, double position, double size) {
         g.setColor(new Color(200, 255, 200));
-        g.fillRect(position+1, 5, size-2, size);
+        Canvas.realFillRect(g, position+1, 5, size-2, size);
         g.setColor(new Color(0, 0, 0));
-        g.drawRect(position+1, 5, size-2, size);
+        Canvas.realDrawRect(g, position+1, 5, size-2, size);
         g.drawString(((Integer) edge.to.getID()).toString(),
-                5+position, 20);
+                (int)(5+position), 20);
     }
 
     public void messageDraw(Graphics g) {

@@ -20,5 +20,12 @@ public class Canvas extends JPanel {
             element.draw(g);
         }
     }
+    
+    static void realDrawRect(Graphics g, double x, double y, double w, double h){
+        g.drawRect((int)(x), (int)(y), (int)(x+w)-(int)(x), (int)(y+h)-(int)(y));
+    }
+    static void realFillRect(Graphics g, double x, double y, double w, double h){
+        g.fillRect((int)(x), (int)(y), (int)(x+w)-(int)(x), (int)(y+h)-(int)(y));
+    }
 
 }

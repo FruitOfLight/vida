@@ -6,7 +6,7 @@ public class Model {
      * kazdy povie, ci je sef)
      */
 
-    String path = "./algorithms/send.cpp.bin";
+    String path = "./algorithms/randsend.cpp.bin";
     Graph graph;
     boolean running;
 
