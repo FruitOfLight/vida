@@ -29,6 +29,7 @@ public class Graph implements Drawable {
         vertices = new ArrayList<Vertex>();
         edges = new ArrayList<Edge>();
         setCanvas(new Canvas(this));
+        xlast = -1; ylast = -1;
     }
 
     public void setCanvas(Canvas canvas) {
@@ -97,6 +98,7 @@ public class Graph implements Drawable {
         @Override
         public void mousePressed(MouseEvent mouse) {
             begin = findVertex(mouse.getX(), mouse.getY());
+            xlast = mouse.getX(); ylast = mouse.getY();
         }
 
         @Override
@@ -104,8 +106,8 @@ public class Graph implements Drawable {
             addEdge(begin, findVertex(mouse.getX(), mouse.getY()));
             canvas.repaint();
             begin = null;
-            xlast = 0;
-            ylast = 0;
+            xlast = -1;
+            ylast = -1;
         }
 
         @Override
