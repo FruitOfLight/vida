@@ -29,6 +29,14 @@ public class GUI {
         what.setSize(w, h);
         to.add(what);
     }
+    
+    static final int windowWidth = 1000;
+    static final int windowHeight = 700;
+    static final int graphWidth = 700;
+    static final int menuHeight = 25;
+    static final int queueHeight = 75;
+    static final int graphHeight = 500;
+    static final int controlsHeight = 100;
 
     static class Window implements Runnable {
         @Override
@@ -66,11 +74,11 @@ public class GUI {
                 }
             }
 
-            addElement(frame, menu, 0, 0, 800, 25);
-            addElement(frame, graph.canvas, 0, 75, 500, 500);
-            addElement(frame, MessageQueue.getInstance().canvas, 0, 25, 600, 50);
+            addElement(frame, menu, 0, 0, windowWidth, menuHeight);
+            addElement(frame, graph.canvas, 0, queueHeight+menuHeight, graphWidth, graphHeight);
+            addElement(frame, MessageQueue.getInstance().canvas, 0, menuHeight, windowWidth, queueHeight);
 
-            frame.setSize(800, 600);
+            frame.setSize(windowWidth, windowHeight);
             frame.setResizable(false);
             frame.setVisible(true);
         }

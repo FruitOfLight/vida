@@ -22,7 +22,7 @@ public class MessageQueue implements Drawable {
     Model model;
     Timer timer;
     
-    long sendInterval = 100;
+    long sendInterval = 800;
     long nextSend = 0;
 
     static class QueueEvent extends TimerTask {
@@ -31,12 +31,12 @@ public class MessageQueue implements Drawable {
                 return;
             if (!getInstance().model.running)
                 return;
-            getInstance().deliverFirstMessage();            
+            getInstance().deliverFirstMessage();
             getInstance().timer.schedule(new QueueEvent(), getInstance().sendInterval);
         }
     }
 
-    static class MessageDrawEvent extends TimerTask {
+    static class StepEvent extends TimerTask {
         static long time = 0;
 
         public void run() {
@@ -47,14 +47,20 @@ public class MessageQueue implements Drawable {
             long prevTime = time;
             time = System.currentTimeMillis();
             long delay = time - prevTime;
+                        
+            // Spravy vo fronte
+            MessageQueue.getInstance().step(delay);
+            
+            // Spravy v grafe
             for (Message message : getInstance().list)
                 message.step(delay);
             // toto by nemal byt foreach, lebo sa zoznam meni pocas behu
             for (int i = 0; i < getInstance().deadlist.size(); ++i)
                 getInstance().deadlist.get(i).step(delay);
 
+            getInstance().canvas.repaint();
             getInstance().model.graph.canvas.repaint();
-            getInstance().timer.schedule(new MessageDrawEvent(), 10);
+            getInstance().timer.schedule(new StepEvent(), 10);
         }
     }
 
@@ -113,12 +119,12 @@ public class MessageQueue implements Drawable {
     }
 
     void start() {
-        MessageDrawEvent.time = System.currentTimeMillis();
+        StepEvent.time = System.currentTimeMillis();
         nextSend = System.currentTimeMillis()+sendInterval;
         MessageQueue.getInstance().timer.schedule(
                 new MessageQueue.QueueEvent(), sendInterval);
         MessageQueue.getInstance().timer.schedule(
-                new MessageQueue.MessageDrawEvent(), 1);
+                new MessageQueue.StepEvent(), 1);
     }
 
     void clear() {
@@ -126,14 +132,24 @@ public class MessageQueue implements Drawable {
         canvas.repaint();
     }
 
+    double size = 50;
+    double expectedSize = 50;
+    
+    public void step(long time){
+        expectedSize = 50.0;
+        if (list.size()*expectedSize>width) expectedSize = width/list.size();
+        size += (expectedSize-size)*0.001*time;  
+    }
+    
     public void draw(Graphics g) {
         this.width = canvas.getWidth();
         this.height = canvas.getHeight();
         // TODO
         g.setColor(new Color(0, 0, 0));
         g.drawRect(0, 0, width - 1, height - 1);
+                
         for (int i = 0; i < list.size(); i++) {
-            list.get(i).queueDraw(g, i);
+            list.get(i).queueDraw(g, 5+(int)(size)*i,(int)size);
         }
     }
 }
