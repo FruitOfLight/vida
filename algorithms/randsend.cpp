@@ -33,7 +33,7 @@ int ports[1047];
 
 int main(){
     srand(time(NULL)+getpid());
-    int randid = rand()%10000;
+    int randid = rand()%1000;
     char ch;
     char str[1000];
     while(scanf("%c",&ch)>0) {
