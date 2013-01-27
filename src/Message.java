@@ -36,8 +36,17 @@ class Message {
                 + edge.to.getX() * (position));
         int y = (int) Math.round(edge.from.getY() * (1.0 - position)
                 + edge.to.getY() * (position));
-        g.fillRect(x - 3, y - 3, 6, 6);
-        g.drawString(((Integer) edge.to.getID()).toString(), x, y);
+        int xPoints[] = new int[3], yPoints[] = new int[3];
+        xPoints[0] = x; yPoints[0] = y;
+        double ux = edge.from.getY() - edge.to.getY(), uy = edge.to.getX() - edge.from.getX();
+        //Tu sa da nastavovat velkost trojuholnika
+        double k = 12.0 / Math.sqrt(ux * ux + uy * uy);
+        double vx = ux * k;
+        double vy = uy * k;
+        xPoints[1] = (int) Math.round(x + vx + vy/2.0); yPoints[1] = (int) Math.round(y + vy - vx/2.0);
+        xPoints[2] = (int) Math.round(x + vx - vy/2.0); yPoints[2] = (int) Math.round(y + vy + vx/2.0);
+        g.fillPolygon(xPoints, yPoints, 3);
+        //g.drawString(((Integer) edge.to.getID()).toString(), x, y);
     }
 
     double position, speed;
