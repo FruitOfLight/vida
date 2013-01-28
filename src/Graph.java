@@ -306,8 +306,7 @@ public class Graph implements Drawable {
             y1 = y2;
             y2 = p;
         }
-        // TODO dat namiesto 10 polomer vrcholu
-        canvas.repaint(x1 - 10, y1 - 10, x2 - x1 + 20, y2 - y1 + 20);
+        canvas.repaint(x1 - CONST.vertexSize, y1 - CONST.vertexSize, x2 - x1 + 20, y2 - y1 + 20);
     }
 
     public void read(Scanner input) {
@@ -378,6 +377,22 @@ public class Graph implements Drawable {
                         addEdge(vertices.get(i), vertices.get((i + 1) % n));
                 break;
             case 3:
+            	int m = newGraphDialog.getTF2();
+            	int dx = (CONST.graphWidth - 30) / (m - 1);
+            	int dy = (CONST.graphHeight - 30) / (n - 1);
+            	System.out.println(dx+" "+dy);
+            	for(int i = 0; i < n; i++)
+            		for(int j = 0; j < m; j++) {
+            			addVertex(15 + j * dx,
+            					15 + i * dy,
+            					getNewVertexID());
+            		}
+            	if(!newGraphDialog.getEdges()) break;
+            	for(int i = 0; i < n; i++)
+            		for(int j = 0; j < m; j++) {
+            			if(j != m-1) addEdge(vertices.get(i*m + j), vertices.get(i*m + j+1));
+            			if(i != n-1) addEdge(vertices.get(i*m + j), vertices.get(i*m + j+m));
+            		}
                 break;
             case 4:
                 addVertex(middlex, middley, getNewVertexID());
