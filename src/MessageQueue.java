@@ -21,15 +21,17 @@ public class MessageQueue implements Drawable {
 
     Model model;
     Timer timer;
-    
+
     private long sendInterval;
     long nextSend = 0;
     private double sendSpeed;
-    public void setSendSpeed(double value){
+
+    public void setSendSpeed(double value) {
         sendSpeed = value;
-        sendInterval = (int)(1000.0/sendSpeed);
+        sendInterval = (int) (1000.0 / sendSpeed);
     }
-    public double getSendSpeed(){
+
+    public double getSendSpeed() {
         return sendSpeed;
     }
 
@@ -51,10 +53,10 @@ public class MessageQueue implements Drawable {
             long prevTime = time;
             time = System.currentTimeMillis();
             long delay = time - prevTime;
-                        
+
             // Spravy vo fronte
             MessageQueue.getInstance().step(delay);
-            
+
             // Spravy v grafe
             for (Message message : getInstance().list)
                 message.step(delay);
@@ -69,7 +71,6 @@ public class MessageQueue implements Drawable {
     }
 
     private MessageQueue() {
-        timer = new Timer();
         canvas = new Canvas(this);
         setSendSpeed(1.2);
     }
@@ -100,54 +101,56 @@ public class MessageQueue implements Drawable {
             return;
         Message message = list.get(0);
         list.remove(0);
-        if (message.edge.to.program == null
-                || message.edge.to.program.running == false) {
-            System.err
-                    .println("Recipient doesn't exist\n  message was delayed\n");
+        if (message.edge.to.program == null || message.edge.to.program.running == false) {
+            System.err.println("Recipient doesn't exist\n  message was delayed\n");
             // TODO pozor, aby sa nemenilo poradie na hrane
             list.add(message);
             list.remove(0);
             return;
         }
         deadlist.add(message);
-        //message.edge.to.receive(message);
-        nextSend = System.currentTimeMillis()+sendInterval;
+        // message.edge.to.receive(message);
+        nextSend = System.currentTimeMillis() + sendInterval;
         refreshRecieveness();
         canvas.repaint();
     }
 
     void refreshRecieveness() {
         for (int i = 0; i < list.size(); i++)
-            list.get(i).setRecieveness(nextSend + i*sendInterval);
+            list.get(i).setRecieveness(nextSend + i * sendInterval);
         for (int i = 0; i < deadlist.size(); i++)
             deadlist.get(i).setRecieveness(-1);
     }
 
-    // zobudi frontu - pozor! pouziva sa aj pri zobudeni z pauzy, nie len pri prvom starte
+    // zobudi frontu - pozor! pouziva sa aj pri zobudeni z pauzy, nie len pri
+    // prvom starte
     void start() {
+        if (timer!=null) timer.cancel();
+        timer = new Timer();
         StepEvent.time = System.currentTimeMillis();
-        nextSend = System.currentTimeMillis()+sendInterval;
-        MessageQueue.getInstance().timer.schedule(
-                new MessageQueue.QueueEvent(), sendInterval);
-        MessageQueue.getInstance().timer.schedule(
-                new MessageQueue.StepEvent(), 1);
+        nextSend = System.currentTimeMillis() + sendInterval;
+        MessageQueue.getInstance().timer.schedule(new MessageQueue.QueueEvent(), sendInterval);
+        MessageQueue.getInstance().timer.schedule(new MessageQueue.StepEvent(), 1);
         refreshRecieveness();
     }
-    
+
     void clear() {
         list.clear();
+        deadlist.clear();
         canvas.repaint();
     }
 
     double size = 50;
     double expectedSize = 50;
-    
-    public void step(long time){
+
+    public void step(long time) {
         expectedSize = 50.0;
-        if (list.size()*expectedSize>width) expectedSize = width/list.size();
-        size += (expectedSize-size)*((expectedSize<size)?0.001:0.0001)*time;  
+        int messageCount = list.size() + deadlist.size() + 1;
+        if (messageCount * expectedSize > width)
+            expectedSize = width / messageCount;
+        size += (expectedSize - size) * ((expectedSize < size) ? 0.001 : 0.0001) * time;
     }
-    
+
     public void draw(Graphics g) {
         this.width = canvas.getWidth();
         this.height = canvas.getHeight();
@@ -155,9 +158,14 @@ public class MessageQueue implements Drawable {
         g.fillRect(0, 0, width, height);
         g.setColor(new Color(0, 0, 0));
         g.drawRect(0, 0, width - 1, height - 1);
-                
-        for (int i = 0; i < list.size(); i++) {
-            list.get(i).queueDraw(g, 5+(size*i),size);
+        
+        for (int i = 0; i < deadlist.size(); i++) {
+            deadlist.get(i).queueDraw(g, 5 + (size * i), size);
         }
+        int deadsize = deadlist.size();
+        for (int i = 0; i < list.size(); i++) {
+            list.get(i).queueDraw(g, 5 + (size * i+deadsize), size);
+        }
+        g.fillRect((int) (size * deadlist.size()), CONST.queueHeight - 10, 10, 5);
     }
 }

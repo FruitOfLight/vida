@@ -14,7 +14,7 @@ public class CONST {
     public static final int vertexSize = 10;
 
     // Queue
-    public static final double speedFactor = 1.1;
+    public static final double speedFactor = 1.2;
     // o kolko sa zrychli beh, pri stlaceni forward
 
     // Model
