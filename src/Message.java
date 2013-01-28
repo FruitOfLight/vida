@@ -23,26 +23,28 @@ class Message {
         Canvas.realFillRect(g, position + 1, 5, size - 2, size);
         g.setColor(new Color(0, 0, 0));
         Canvas.realDrawRect(g, position + 1, 5, size - 2, size);
-        g.drawString(shorten(g, ((Integer) edge.to.getID()).toString(), (int)size-5, Preference.begin),
-                (int) (5 + position), 20);
-        if (size > 30) {
-            g.drawString(shorten(g, content, (int)size-5, Preference.begin), (int) (5 + position), 32);
-            if (size > 40)
-                g.drawString(shorten(g, content, (int)size-5, Preference.end), (int) (5 + position), 44);
+        if (size > 18) {
+            g.drawString(
+                    shorten(g, ((Integer) edge.to.getID()).toString(), (int) size - 5,
+                            Preference.begin), (int) (5 + position), 20);
+            if (size > 30) {
+                g.drawString(shorten(g, content, (int) size - 5, Preference.begin),
+                        (int) (5 + position), 32);
+                if (size > 40)
+                    g.drawString(shorten(g, content, (int) size - 5, Preference.end),
+                            (int) (5 + position), 44);
+            }
         }
     }
 
     public void messageDraw(Graphics g) {
         g.setColor(new Color(255, 0, 0));
-        int x = (int) Math.round(edge.from.getX() * (1.0 - position)
-                + edge.to.getX() * (position));
-        int y = (int) Math.round(edge.from.getY() * (1.0 - position)
-                + edge.to.getY() * (position));
+        int x = (int) Math.round(edge.from.getX() * (1.0 - position) + edge.to.getX() * (position));
+        int y = (int) Math.round(edge.from.getY() * (1.0 - position) + edge.to.getY() * (position));
         int xPoints[] = new int[3], yPoints[] = new int[3];
         xPoints[0] = x;
         yPoints[0] = y;
-        double ux = edge.from.getY() - edge.to.getY(), uy = edge.to.getX()
-                - edge.from.getX();
+        double ux = edge.from.getY() - edge.to.getY(), uy = edge.to.getX() - edge.from.getX();
         // Tu sa da nastavovat velkost trojuholnika
         double k = 12.0 / Math.sqrt(ux * ux + uy * uy);
         double vx = ux * k;
@@ -88,24 +90,28 @@ class Message {
         }
     }
 
-    enum Preference{
+    enum Preference {
         begin, end, special
     }
-    
+
     public static String shorten(Graphics g, String text, int width, Preference preference) {
         if (g.getFontMetrics().stringWidth(text) <= width)
             return text;
         if (preference == Preference.begin) {
-            if (g.getFontMetrics().stringWidth("..") > width) return "";
+            if (g.getFontMetrics().stringWidth("..") > width)
+                return "";
             int len = 0;
-            while(g.getFontMetrics().stringWidth(text.substring(0,len+1)+"..") <= width) len++;
-            return text.substring(0,len)+"..";
+            while (g.getFontMetrics().stringWidth(text.substring(0, len + 1) + "..") <= width)
+                len++;
+            return text.substring(0, len) + "..";
         }
         if (preference == Preference.end) {
-            if (g.getFontMetrics().stringWidth("..") > width) return "";
+            if (g.getFontMetrics().stringWidth("..") > width)
+                return "";
             int len = 0;
-            while(g.getFontMetrics().stringWidth(".."+text.substring(text.length()-len)) <= width) len++;
-            return ".."+text.substring(text.length()-len);
+            while (g.getFontMetrics().stringWidth(".." + text.substring(text.length() - len)) <= width)
+                len++;
+            return ".." + text.substring(text.length() - len);
         }
         return "";
     }

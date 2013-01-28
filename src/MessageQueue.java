@@ -22,14 +22,22 @@ public class MessageQueue implements Drawable {
     Model model;
     Timer timer;
     
-    long sendInterval = 800;
+    long sendInterval;
     long nextSend = 0;
+    private double sendSpeed;
+    public void setSendSpeed(double value){
+        sendSpeed = value;
+        sendInterval = (int)(1000.0/sendSpeed);
+    }
+    public double getSendSpeed(){
+        return sendSpeed;
+    }
 
     static class QueueEvent extends TimerTask {
         public void run() {
             if (getInstance().model == null)
                 return;
-            if (getInstance().model.running == CONST.stoped)
+            if (getInstance().model.running == RunState.stopped)
                 return;
             getInstance().deliverFirstMessage();
             getInstance().timer.schedule(new QueueEvent(), getInstance().sendInterval);
@@ -42,7 +50,7 @@ public class MessageQueue implements Drawable {
         public void run() {
             if (getInstance().model == null)
                 return;
-            if (getInstance().model.running == CONST.stoped)
+            if (getInstance().model.running == RunState.stopped)
                 return;
             long prevTime = time;
             time = System.currentTimeMillis();
@@ -67,6 +75,7 @@ public class MessageQueue implements Drawable {
     private MessageQueue() {
         timer = new Timer();
         canvas = new Canvas(this);
+        setSendSpeed(1.2);
     }
 
     ArrayList<Message> list = new ArrayList<Message>();

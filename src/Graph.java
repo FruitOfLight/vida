@@ -84,11 +84,11 @@ public class Graph implements Drawable {
         @Override
         public void mouseClicked(MouseEvent mouse) {
             if (!deleting && !moving) {
-            	if(GUI.model.running != CONST.stoped) return ;
+            	if(GUI.model.running != RunState.stopped) return ;
                 addVertex(mouse);
             }
             if (deleting) {
-            	if(GUI.model.running != CONST.stoped) return ;
+            	if(GUI.model.running != RunState.stopped) return ;
                 Vertex vertex = findVertex(mouse.getX(), mouse.getY());
                 if (vertex != null) {
                     deleteVertex(vertex);
@@ -107,7 +107,7 @@ public class Graph implements Drawable {
 
         @Override
         public void mouseReleased(MouseEvent mouse) {
-        	if(GUI.model.running == CONST.stoped) addEdge(begin, findVertex(mouse.getX(), mouse.getY()));
+        	if(GUI.model.running == RunState.stopped) addEdge(begin, findVertex(mouse.getX(), mouse.getY()));
             canvas.repaint();
             begin = null;
             xlast = -1;
@@ -120,7 +120,7 @@ public class Graph implements Drawable {
                 return;
             }
             if (!moving) {
-            	if(GUI.model.running != CONST.stoped) return ;
+            	if(GUI.model.running != RunState.stopped) return ;
                 repaintBetween(begin.getX(), begin.getY(), xlast, ylast);
                 xlast = mouse.getX();
                 ylast = mouse.getY();
@@ -147,13 +147,6 @@ public class Graph implements Drawable {
             if (key.getKeyCode() == 17 && !moving) {
                 deleting = true;
             }
-            // TODO toto je len provizorne
-            if (key.getKeyCode() == 'P')
-                MessageQueue.getInstance().sendInterval -= (MessageQueue
-                        .getInstance().sendInterval > 200) ? 100 : 10;
-            if (key.getKeyCode() == 'M')
-                MessageQueue.getInstance().sendInterval += (MessageQueue
-                        .getInstance().sendInterval > 200) ? 100 : 10;
         }
 
         @Override

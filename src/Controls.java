@@ -26,6 +26,7 @@ public class Controls implements Drawable {
 	
 	public void setCanvas(Canvas canvas) {
 		this.canvas = canvas;
+		
 	}
 	
 	public void createButtons() {
@@ -99,7 +100,7 @@ public class Controls implements Drawable {
 		canvas.add(backwardButton);
 		canvas.add(stopButton);
 		canvas.add(forwardButton);
-		if(GUI.model.running != CONST.running) {
+		if(GUI.model.running != RunState.running) {
 			pauseButton.setVisible(false);
 			playButton.setVisible(true);
 		}

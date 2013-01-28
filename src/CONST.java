@@ -12,8 +12,12 @@ public class CONST {
 	public static final int controlsWidth = 700;
 
 	//Model
-	public static final int running = 2;
-	public static final int paused = 1;
-	public static final int stoped = 0;
-	
+	//public static final int running = 2;
+	//public static final int paused = 1;
+	//public static final int stoped = 0;
+
+}
+
+enum RunState {
+    stopped, paused, running
 }
