@@ -14,16 +14,15 @@ public class Model {
         running = RunState.stopped;
     }
 
-    void load() {
+    private void load() {
         if (running != RunState.stopped) stop();
         MessageQueue.getInstance().model = this;
-
+        graph = GUI.graph;
+        
         for (Vertex v : graph.vertices) {
             v.program = new Program(v, this);
             v.program.load(path);
         }
-        running = RunState.running;
-        MessageQueue.getInstance().start();
     }
 
     void stop() {
@@ -34,5 +33,15 @@ public class Model {
             v.program.kill();
         }
         MessageQueue.getInstance().clear();
+    }
+    
+    void start(){
+        if (running == RunState.stopped) load();
+        running = RunState.running;
+        MessageQueue.getInstance().start();
+    }
+    
+    void pause(){
+        running = RunState.paused;
     }
 }

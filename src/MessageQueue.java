@@ -35,9 +35,7 @@ public class MessageQueue implements Drawable {
 
     static class QueueEvent extends TimerTask {
         public void run() {
-            if (getInstance().model == null)
-                return;
-            if (getInstance().model.running == RunState.stopped)
+            if (getInstance().model == null || getInstance().model.running != RunState.running)
                 return;
             getInstance().deliverFirstMessage();
             getInstance().timer.schedule(new QueueEvent(), getInstance().sendInterval);
@@ -48,9 +46,7 @@ public class MessageQueue implements Drawable {
         static long time = 0;
 
         public void run() {
-            if (getInstance().model == null)
-                return;
-            if (getInstance().model.running == RunState.stopped)
+            if (getInstance().model == null || getInstance().model.running != RunState.running)
                 return;
             long prevTime = time;
             time = System.currentTimeMillis();
@@ -127,6 +123,7 @@ public class MessageQueue implements Drawable {
             deadlist.get(i).setRecieveness(-1);
     }
 
+    // zobudi frontu - pozor! pouziva sa aj pri zobudeni z pauzy, nie len pri prvom starte
     void start() {
         StepEvent.time = System.currentTimeMillis();
         nextSend = System.currentTimeMillis()+sendInterval;
@@ -134,8 +131,9 @@ public class MessageQueue implements Drawable {
                 new MessageQueue.QueueEvent(), sendInterval);
         MessageQueue.getInstance().timer.schedule(
                 new MessageQueue.StepEvent(), 1);
+        refreshRecieveness();
     }
-
+    
     void clear() {
         list.clear();
         canvas.repaint();

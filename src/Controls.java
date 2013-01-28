@@ -58,16 +58,14 @@ public class Controls implements Drawable {
             playButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    GUI.model.graph = GUI.graph;
-                    GUI.model.load();
+                    GUI.model.start();
                     canvas.repaint();
                 }
             });
             pauseButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    GUI.model.graph = GUI.graph;
-                    GUI.model.load();
+                    GUI.model.pause();
                     canvas.repaint();
                 }
             });
@@ -104,17 +102,17 @@ public class Controls implements Drawable {
     public void draw(Graphics g) {
         String speedString = ((Double)MessageQueue.getInstance().getSendSpeed()).toString();
         if (speedString.length()>5) speedString = speedString.substring(0, 5);
-        if (GUI.model.running != RunState.running) {
+        if (GUI.model.running == RunState.running) {
+            pauseButton.setVisible(true);
+            playButton.setVisible(false);
+            speedLabel.setText("Running " + speedString);
+        } else if (GUI.model.running == RunState.paused) {
             pauseButton.setVisible(false);
             playButton.setVisible(true);
-            speedLabel.setText("Running " + speedString);
-        } else if (GUI.model.running != RunState.paused) {
-            pauseButton.setVisible(true);
-            playButton.setVisible(false);
             speedLabel.setText("Paused (" + speedString +")");
         } else {
-            pauseButton.setVisible(true);
-            playButton.setVisible(false);
+            pauseButton.setVisible(false);
+            playButton.setVisible(true);
             speedLabel.setText("Stopped (" + speedString +")");
         }
     }

@@ -29,7 +29,8 @@ public class Graph implements Drawable {
         vertices = new ArrayList<Vertex>();
         edges = new ArrayList<Edge>();
         setCanvas(new Canvas(this));
-        xlast = -1; ylast = -1;
+        xlast = -1;
+        ylast = -1;
     }
 
     public void setCanvas(Canvas canvas) {
@@ -43,7 +44,7 @@ public class Graph implements Drawable {
 
     @Override
     public void draw(Graphics g) {
-    	g.setColor(new Color(255, 255, 255));
+        g.setColor(new Color(255, 255, 255));
         g.fillRect(0, 0, CONST.graphWidth, CONST.graphHeight);
         this.width = canvas.getWidth();
         this.height = canvas.getHeight();
@@ -78,17 +79,18 @@ public class Graph implements Drawable {
 
     }
 
-    class GraphListener implements MouseListener, MouseMotionListener,
-            KeyListener {
+    class GraphListener implements MouseListener, MouseMotionListener, KeyListener {
 
         @Override
         public void mouseClicked(MouseEvent mouse) {
             if (!deleting && !moving) {
-            	if(GUI.model.running != RunState.stopped) return ;
+                if (GUI.model.running != RunState.stopped)
+                    return;
                 addVertex(mouse);
             }
             if (deleting) {
-            	if(GUI.model.running != RunState.stopped) return ;
+                if (GUI.model.running != RunState.stopped)
+                    return;
                 Vertex vertex = findVertex(mouse.getX(), mouse.getY());
                 if (vertex != null) {
                     deleteVertex(vertex);
@@ -102,12 +104,14 @@ public class Graph implements Drawable {
         @Override
         public void mousePressed(MouseEvent mouse) {
             begin = findVertex(mouse.getX(), mouse.getY());
-            xlast = mouse.getX(); ylast = mouse.getY();
+            xlast = mouse.getX();
+            ylast = mouse.getY();
         }
 
         @Override
         public void mouseReleased(MouseEvent mouse) {
-        	if(GUI.model.running == RunState.stopped) addEdge(begin, findVertex(mouse.getX(), mouse.getY()));
+            if (GUI.model.running == RunState.stopped)
+                addEdge(begin, findVertex(mouse.getX(), mouse.getY()));
             canvas.repaint();
             begin = null;
             xlast = -1;
@@ -120,7 +124,8 @@ public class Graph implements Drawable {
                 return;
             }
             if (!moving) {
-            	if(GUI.model.running != RunState.stopped) return ;
+                if (GUI.model.running != RunState.stopped)
+                    return;
                 repaintBetween(begin.getX(), begin.getY(), xlast, ylast);
                 xlast = mouse.getX();
                 ylast = mouse.getY();
@@ -128,8 +133,7 @@ public class Graph implements Drawable {
             } else {
                 for (Vertex vertex : vertices) {
                     if (!vertex.equals(begin)
-                            && vertex.isNearPoint(mouse.getX(), mouse.getY(),
-                                    vertex.getRadius())) {
+                            && vertex.isNearPoint(mouse.getX(), mouse.getY(), vertex.getRadius())) {
                         return;
                     }
                 }
@@ -180,11 +184,9 @@ public class Graph implements Drawable {
         int x = mouse.getX(), y = mouse.getY();
         for (Vertex vertex : vertices) {
             if (vertex.isNearPoint(x, y, 0)) {
-                Dialog.DialogNewVertex newVertexDialog = new Dialog.DialogNewVertex(
-                        vertex.getID());
-                int ok = JOptionPane.showConfirmDialog(null,
-                        newVertexDialog.getPanel(), "Edit vertex",
-                        JOptionPane.OK_CANCEL_OPTION);
+                Dialog.DialogNewVertex newVertexDialog = new Dialog.DialogNewVertex(vertex.getID());
+                int ok = JOptionPane.showConfirmDialog(null, newVertexDialog.getPanel(),
+                        "Edit vertex", JOptionPane.OK_CANCEL_OPTION);
                 if (ok == JOptionPane.OK_OPTION) {
                     vertex.setID(newVertexDialog.getID());
                 }
@@ -315,8 +317,7 @@ public class Graph implements Drawable {
         try {
             int n = input.nextInt(), m = input.nextInt();
             for (int i = 0; i < n; i++) {
-                int x = input.nextInt(), y = input.nextInt(), ID = input
-                        .nextInt();
+                int x = input.nextInt(), y = input.nextInt(), ID = input.nextInt();
                 vertices.add(new Vertex(x, y, ID));
             }
             for (int i = 0; i < m; i++) {
@@ -331,8 +332,8 @@ public class Graph implements Drawable {
     public void print(PrintStream output) {
         output.println(vertices.size() + " " + edges.size());
         for (int i = 0; i < vertices.size(); i++) {
-            output.println(vertices.get(i).getX() + " "
-                    + vertices.get(i).getY() + " " + vertices.get(i).getID());
+            output.println(vertices.get(i).getX() + " " + vertices.get(i).getY() + " "
+                    + vertices.get(i).getID());
         }
         // TODO spravit efektivnejsie indexOf
         for (int i = 0; i < edges.size(); i++) {
@@ -343,8 +344,8 @@ public class Graph implements Drawable {
 
     public void createNew() {
         Dialog.DialogNewGraph newGraphDialog = new Dialog.DialogNewGraph();
-        int ok = JOptionPane.showConfirmDialog(null, newGraphDialog.getPanel(),
-                "New graph", JOptionPane.OK_CANCEL_OPTION);
+        int ok = JOptionPane.showConfirmDialog(null, newGraphDialog.getPanel(), "New graph",
+                JOptionPane.OK_CANCEL_OPTION);
         // { "Empty", "Clique", "Circle", "Grid", "Wheel", "Random" };
         if (ok == JOptionPane.OK_OPTION) {
             int d = CONST.graphWidth / 3, n = newGraphDialog.getTF1();
@@ -357,10 +358,8 @@ public class Graph implements Drawable {
                 break;
             case 1:
                 for (int i = 0; i < n; ++i)
-                    addVertex(
-                            middlex + (int) (d * Math.sin(i * 2 * Math.PI / n)),
-                            middley + (int) (d * Math.cos(i * 2 * Math.PI / n)),
-                            getNewVertexID());
+                    addVertex(middlex + (int) (d * Math.sin(i * 2 * Math.PI / n)), middley
+                            - (int) (d * Math.cos(i * 2 * Math.PI / n)), getNewVertexID());
                 if (newGraphDialog.getEdges())
                     for (int i = 0; i < n; ++i)
                         for (int j = i + 1; j < n; ++j)
@@ -368,47 +367,43 @@ public class Graph implements Drawable {
                 break;
             case 2:
                 for (int i = 0; i < n; ++i)
-                    addVertex(
-                            middlex + (int) (d * Math.sin(i * 2 * Math.PI / n)),
-                            middley + (int) (d * Math.cos(i * 2 * Math.PI / n)),
-                            getNewVertexID());
+                    addVertex(middlex + (int) (d * Math.sin(i * 2 * Math.PI / n)), middley
+                            - (int) (d * Math.cos(i * 2 * Math.PI / n)), getNewVertexID());
                 if (newGraphDialog.getEdges())
                     for (int i = 0; i < n; ++i)
                         addEdge(vertices.get(i), vertices.get((i + 1) % n));
                 break;
             case 3:
-            	int m = newGraphDialog.getTF2();
-            	int dx = (CONST.graphWidth - 30) / (m - 1);
-            	int dy = (CONST.graphHeight - 30) / (n - 1);
-            	System.out.println(dx+" "+dy);
-            	for(int i = 0; i < n; i++)
-            		for(int j = 0; j < m; j++) {
-            			addVertex(15 + j * dx,
-            					15 + i * dy,
-            					getNewVertexID());
-            		}
-            	if(!newGraphDialog.getEdges()) break;
-            	for(int i = 0; i < n; i++)
-            		for(int j = 0; j < m; j++) {
-            			if(j != m-1) addEdge(vertices.get(i*m + j), vertices.get(i*m + j+1));
-            			if(i != n-1) addEdge(vertices.get(i*m + j), vertices.get(i*m + j+m));
-            		}
+                int m = newGraphDialog.getTF2();
+                int dx = (CONST.graphWidth - 30) / (m - 1);
+                int dy = (CONST.graphHeight - 30) / (n - 1);
+                System.out.println(dx + " " + dy);
+                for (int i = 0; i < n; i++)
+                    for (int j = 0; j < m; j++) {
+                        addVertex(15 + j * dx, 15 + i * dy, getNewVertexID());
+                    }
+                if (!newGraphDialog.getEdges())
+                    break;
+                for (int i = 0; i < n; i++)
+                    for (int j = 0; j < m; j++) {
+                        if (j != m - 1)
+                            addEdge(vertices.get(i * m + j), vertices.get(i * m + j + 1));
+                        if (i != n - 1)
+                            addEdge(vertices.get(i * m + j), vertices.get(i * m + j + m));
+                    }
                 break;
             case 4:
                 addVertex(middlex, middley, getNewVertexID());
                 for (int i = 0; i < n; ++i)
-                    addVertex(
-                            middlex + (int) (d * Math.sin(i * 2 * Math.PI / n)),
-                            middley + (int) (d * Math.cos(i * 2 * Math.PI / n)),
-                            getNewVertexID());
+                    addVertex(middlex + (int) (d * Math.sin(i * 2 * Math.PI / n)), middley
+                            - (int) (d * Math.cos(i * 2 * Math.PI / n)), getNewVertexID());
                 if (newGraphDialog.getEdges())
                     for (int i = 0; i < n; ++i) {
-                        addEdge(vertices.get(i + 1),
-                                vertices.get((i + 1) % n + 1));
+                        addEdge(vertices.get(i + 1), vertices.get((i + 1) % n + 1));
                         addEdge(vertices.get(0), vertices.get(i + 1));
                     }
                 break;
-            
+
             case 5:
                 break;
             }
