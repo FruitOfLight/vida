@@ -129,9 +129,11 @@ public class MessageQueue implements Drawable {
         timer = new Timer();
         StepEvent.time = System.currentTimeMillis();
         nextSend = System.currentTimeMillis() + sendInterval;
-        MessageQueue.getInstance().timer.schedule(new MessageQueue.QueueEvent(), sendInterval);
-        MessageQueue.getInstance().timer.schedule(new MessageQueue.StepEvent(), 1);
         refreshRecieveness();
+        MessageQueue.getInstance().timer.schedule(new MessageQueue.QueueEvent(), sendInterval);
+        MessageQueue.getInstance().timer.schedule(new MessageQueue.StepEvent(), 0);
+        canvas.repaint();
+        
     }
 
     void clear() {

@@ -74,11 +74,12 @@ class Message {
         // System.err.println("time " + time + " expected " + expectedTime);
         double expectedTime = (expectedRecieve - System.currentTimeMillis()) * 0.001;
         double expectedSpeed;
-        if (expectedTime < 1e-3) {
+        if (expectedTime < 1e-2) {
             expectedSpeed = 1;
         } else {
             expectedSpeed = (1.0 - position) / expectedTime;
         }
+        if (expectedSpeed>2.0) expectedSpeed = 2.0;
 
         speed = expectedSpeed;
         // speed += (expectedSpeed-speed)*(0.01);
