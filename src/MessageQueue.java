@@ -22,7 +22,7 @@ public class MessageQueue implements Drawable {
     Model model;
     Timer timer;
     
-    long sendInterval;
+    private long sendInterval;
     long nextSend = 0;
     private double sendSpeed;
     public void setSendSpeed(double value){
