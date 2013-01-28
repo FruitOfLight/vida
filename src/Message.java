@@ -79,7 +79,7 @@ class Message {
         } else {
             expectedSpeed = (1.0 - position) / expectedTime;
         }
-        if (expectedSpeed>2.0) expectedSpeed = 2.0;
+        if (expectedSpeed>1.0) expectedSpeed = 1.0;
 
         speed = expectedSpeed;
         // speed += (expectedSpeed-speed)*(0.01);

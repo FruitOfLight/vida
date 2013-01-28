@@ -29,7 +29,7 @@ public class Vertex implements Drawable {
         this.x = x;
         this.y = y;
         this.ID = ID;
-        radius = 11;
+        radius = CONST.vertexSize;
     }
 
     void send(Message message) {

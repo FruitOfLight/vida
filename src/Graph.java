@@ -69,7 +69,8 @@ public class Graph implements Drawable {
             for (Message message : messages.list)
                 message.messageDraw(g);
         } catch (ConcurrentModificationException e) {
-
+            e.printStackTrace();
+            draw(g);
         }
         /*
          * for (int i = 0; i < messages.list.size(); i++) {
@@ -103,6 +104,7 @@ public class Graph implements Drawable {
 
         @Override
         public void mousePressed(MouseEvent mouse) {
+            if (GUI.model.running != RunState.stopped) return;
             begin = findVertex(mouse.getX(), mouse.getY());
             xlast = mouse.getX();
             ylast = mouse.getY();
@@ -308,7 +310,7 @@ public class Graph implements Drawable {
             y1 = y2;
             y2 = p;
         }
-        canvas.repaint(x1 - CONST.vertexSize, y1 - CONST.vertexSize, x2 - x1 + 20, y2 - y1 + 20);
+        canvas.repaint(x1 - CONST.vertexSize, y1 - CONST.vertexSize, x2 - x1 + CONST.vertexSize*2, y2 - y1 + CONST.vertexSize*2);
     }
 
     public void read(Scanner input) {

@@ -3,7 +3,7 @@ public class Model {
     /*
      * TODO parametre ako synchronny? anonymny? synchronne zobudenie.... maju
      * nejake vstupne hodnoty? maju s.o.d.? caka sa od nich nejaky vystup (napr.
-     * kazdy povie, ci je sef)
+     * kazdy povie, ci je sef)?
      */
 
     String path = "./algorithms/randsend.cpp.bin";

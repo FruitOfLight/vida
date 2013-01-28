@@ -29,6 +29,7 @@ public class MessageQueue implements Drawable {
     public void setSendSpeed(double value) {
         sendSpeed = value;
         sendInterval = (int) (1000.0 / sendSpeed);
+        refreshRecieveness();
     }
 
     public double getSendSpeed() {
@@ -66,7 +67,7 @@ public class MessageQueue implements Drawable {
 
             getInstance().canvas.repaint();
             getInstance().model.graph.canvas.repaint();
-            getInstance().timer.schedule(new StepEvent(), 10);
+            getInstance().timer.schedule(new StepEvent(), 30);
         }
     }
 
@@ -160,13 +161,17 @@ public class MessageQueue implements Drawable {
         g.fillRect(0, 0, width, height);
         g.setColor(new Color(0, 0, 0));
         g.drawRect(0, 0, width - 1, height - 1);
-        
-        for (int i = 0; i < deadlist.size(); i++) {
-            deadlist.get(i).queueDraw(g, 5 + (size * i), size);
-        }
-        int deadsize = deadlist.size();
-        for (int i = 0; i < list.size(); i++) {
-            list.get(i).queueDraw(g, 5 + (size * i+deadsize), size);
+        try {
+            for (int i = 0; i < deadlist.size(); i++) {
+                deadlist.get(i).queueDraw(g, 5 + (size * i), size);
+            }
+            int deadsize = deadlist.size();
+            for (int i = 0; i < list.size(); i++) {
+                list.get(i).queueDraw(g, 5 + (size * i+deadsize), size);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            draw(g);
         }
         g.fillRect((int) (size * deadlist.size()), CONST.queueHeight - 10, 10, 5);
     }
