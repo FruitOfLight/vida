@@ -10,6 +10,9 @@ public class CONST {
 	public static final int graphHeight = 500;
 	public static final int controlsHeight = 50;
 	public static final int controlsWidth = 700;
+	
+	//Graph
+	public static final int vertexSize = 10;
 
 	//Model
 	public static final int running = 2;
