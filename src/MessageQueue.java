@@ -29,7 +29,7 @@ public class MessageQueue implements Drawable {
         public void run() {
             if (getInstance().model == null)
                 return;
-            if (!getInstance().model.running)
+            if (getInstance().model.running == CONST.stoped)
                 return;
             getInstance().deliverFirstMessage();
             getInstance().timer.schedule(new QueueEvent(), getInstance().sendInterval);
@@ -42,7 +42,7 @@ public class MessageQueue implements Drawable {
         public void run() {
             if (getInstance().model == null)
                 return;
-            if (!getInstance().model.running)
+            if (getInstance().model.running == CONST.stoped)
                 return;
             long prevTime = time;
             time = System.currentTimeMillis();
@@ -144,6 +144,8 @@ public class MessageQueue implements Drawable {
     public void draw(Graphics g) {
         this.width = canvas.getWidth();
         this.height = canvas.getHeight();
+        g.setColor(new Color(255, 255, 255));
+        g.fillRect(0, 0, width, height);
         // TODO
         g.setColor(new Color(0, 0, 0));
         g.drawRect(0, 0, width - 1, height - 1);

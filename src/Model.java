@@ -8,28 +8,28 @@ public class Model {
 
     String path = "./algorithms/randsend.cpp.bin";
     Graph graph;
-    boolean running;
+    int running;
 
     Model() {
-        running = false;
+        running = CONST.stoped;
     }
 
     void load() {
-        if (running) stop();
+        if (running != CONST.stoped) stop();
         MessageQueue.getInstance().model = this;
 
         for (Vertex v : graph.vertices) {
             v.program = new Program(v, this);
             v.program.load(path);
         }
-        running = true;
+        running = CONST.running;
         MessageQueue.getInstance().start();
     }
 
     void stop() {
-        if (!running) return;
+        if (running == CONST.stoped) return;
         MessageQueue.getInstance().model = null;
-        running = false;
+        running = CONST.stoped;
         for (Vertex v : graph.vertices) {
             v.program.kill();
         }

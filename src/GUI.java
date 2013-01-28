@@ -21,6 +21,7 @@ public class GUI {
     // uz pristupujeme cez graf
     static Graph graph;
     static Model model;
+    static Controls controls;
     static MessageQueue letterQueue;
 
     static void addElement(Container to, Component what, int x, int y, int w,
@@ -29,14 +30,6 @@ public class GUI {
         what.setSize(w, h);
         to.add(what);
     }
-    
-    static final int windowWidth = 1000;
-    static final int windowHeight = 700;
-    static final int graphWidth = 700;
-    static final int menuHeight = 25;
-    static final int queueHeight = 75;
-    static final int graphHeight = 500;
-    static final int controlsHeight = 100;
 
     static class Window implements Runnable {
         @Override
@@ -74,11 +67,12 @@ public class GUI {
                 }
             }
 
-            addElement(frame, menu, 0, 0, windowWidth, menuHeight);
-            addElement(frame, graph.canvas, 0, queueHeight+menuHeight, graphWidth, graphHeight);
-            addElement(frame, MessageQueue.getInstance().canvas, 0, menuHeight, windowWidth, queueHeight);
+            addElement(frame, menu, 0, 0, CONST.windowWidth, CONST.menuHeight);
+            addElement(frame, graph.canvas, 0, CONST.queueHeight+CONST.menuHeight, CONST.graphWidth, CONST.graphHeight);
+            addElement(frame, MessageQueue.getInstance().canvas, 0, CONST.menuHeight, CONST.windowWidth, CONST.queueHeight);
+            addElement(frame, controls.canvas, 0, CONST.queueHeight+CONST.menuHeight+CONST.graphHeight, CONST.controlsWidth, CONST.controlsHeight);
             
-            frame.setSize(windowWidth, windowHeight);
+            frame.setSize(CONST.windowWidth, CONST.windowHeight);
             frame.setResizable(false);
             frame.setVisible(true);
         }
@@ -92,6 +86,7 @@ public class GUI {
         // TODO spravit krajsie
         graph = new Graph();
         model = new Model();
+        controls = new Controls();
         letterQueue = MessageQueue.getInstance();
         graph.messages = MessageQueue.getInstance();
         final Window window = new Window();
