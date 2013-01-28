@@ -44,7 +44,7 @@ public class Graph implements Drawable {
     @Override
     public void draw(Graphics g) {
     	g.setColor(new Color(255, 255, 255));
-        g.fillRect(0, 0, GUI.graphWidth, GUI.graphHeight);
+        g.fillRect(0, 0, CONST.graphWidth, CONST.graphHeight);
         this.width = canvas.getWidth();
         this.height = canvas.getHeight();
         g.setColor(new Color(0, 0, 0));
@@ -356,9 +356,9 @@ public class Graph implements Drawable {
                 "New graph", JOptionPane.OK_CANCEL_OPTION);
         // { "Empty", "Clique", "Circle", "Grid", "Wheel", "Random" };
         if (ok == JOptionPane.OK_OPTION) {
-            int d = GUI.graphWidth / 3, n = newGraphDialog.getTF1();
-            int middlex = GUI.graphWidth / 2;
-            int middley = GUI.graphHeight / 2;
+            int d = CONST.graphWidth / 3, n = newGraphDialog.getTF1();
+            int middlex = CONST.graphWidth / 2;
+            int middley = CONST.graphHeight / 2;
             GUI.graph.vertices.clear();
             GUI.graph.edges.clear();
             switch (newGraphDialog.getType()) {

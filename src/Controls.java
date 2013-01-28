@@ -16,6 +16,8 @@ public class Controls implements Drawable {
 	JButton playButton;
 	JButton stopButton;
 	JButton pauseButton;
+	JButton forwardButton;
+	JButton backwardButton;
 	
 	public Controls() {
 		setCanvas(new Canvas(this));
@@ -37,6 +39,12 @@ public class Controls implements Drawable {
 			buttonIcon = ImageIO.read(new File("images/stopButton.jpg"));
 			stopButton = new JButton(new ImageIcon(buttonIcon));
 			withoutBorder(stopButton);
+			buttonIcon = ImageIO.read(new File("images/forwardButton.jpg"));
+			forwardButton = new JButton(new ImageIcon(buttonIcon));
+			withoutBorder(forwardButton);
+			buttonIcon = ImageIO.read(new File("images/backwardButton.jpg"));
+			backwardButton = new JButton(new ImageIcon(buttonIcon));
+			withoutBorder(backwardButton);
 			playButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -61,6 +69,20 @@ public class Controls implements Drawable {
 	                canvas.repaint();
 				}
 			});
+			forwardButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					MessageQueue.getInstance().sendInterval -= (MessageQueue
+	                        .getInstance().sendInterval > 200) ? 100 : 10;
+				}
+			});
+			backwardButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					MessageQueue.getInstance().sendInterval += (MessageQueue
+	                        .getInstance().sendInterval > 200) ? 100 : 10;
+				}
+			});
 		}
 		catch (Exception e) {System.out.println(e.toString());}
 	}
@@ -72,13 +94,18 @@ public class Controls implements Drawable {
 	
 	public void draw(Graphics g) {
 		canvas.removeAll();
-		if(!GUI.model.running) {
-			canvas.add(playButton);
-			canvas.add(stopButton);
+		canvas.add(playButton);
+		canvas.add(pauseButton);
+		canvas.add(backwardButton);
+		canvas.add(stopButton);
+		canvas.add(forwardButton);
+		if(GUI.model.running != CONST.running) {
+			pauseButton.setVisible(false);
+			playButton.setVisible(true);
 		}
 		else {
-			canvas.add(pauseButton);
-			canvas.add(stopButton);
+			pauseButton.setVisible(true);
+			playButton.setVisible(false);
 		}
 	}
 	
