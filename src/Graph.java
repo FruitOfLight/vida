@@ -43,6 +43,8 @@ public class Graph implements Drawable {
 
     @Override
     public void draw(Graphics g) {
+    	g.setColor(new Color(255, 255, 255));
+        g.fillRect(0, 0, GUI.graphWidth, GUI.graphHeight);
         this.width = canvas.getWidth();
         this.height = canvas.getHeight();
         g.setColor(new Color(0, 0, 0));
