@@ -6,9 +6,9 @@ import javax.swing.JFileChooser;
 
 public class Menu {
 
-    static final String[] menuItems = { "App", "Graph", "Model" };
+    static final String[] menuItems = { "App", "Graph", /*"Model"*/ };
     static final String[][] allMenuItems = {
-        {"Configure","Quit"}, { "New", "Open", "Save" }, { "Run", "Stop" }, };
+        {"Configure","Quit"}, { "New", "Open", "Save" }, /*{ "Run", "Stop" },*/ };
 
     static void performAction(int r, int c) {
         switch (r) {
@@ -61,7 +61,7 @@ public class Menu {
                 System.out.println("Invalid entry!");
             }
             break;
-        case 2:
+        /*case 2:
             switch (c) {
             case 0:
                 GUI.model.graph = GUI.graph;
@@ -74,7 +74,7 @@ public class Menu {
             default:
                 System.out.println("Invalid entry!");
             }
-            break;
+            break;*/
         default:
             System.out.println("Invalid entry!");
         }

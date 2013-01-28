@@ -84,9 +84,11 @@ public class Graph implements Drawable {
         @Override
         public void mouseClicked(MouseEvent mouse) {
             if (!deleting && !moving) {
+            	if(GUI.model.running != CONST.stoped) return ;
                 addVertex(mouse);
             }
             if (deleting) {
+            	if(GUI.model.running != CONST.stoped) return ;
                 Vertex vertex = findVertex(mouse.getX(), mouse.getY());
                 if (vertex != null) {
                     deleteVertex(vertex);
@@ -105,7 +107,7 @@ public class Graph implements Drawable {
 
         @Override
         public void mouseReleased(MouseEvent mouse) {
-            addEdge(begin, findVertex(mouse.getX(), mouse.getY()));
+        	if(GUI.model.running == CONST.stoped) addEdge(begin, findVertex(mouse.getX(), mouse.getY()));
             canvas.repaint();
             begin = null;
             xlast = -1;
@@ -118,6 +120,7 @@ public class Graph implements Drawable {
                 return;
             }
             if (!moving) {
+            	if(GUI.model.running != CONST.stoped) return ;
                 repaintBetween(begin.getX(), begin.getY(), xlast, ylast);
                 xlast = mouse.getX();
                 ylast = mouse.getY();
@@ -181,8 +184,6 @@ public class Graph implements Drawable {
     }
 
     public void addVertex(MouseEvent mouse) {
-        // TODO ak je zapnute prehravanie, zrusit
-        // TODO este musi vybehnut policko, kde zada ID a tak
         int x = mouse.getX(), y = mouse.getY();
         for (Vertex vertex : vertices) {
             if (vertex.isNearPoint(x, y, 0)) {
@@ -234,7 +235,6 @@ public class Graph implements Drawable {
     }
 
     public void deleteVertex(Vertex vertex) {
-        // TODO skontrolovat ci to mazem spravne a vsade kde sa vrchol nachadza
         ArrayList<Edge> delete = new ArrayList<Edge>();
         for (Edge edge : edges) {
             if (edge.from.equals(vertex)) {
@@ -253,7 +253,6 @@ public class Graph implements Drawable {
     }
 
     public void addEdge(Vertex from, Vertex to) {
-        // TODO ak je zapnute prehravanie, zrusit
         if (from == null || to == null || from.equals(to)) {
             return;
         }
