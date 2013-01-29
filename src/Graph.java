@@ -104,7 +104,6 @@ public class Graph implements Drawable {
 
         @Override
         public void mousePressed(MouseEvent mouse) {
-            if (GUI.model.running != RunState.stopped) return;
             begin = findVertex(mouse.getX(), mouse.getY());
             xlast = mouse.getX();
             ylast = mouse.getY();
