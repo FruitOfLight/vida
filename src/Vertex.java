@@ -1,5 +1,4 @@
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
@@ -34,8 +33,7 @@ public class Vertex implements Drawable {
 
     void send(Message message) {
         message.setEdge(edges.get(message.fromPort));
-        message.toPort = message.edge.to.edges
-                .indexOf(message.edge.oppositeEdge);
+        message.toPort = message.edge.to.edges.indexOf(message.edge.oppositeEdge);
         MessageQueue.getInstance().pushMessage(message);
     }
 
@@ -45,22 +43,17 @@ public class Vertex implements Drawable {
 
     @Override
     public void draw(Graphics g) {
-        g.setColor(new Color(0, 0, 0));
-        g.fillOval(x - radius, y - radius, 2 * radius, 2 * radius);
         g.setColor(new Color(0, 255, 0));
-        g.fillOval(x - radius + 1, y - radius + 1, 2 * radius - 2,
-                2 * radius - 2);
-        g.setFont(new Font(Font.MONOSPACED, Font.ITALIC, 14));
+        g.fillOval(x - radius, y - radius, 2 * radius, 2 * radius);
         g.setColor(new Color(0, 0, 0));
-        if (ID < 10) {
-            g.drawString(((Integer) ID).toString(), x - radius / 2 + 1, y
-                    + radius / 2);
-        } else if (ID < 100) {
-            g.drawString(((Integer) ID).toString(), x - radius / 2 - 3, y
-                    + radius / 2);
-        } else {
-            g.drawString("V", x - radius / 2 + 1, y + radius / 2);
-        }
+        g.drawOval(x - radius, y - radius, 2 * radius, 2 * radius);
+
+        String caption = Canvas.shorten(g, ((Integer) ID).toString(), 2 * radius, Preference.begin);
+        if (caption.endsWith(".."))
+            caption = "V";
+        g.drawString(caption, x - g.getFontMetrics().stringWidth(caption) / 2, y
+                + g.getFontMetrics().getAscent() / 2);
+
     }
 
     public boolean isOnPoint(int x1, int y1) {
@@ -73,10 +66,10 @@ public class Vertex implements Drawable {
     }
 
     public void repaint(Canvas canvas) {
-        canvas.repaint(x - 2 * radius, x + 2 * radius, 4 * radius, 4 * radius);
+        canvas.repaint(x - 2 * radius, y - 2 * radius, 4 * radius, 4 * radius);
     }
-    
-    public void removeEdge(Edge edge){
+
+    public void removeEdge(Edge edge) {
         edges.remove(edge);
     }
 

@@ -27,8 +27,9 @@ public class Model {
 
     void stop() {
         if (running == RunState.stopped) return;
-        MessageQueue.getInstance().model = null;
         running = RunState.stopped;
+        MessageQueue.getInstance().model = null;
+        
         for (Vertex v : graph.vertices) {
             v.program.kill();
         }

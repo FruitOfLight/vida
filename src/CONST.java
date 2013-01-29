@@ -31,3 +31,7 @@ public class CONST {
 enum RunState {
     stopped, paused, running
 }
+
+enum Preference {
+    begin, end, special
+}

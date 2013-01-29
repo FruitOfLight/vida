@@ -25,13 +25,13 @@ class Message {
         Canvas.realDrawRect(g, position + 1, 5, size - 2, size);
         if (size > 18) {
             g.drawString(
-                    shorten(g, ((Integer) edge.to.getID()).toString(), (int) size - 5,
+                    Canvas.shorten(g, ((Integer) edge.to.getID()).toString(), (int) size - 5,
                             Preference.begin), (int) (5 + position), 20);
             if (size > 30) {
-                g.drawString(shorten(g, content, (int) size - 5, Preference.begin),
+                g.drawString(Canvas.shorten(g, content, (int) size - 5, Preference.begin),
                         (int) (5 + position), 32);
                 if (size > 40)
-                    g.drawString(shorten(g, content, (int) size - 5, Preference.end),
+                    g.drawString(Canvas.shorten(g, content, (int) size - 5, Preference.end),
                             (int) (5 + position), 44);
             }
         }
@@ -79,7 +79,8 @@ class Message {
         } else {
             expectedSpeed = (1.0 - position) / expectedTime;
         }
-        if (expectedSpeed>1.0) expectedSpeed = 1.0;
+        if (expectedSpeed > 1.0)
+            expectedSpeed = 1.0;
 
         speed = expectedSpeed;
         // speed += (expectedSpeed-speed)*(0.01);
@@ -90,31 +91,4 @@ class Message {
             edge.to.receive(this);
         }
     }
-
-    enum Preference {
-        begin, end, special
-    }
-
-    public static String shorten(Graphics g, String text, int width, Preference preference) {
-        if (g.getFontMetrics().stringWidth(text) <= width)
-            return text;
-        if (preference == Preference.begin) {
-            if (g.getFontMetrics().stringWidth("..") > width)
-                return "";
-            int len = 0;
-            while (g.getFontMetrics().stringWidth(text.substring(0, len + 1) + "..") <= width)
-                len++;
-            return text.substring(0, len) + "..";
-        }
-        if (preference == Preference.end) {
-            if (g.getFontMetrics().stringWidth("..") > width)
-                return "";
-            int len = 0;
-            while (g.getFontMetrics().stringWidth(".." + text.substring(text.length() - len)) <= width)
-                len++;
-            return ".." + text.substring(text.length() - len);
-        }
-        return "";
-    }
-
 }

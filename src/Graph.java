@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -56,6 +57,7 @@ public class Graph implements Drawable {
             g.drawLine(begin.getX(), begin.getY(), xlast, ylast);
         }
         // vykresli vrcholy a hrany
+        g.setFont(new Font(Font.MONOSPACED, Font.ITALIC, 14));
         for (Edge edge : edges) {
             edge.draw(g);
         }

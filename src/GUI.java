@@ -22,7 +22,7 @@ public class GUI {
     static Graph graph;
     static Model model;
     static Controls controls;
-    static MessageQueue letterQueue;
+    static MessageQueue messageQueue;
 
     static void addElement(Container to, Component what, int x, int y, int w,
             int h) {
@@ -87,7 +87,7 @@ public class GUI {
         graph = new Graph();
         model = new Model();
         controls = new Controls();
-        letterQueue = MessageQueue.getInstance();
+        messageQueue = MessageQueue.getInstance();
         graph.messages = MessageQueue.getInstance();
         final Window window = new Window();
         SwingUtilities.invokeLater(window);
