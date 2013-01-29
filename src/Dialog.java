@@ -89,7 +89,7 @@ public class Dialog {
             for (int i = 0; i < 2; ++i) {
                 labels[i].setText(labelTexts[i][choose.getSelectedIndex()]);
                 inputFields[i].setVisible(labels[i].getText().length() != 0);
-                int value = inputFields[i].getInt(-1,0,101,true);
+                int value = inputFields[i].getInt(-1, 0, 101, true);
                 if (value < 1 || value > 100)
                     inputFields[i].setText("5");
             }
@@ -124,24 +124,29 @@ class InputField extends JTextField {
     public int getInt(int def, int min, int max) {
         return getInt(def, min, max, false);
     }
-    
+
     // pozor, def moze byt mimo rozsahu
     // iff (quiet == true) nevypisuje hlasky
     public int getInt(int def, int min, int max, boolean quiet) {
         try {
             Integer res = Integer.parseInt(getText());
             if (res > max) {
-                if (!quiet) Dialog.showError("Value is too large. Maximum value " + max + " was used instead\n");
+                if (!quiet)
+                    Dialog.showError("Value is too large. Maximum value " + max
+                            + " was used instead\n");
                 res = max;
             }
             if (res < min) {
-                if (!quiet) Dialog.showError("Value is too small. Minimum value " + min + " was used instead\n");
+                if (!quiet)
+                    Dialog.showError("Value is too small. Minimum value " + min
+                            + " was used instead\n");
                 res = min;
             }
             return res;
         } catch (NumberFormatException e) {
-            if (!quiet) Dialog.showError("Value is not valid integer. Default value " + def
-                    + " was used instead\n");
+            if (!quiet)
+                Dialog.showError("Value is not valid integer. Default value " + def
+                        + " was used instead\n");
             return def;
         }
     }
