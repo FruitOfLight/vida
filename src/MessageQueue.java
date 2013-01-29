@@ -13,17 +13,33 @@ import java.util.TimerTask;
  * neposielajú sa priamo správy, ale listy
  */
 public class MessageQueue implements Drawable {
+    private static MessageQueue instance = new MessageQueue();
+
     public static MessageQueue getInstance() {
         return instance;
     }
 
-    private static MessageQueue instance = new MessageQueue();
-
+    Canvas canvas;
+    int width, height;
     Model model;
     Timer timer;
 
+    private MessageQueue() {
+        canvas = new Canvas(this);
+        setSendSpeed(1.2);
+    }
+
+    public void setCanvas(Canvas canvas) {
+        this.canvas = canvas;
+    }
+
+    public void setPosition(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
     private long sendInterval;
-    long nextSend = 0;
+    private long nextSend = 0;
     private double sendSpeed;
 
     public void setSendSpeed(double value) {
@@ -35,6 +51,11 @@ public class MessageQueue implements Drawable {
     public double getSendSpeed() {
         return sendSpeed;
     }
+
+    ArrayList<Message> sleepList = new ArrayList<Message>();
+    ArrayList<Message> bornList = new ArrayList<Message>();
+    ArrayList<Message> mainList = new ArrayList<Message>();
+    ArrayList<Message> deadList = new ArrayList<Message>();
 
     static class QueueEvent extends TimerTask {
         public void run() {
@@ -59,11 +80,11 @@ public class MessageQueue implements Drawable {
             MessageQueue.getInstance().step(delay);
 
             // Spravy v grafe
-            for (Message message : getInstance().list)
-                message.step(delay);
+            for (Message message : getInstance().mainList)
+                message.edgeStep(delay);
             // toto by nemal byt foreach, lebo sa zoznam meni pocas behu
-            for (int i = 0; i < getInstance().deadlist.size(); ++i)
-                getInstance().deadlist.get(i).step(delay);
+            for (int i = 0; i < getInstance().deadList.size(); ++i)
+                getInstance().deadList.get(i).edgeStep(delay);
 
             getInstance().canvas.repaint();
             getInstance().model.graph.canvas.repaint();
@@ -71,45 +92,25 @@ public class MessageQueue implements Drawable {
         }
     }
 
-    private MessageQueue() {
-        canvas = new Canvas(this);
-        setSendSpeed(1.2);
-    }
-
-    ArrayList<Message> list = new ArrayList<Message>();
-    ArrayList<Message> deadlist = new ArrayList<Message>();
-    // premenne pre vykreslovanie
-    Canvas canvas;
-    int width, height;
-
-    public void setCanvas(Canvas canvas) {
-        this.canvas = canvas;
-    }
-
-    public void setPosition(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
-
     void pushMessage(Message message) {
-        list.add(message);
+        mainList.add(message);
         refreshRecieveness();
         canvas.repaint();
     }
 
     void deliverFirstMessage() {
-        if (list.size() <= 0)
+        if (mainList.size() <= 0)
             return;
-        Message message = list.get(0);
-        list.remove(0);
+        Message message = mainList.get(0);
+        mainList.remove(0);
         if (message.edge.to.program == null || message.edge.to.program.running == false) {
             System.err.println("Recipient doesn't exist\n  message was delayed\n");
             // TODO pozor, aby sa nemenilo poradie na hrane
-            list.add(message);
-            list.remove(0);
+            mainList.add(message);
+            mainList.remove(0);
             return;
         }
-        deadlist.add(message);
+        deadList.add(message);
         // message.edge.to.receive(message);
         nextSend = System.currentTimeMillis() + sendInterval;
         refreshRecieveness();
@@ -117,16 +118,17 @@ public class MessageQueue implements Drawable {
     }
 
     void refreshRecieveness() {
-        for (int i = 0; i < list.size(); i++)
-            list.get(i).setRecieveness(nextSend + i * sendInterval);
-        for (int i = 0; i < deadlist.size(); i++)
-            deadlist.get(i).setRecieveness(-1);
+        for (int i = 0; i < mainList.size(); i++)
+            mainList.get(i).setRecieveness(nextSend + i * sendInterval);
+        for (int i = 0; i < deadList.size(); i++)
+            deadList.get(i).setRecieveness(-1);
     }
 
     // zobudi frontu - pozor! pouziva sa aj pri zobudeni z pauzy, nie len pri
     // prvom starte
     void start() {
-        if (timer!=null) timer.cancel();
+        if (timer != null)
+            timer.cancel();
         timer = new Timer();
         StepEvent.time = System.currentTimeMillis();
         nextSend = System.currentTimeMillis() + sendInterval;
@@ -134,12 +136,11 @@ public class MessageQueue implements Drawable {
         MessageQueue.getInstance().timer.schedule(new MessageQueue.QueueEvent(), sendInterval);
         MessageQueue.getInstance().timer.schedule(new MessageQueue.StepEvent(), 0);
         canvas.repaint();
-        
     }
 
     void clear() {
-        list.clear();
-        deadlist.clear();
+        mainList.clear();
+        deadList.clear();
         canvas.repaint();
     }
 
@@ -148,7 +149,7 @@ public class MessageQueue implements Drawable {
 
     public void step(long time) {
         expectedSize = 50.0;
-        int messageCount = list.size() + deadlist.size() + 1;
+        int messageCount = mainList.size() + deadList.size() + 1;
         if (messageCount * expectedSize > width)
             expectedSize = width / messageCount;
         size += (expectedSize - size) * ((expectedSize < size) ? 0.001 : 0.0001) * time;
@@ -162,17 +163,17 @@ public class MessageQueue implements Drawable {
         g.setColor(new Color(0, 0, 0));
         g.drawRect(0, 0, width - 1, height - 1);
         try {
-            for (int i = 0; i < deadlist.size(); i++) {
-                deadlist.get(i).queueDraw(g, 5 + (size * i), size);
+            for (int i = 0; i < deadList.size(); i++) {
+                deadList.get(i).queueDraw(g, 5 + (size * i), size);
             }
-            int deadsize = deadlist.size();
-            for (int i = 0; i < list.size(); i++) {
-                list.get(i).queueDraw(g, 5 + (size * i+deadsize), size);
+            int deadsize = deadList.size();
+            for (int i = 0; i < mainList.size(); i++) {
+                mainList.get(i).queueDraw(g, 5 + (size * i + deadsize), size);
             }
         } catch (Exception e) {
             e.printStackTrace();
             draw(g);
         }
-        g.fillRect((int) (size * deadlist.size()), CONST.queueHeight - 10, 10, 5);
+        g.fillRect((int) (size * deadList.size()), CONST.queueHeight - 10, 10, 5);
     }
 }

@@ -40,8 +40,7 @@ public class Program extends Thread {
         super.run();
         System.out.println("bezim " + id);
         try {
-            BufferedReader out = new BufferedReader(new InputStreamReader(
-                    output));
+            BufferedReader out = new BufferedReader(new InputStreamReader(output));
             String line;
             running = true;
             while ((line = out.readLine()) != null) {
@@ -85,16 +84,16 @@ public class Program extends Thread {
             in.print(" " + p);
         }
         in.println();
-        
-        // id
-        //TODO skontrolovat anonymitu
-        in.println("* id : " + id);
 
+        // id
+        // TODO skontrolovat anonymitu
+        in.println("* id : " + id);
+        in.println("* start");
         in.flush();
     }
 
     public void send(int port, String content) {
-        //System.err.println("send " + id + " " + port + " " + content);
+        // System.err.println("send " + id + " " + port + " " + content);
 
         // svoj port zmenim na port vrchola
         // TODO spravit efektivnejsie nez cez indexOf
@@ -103,8 +102,8 @@ public class Program extends Thread {
     }
 
     public void receive(Message message) {
-        //System.err.println("receive " + id + " " + message.toPort + " "
-        //        + message.content);
+        // System.err.println("receive " + id + " " + message.toPort + " "
+        // + message.content);
 
         in.println("@ " + ports.get(message.toPort) + " : " + message.content);
         in.flush();

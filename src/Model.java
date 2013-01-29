@@ -1,4 +1,3 @@
-
 public class Model {
     /*
      * TODO parametre ako synchronny? anonymny? synchronne zobudenie.... maju
@@ -6,7 +5,7 @@ public class Model {
      * kazdy povie, ci je sef)?
      */
 
-    String path = "./algorithms/randsend.cpp.bin";
+    String path = "./algorithms/rands.cpp.bin";
     Graph graph;
     RunState running;
 
@@ -15,10 +14,11 @@ public class Model {
     }
 
     private void load() {
-        if (running != RunState.stopped) stop();
+        if (running != RunState.stopped)
+            stop();
         MessageQueue.getInstance().model = this;
         graph = GUI.graph;
-        
+
         for (Vertex v : graph.vertices) {
             v.program = new Program(v, this);
             v.program.load(path);
@@ -26,23 +26,25 @@ public class Model {
     }
 
     void stop() {
-        if (running == RunState.stopped) return;
+        if (running == RunState.stopped)
+            return;
         running = RunState.stopped;
         MessageQueue.getInstance().model = null;
-        
+
         for (Vertex v : graph.vertices) {
             v.program.kill();
         }
         MessageQueue.getInstance().clear();
     }
-    
-    void start(){
-        if (running == RunState.stopped) load();
+
+    void start() {
+        if (running == RunState.stopped)
+            load();
         running = RunState.running;
         MessageQueue.getInstance().start();
     }
-    
-    void pause(){
+
+    void pause() {
         running = RunState.paused;
     }
 }

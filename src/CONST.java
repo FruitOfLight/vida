@@ -35,3 +35,7 @@ enum RunState {
 enum Preference {
     begin, end, special
 }
+
+enum MessageState {
+    born, main, sleep, dead
+}

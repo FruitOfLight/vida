@@ -6,12 +6,19 @@ class Message {
     int toPort;
     Edge edge;
     String content;
+    MessageState state;
+    double ePosition, eSpeed;
+    double qX, qY, qSpeed;
+    double qSize;
+    long expectedRecieve;
 
     public Message(int port, String content) {
         this.fromPort = port;
         this.content = content;
-        dead = false;
-        position = speed = 0.0;
+        state = MessageState.born;
+        ePosition = eSpeed = 0.0;
+        qSpeed = 0.0;
+
     }
 
     public void setEdge(Edge edge) {
@@ -19,14 +26,14 @@ class Message {
     }
 
     public void queueDraw(Graphics g, double position, double size) {
+
         g.setColor(new Color(200, 255, 200));
         Canvas.realFillRect(g, position + 1, 5, size - 2, size);
         g.setColor(new Color(0, 0, 0));
         Canvas.realDrawRect(g, position + 1, 5, size - 2, size);
         if (size > 18) {
-            g.drawString(
-                    Canvas.shorten(g, ((Integer) edge.to.getID()).toString(), (int) size - 5,
-                            Preference.begin), (int) (5 + position), 20);
+            g.drawString(Canvas.shorten(g, ((Integer) edge.to.getID()).toString(), (int) size - 5,
+                    Preference.begin), (int) (5 + position), 20);
             if (size > 30) {
                 g.drawString(Canvas.shorten(g, content, (int) size - 5, Preference.begin),
                         (int) (5 + position), 32);
@@ -37,10 +44,12 @@ class Message {
         }
     }
 
-    public void messageDraw(Graphics g) {
+    public void edgeDraw(Graphics g) {
         g.setColor(new Color(255, 0, 0));
-        int x = (int) Math.round(edge.from.getX() * (1.0 - position) + edge.to.getX() * (position));
-        int y = (int) Math.round(edge.from.getY() * (1.0 - position) + edge.to.getY() * (position));
+        int x = (int) Math.round(edge.from.getX() * (1.0 - ePosition) + edge.to.getX()
+                * (ePosition));
+        int y = (int) Math.round(edge.from.getY() * (1.0 - ePosition) + edge.to.getY()
+                * (ePosition));
         int xPoints[] = new int[3], yPoints[] = new int[3];
         xPoints[0] = x;
         yPoints[0] = y;
@@ -57,38 +66,38 @@ class Message {
         // g.drawString(((Integer) edge.to.getID()).toString(), x, y);
     }
 
-    double position, speed;
-    long expectedRecieve;
-    boolean dead;
-
     public void setRecieveness(long time) {
         if (time < 0) {
             expectedRecieve = 0;
-            dead = true;
+            state = MessageState.dead;
             return;
         }
         expectedRecieve = time;
     }
 
-    public void step(long time) {
+    public void edgeStep(long time) {
         // System.err.println("time " + time + " expected " + expectedTime);
         double expectedTime = (expectedRecieve - System.currentTimeMillis()) * 0.001;
         double expectedSpeed;
         if (expectedTime < 1e-2) {
             expectedSpeed = 1;
         } else {
-            expectedSpeed = (1.0 - position) / expectedTime;
+            expectedSpeed = (1.0 - ePosition) / expectedTime;
         }
         if (expectedSpeed > 1.0)
             expectedSpeed = 1.0;
 
-        speed = expectedSpeed;
+        eSpeed = expectedSpeed;
         // speed += (expectedSpeed-speed)*(0.01);
-        position += speed * time * 0.001;
-        if (dead && position >= 1.0) {
-            MessageQueue.getInstance().deadlist.remove(this);
-            position = 1.0;
+        ePosition += eSpeed * time * 0.001;
+        if (state == MessageState.dead && ePosition >= 1.0) {
+            MessageQueue.getInstance().deadList.remove(this);
+            ePosition = 1.0;
             edge.to.receive(this);
         }
+    }
+
+    public void queueStep(long time) {
+
     }
 }

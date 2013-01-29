@@ -66,10 +66,10 @@ public class Graph implements Drawable {
         }
         // vykresli spravy
         try {
-            for (Message message : messages.deadlist)
-                message.messageDraw(g);
-            for (Message message : messages.list)
-                message.messageDraw(g);
+            for (Message message : messages.deadList)
+                message.edgeDraw(g);
+            for (Message message : messages.mainList)
+                message.edgeDraw(g);
         } catch (ConcurrentModificationException e) {
             e.printStackTrace();
             draw(g);
