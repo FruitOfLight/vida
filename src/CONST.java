@@ -12,6 +12,10 @@ public class CONST {
 
     // Graph
     public static final int vertexSize = 10;
+    
+    //Keys
+    public static final int shiftKey = 16;
+    public static final int controlKey = 17;
 
     // Queue
     public static final double speedFactor = 1.2;

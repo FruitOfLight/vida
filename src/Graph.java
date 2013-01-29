@@ -147,10 +147,10 @@ public class Graph implements Drawable {
 
         @Override
         public void keyPressed(KeyEvent key) {
-            if (key.getKeyCode() == 16 && !deleting) {
+            if (key.getKeyCode() == CONST.shiftKey && !deleting) {
                 moving = true;
             }
-            if (key.getKeyCode() == 17 && !moving) {
+            if (key.getKeyCode() == CONST.controlKey && !moving) {
                 deleting = true;
             }
         }
