@@ -72,12 +72,6 @@ public class Graph implements Drawable {
             e.printStackTrace();
             draw(g);
         }
-        /*
-         * for (int i = 0; i < messages.list.size(); i++) {
-         * messages.list.get(i).messageDraw( g,
-         * (i+1)*10-MessageQueue.MessageDrawEvent.counter); }
-         */
-
     }
 
     class GraphListener implements MouseListener, MouseMotionListener, KeyListener {
@@ -309,7 +303,8 @@ public class Graph implements Drawable {
             y1 = y2;
             y2 = p;
         }
-        canvas.repaint(x1 - CONST.vertexSize, y1 - CONST.vertexSize, x2 - x1 + CONST.vertexSize*2, y2 - y1 + CONST.vertexSize*2);
+        canvas.repaint(x1 - CONST.vertexSize, y1 - CONST.vertexSize,
+                x2 - x1 + CONST.vertexSize * 2, y2 - y1 + CONST.vertexSize * 2);
     }
 
     public void read(Scanner input) {
@@ -349,62 +344,23 @@ public class Graph implements Drawable {
                 JOptionPane.OK_CANCEL_OPTION);
         // { "Empty", "Clique", "Circle", "Grid", "Wheel", "Random" };
         if (ok == JOptionPane.OK_OPTION) {
-            int d = CONST.graphWidth / 3, n = newGraphDialog.getTF1();
-            int middlex = CONST.graphWidth / 2;
-            int middley = CONST.graphHeight / 2;
-            GUI.graph.vertices.clear();
-            GUI.graph.edges.clear();
+            emptyGraph();
             switch (newGraphDialog.getType()) {
             case 0:
                 break;
             case 1:
-                for (int i = 0; i < n; ++i)
-                    addVertex(middlex + (int) (d * Math.sin(i * 2 * Math.PI / n)), middley
-                            - (int) (d * Math.cos(i * 2 * Math.PI / n)), getNewVertexID());
-                if (newGraphDialog.getEdges())
-                    for (int i = 0; i < n; ++i)
-                        for (int j = i + 1; j < n; ++j)
-                            addEdge(vertices.get(i), vertices.get(j));
+                createClique(newGraphDialog.getInputValue(0), newGraphDialog.getEdges());
                 break;
             case 2:
-                for (int i = 0; i < n; ++i)
-                    addVertex(middlex + (int) (d * Math.sin(i * 2 * Math.PI / n)), middley
-                            - (int) (d * Math.cos(i * 2 * Math.PI / n)), getNewVertexID());
-                if (newGraphDialog.getEdges())
-                    for (int i = 0; i < n; ++i)
-                        addEdge(vertices.get(i), vertices.get((i + 1) % n));
+                createCycle(newGraphDialog.getInputValue(0), newGraphDialog.getEdges());
                 break;
             case 3:
-                int m = newGraphDialog.getTF2();
-                int dx = (CONST.graphWidth - 30) / (m - 1);
-                int dy = (CONST.graphHeight - 30) / (n - 1);
-                System.out.println(dx + " " + dy);
-                for (int i = 0; i < n; i++)
-                    for (int j = 0; j < m; j++) {
-                        addVertex(15 + j * dx, 15 + i * dy, getNewVertexID());
-                    }
-                if (!newGraphDialog.getEdges())
-                    break;
-                for (int i = 0; i < n; i++)
-                    for (int j = 0; j < m; j++) {
-                        if (j != m - 1)
-                            addEdge(vertices.get(i * m + j), vertices.get(i * m + j + 1));
-                        if (i != n - 1)
-                            addEdge(vertices.get(i * m + j), vertices.get(i * m + j + m));
-                    }
+                createGrid(newGraphDialog.getInputValue(0), newGraphDialog.getInputValue(1),
+                        newGraphDialog.getEdges());
                 break;
             case 4:
-                addVertex(middlex, middley, getNewVertexID());
-                for (int i = 0; i < n; ++i)
-                    addVertex(middlex + (int) (d * Math.sin(i * 2 * Math.PI / n)), middley
-                            - (int) (d * Math.cos(i * 2 * Math.PI / n)), getNewVertexID());
-                if (newGraphDialog.getEdges())
-                    for (int i = 0; i < n; ++i) {
-                        addEdge(vertices.get(i + 1), vertices.get((i + 1) % n + 1));
-                        addEdge(vertices.get(0), vertices.get(i + 1));
-                    }
+                createWheel(newGraphDialog.getInputValue(0), newGraphDialog.getEdges());
                 break;
-
             case 5:
                 break;
             }
@@ -413,4 +369,70 @@ public class Graph implements Drawable {
         canvas.repaint();
     }
 
+    private void emptyGraph() {
+        GUI.graph.vertices.clear();
+        GUI.graph.edges.clear();
+
+    }
+
+    private void createClique(int n, boolean edges) {
+        int d = CONST.graphWidth / 3;
+        int middlex = CONST.graphWidth / 2;
+        int middley = CONST.graphHeight / 2;
+
+        for (int i = 0; i < n; ++i)
+            addVertex(middlex + (int) (d * Math.sin(i * 2 * Math.PI / n)), middley
+                    - (int) (d * Math.cos(i * 2 * Math.PI / n)), getNewVertexID());
+        if (edges)
+            for (int i = 0; i < n; ++i)
+                for (int j = i + 1; j < n; ++j)
+                    addEdge(vertices.get(i), vertices.get(j));
+    }
+
+    private void createCycle(int n, boolean edges) {
+        int d = CONST.graphWidth / 3;
+        int middlex = CONST.graphWidth / 2;
+        int middley = CONST.graphHeight / 2;
+
+        for (int i = 0; i < n; ++i)
+            addVertex(middlex + (int) (d * Math.sin(i * 2 * Math.PI / n)), middley
+                    - (int) (d * Math.cos(i * 2 * Math.PI / n)), getNewVertexID());
+        if (edges)
+            for (int i = 0; i < n; ++i)
+                addEdge(vertices.get(i), vertices.get((i + 1) % n));
+    }
+
+    private void createWheel(int n, boolean edges) {
+        int d = CONST.graphWidth / 3;
+        int middlex = CONST.graphWidth / 2;
+        int middley = CONST.graphHeight / 2;
+
+        addVertex(middlex, middley, getNewVertexID());
+        for (int i = 0; i < n; ++i)
+            addVertex(middlex + (int) (d * Math.sin(i * 2 * Math.PI / n)), middley
+                    - (int) (d * Math.cos(i * 2 * Math.PI / n)), getNewVertexID());
+        if (edges)
+            for (int i = 0; i < n; ++i) {
+                addEdge(vertices.get(i + 1), vertices.get((i + 1) % n + 1));
+                addEdge(vertices.get(0), vertices.get(i + 1));
+            }
+    }
+
+    private void createGrid(int m, int n, boolean edges) {
+        int dy = (CONST.graphHeight - 30) / (m - 1);
+        int dx = (CONST.graphWidth - 30) / (n - 1);
+        System.out.println(dx + " " + dy);
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j < n; j++) {
+                addVertex(15 + j * dx, 15 + i * dy, getNewVertexID());
+            }
+        if (edges)
+            for (int i = 0; i < m; i++)
+                for (int j = 0; j < n; j++) {
+                    if (j != n - 1)
+                        addEdge(vertices.get(i * n + j), vertices.get(i * n + j + 1));
+                    if (i != m - 1)
+                        addEdge(vertices.get(i * n + j), vertices.get(i * n + j + n));
+                }
+    }
 }

@@ -15,7 +15,7 @@ public class Menu {
         case 0:
             switch (c) {
             case 0:
-                Dialog.vyhlasSpravu("Nothing to do");
+                Dialog.showMessage("Nothing to do");
                 break;
             case 1:
                 System.exit(0);
@@ -64,7 +64,7 @@ public class Menu {
         case 2:
             switch (c) {
             default:
-                Dialog.vyhlasChybu("Not implemented");
+                Dialog.showError("Not implemented");
             }
             break;
         default:
