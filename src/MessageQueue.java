@@ -40,37 +40,30 @@ public class MessageQueue implements Drawable {
     }
 
     private long sendInterval;
-    private long nextSend = 0;
     private double sendSpeed;
 
     public void setSendSpeed(double value) {
         sendSpeed = value;
         sendInterval = (int) (1000.0 / sendSpeed);
-        refreshRecieveness();
     }
 
     public double getSendSpeed() {
         return sendSpeed;
     }
 
+    public double getRealSendSpeed() {
+        return sendSpeed * zoom;
+    }
+
     private LinkedList<Message> bornList = new LinkedList<Message>();
     ArrayList<Message> mainList = new ArrayList<Message>();
     ArrayList<Message> deadList = new ArrayList<Message>();
-
-    static class QueueEvent extends TimerTask {
-        public void run() {
-            /*if (getInstance().model == null || getInstance().model.running != RunState.running)
-                return;
-            getInstance().deliverFirstMessage();
-            getInstance().timer.schedule(new QueueEvent(), getInstance().sendInterval);*/
-        }
-    }
 
     static class StepEvent extends TimerTask {
         static long time = 0;
 
         public void run() {
-            if (getInstance().model == null || getInstance().model.running != RunState.running)
+            if (getInstance().model == null || getInstance().model.running == RunState.stopped)
                 return;
             long prevTime = time;
             time = System.currentTimeMillis();
@@ -79,12 +72,14 @@ public class MessageQueue implements Drawable {
             // Spravy vo fronte
             MessageQueue.getInstance().step(delay);
 
-            // Spravy v grafe
-            for (Message message : getInstance().mainList)
-                message.edgeStep(delay);
-            // toto by nemal byt foreach, lebo sa zoznam meni pocas behu
-            for (int i = 0; i < getInstance().deadList.size(); ++i)
-                getInstance().deadList.get(i).edgeStep(delay);
+            if (getInstance().model.running == RunState.running) {
+                // Spravy v grafe
+                for (Message message : getInstance().mainList)
+                    message.edgeStep(delay);
+                // toto by nemal byt foreach, lebo sa zoznam meni pocas behu
+                for (int i = 0; i < getInstance().deadList.size(); ++i)
+                    getInstance().deadList.get(i).edgeStep(delay);
+            }
 
             getInstance().canvas.repaint();
             getInstance().model.graph.canvas.repaint();
@@ -104,32 +99,6 @@ public class MessageQueue implements Drawable {
         message.born(index);
     }
 
-    /*void deliverFirstMessage() {
-        if (mainList.size() <= 0)
-            return;
-        Message message = mainList.get(0);
-        mainList.remove(0);
-        if (message.edge.to.program == null || message.edge.to.program.running == false) {
-            System.err.println("Recipient doesn't exist\n  message was delayed\n");
-            // TODO pozor, aby sa nemenilo poradie na hrane
-            mainList.add(message);
-            mainList.remove(0);
-            return;
-        }
-        deadList.add(message);
-        // message.edge.to.receive(message);
-        nextSend = System.currentTimeMillis() + sendInterval;
-        refreshRecieveness();
-        canvas.repaint();
-    }*/
-
-    void refreshRecieveness() {
-        /*  for (int i = 0; i < mainList.size(); i++)
-              mainList.get(i).setRecieveness(nextSend + i * sendInterval);
-          for (int i = 0; i < deadList.size(); i++)
-              deadList.get(i).setRecieveness(-1);*/
-    }
-
     // zobudi frontu - pozor! pouziva sa aj pri zobudeni z pauzy, nie len pri
     // prvom starte
     void start() {
@@ -137,9 +106,6 @@ public class MessageQueue implements Drawable {
             timer.cancel();
         timer = new Timer();
         StepEvent.time = System.currentTimeMillis();
-        nextSend = System.currentTimeMillis() + sendInterval;
-        refreshRecieveness();
-        MessageQueue.getInstance().timer.schedule(new MessageQueue.QueueEvent(), sendInterval);
         MessageQueue.getInstance().timer.schedule(new MessageQueue.StepEvent(), 0);
         canvas.repaint();
     }
@@ -164,10 +130,11 @@ public class MessageQueue implements Drawable {
     public void step(long time) {
         bornMessages();
 
-        /* expectedSize = 50.0; int messageCount = mainList.size() +
-         * deadList.size() + 1; if (messageCount * expectedSize > width)
-         * expectedSize = width / messageCount; size += (expectedSize - size) *
-         * ((expectedSize < size) ? 0.001 : 0.0001) * time; */
+        double expectedSize = 50.0;
+        int messageCount = mainList.size() + deadList.size();
+        if (messageCount * expectedSize > width)
+            expectedSize = width / messageCount;
+        zoom += (expectedSize - zoom) * ((expectedSize < zoom) ? 0.0005 : 0.0001) * time;
 
         for (int i = 0; i < mainList.size(); ++i) {
             mainList.get(i).queueStep(time, i);

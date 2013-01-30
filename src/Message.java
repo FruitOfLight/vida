@@ -82,7 +82,7 @@ class Message {
         // System.err.println("time " + time + " expected " + expectedTime);
         //double expectedTime = (expectedRecieve - System.currentTimeMillis()) * 0.001;
         double expectedTime = (1.0 - qSize) / vspeed + qX
-                / (hspeed * MessageQueue.getInstance().getSendSpeed());
+                / (hspeed * MessageQueue.getInstance().getRealSendSpeed());
         if (state == MessageState.dead)
             expectedTime = 0;
 
@@ -107,8 +107,8 @@ class Message {
 
     double qX, qY, qSpeed;
     double qSize;
-    static final double vspeed = 0.8;
-    static final double hspeed = 0.6;
+    static final double vspeed = 1.0;
+    static final double hspeed = 0.012;
 
     public void born(int index) {
         state = MessageState.born;
@@ -129,15 +129,20 @@ class Message {
         }
         if (state == MessageState.main) {
             Message prev = (index > 0) ? MessageQueue.getInstance().mainList.get(index - 1) : null;
-            double shift = hspeed * time * 0.001 * MessageQueue.getInstance().getSendSpeed();
-            if (prev == null || prev.qX + prev.qSize < qX) {
-                qX -= shift;
-                qY = 0.0;
-            } else if (prev != null && prev.qX + prev.qSize > qX + shift) {
-                qX += shift;
-                qY = 0.2;
+            double shift = hspeed * time * 0.001 * MessageQueue.getInstance().getRealSendSpeed();
+            if (prev == null || prev.qX + qSize < qX) {
+                if (MessageQueue.getInstance().model.running == RunState.running) {
+                    qX -= shift;
+                    qY = 0.0;
+                }
             } else {
-                qY = 0.1;
+                if (prev.qX + qSize - qX < shift) {
+                    qX = prev.qX + qSize;
+                } else {
+                    qX += shift;
+                    qY = 0.1;
+                }
+
             }
 
             if (qX < 0.0) {
