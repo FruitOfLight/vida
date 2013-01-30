@@ -1,3 +1,6 @@
+import java.io.File;
+
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 public class ModelSettings {
@@ -74,5 +77,24 @@ public class ModelSettings {
 		else
 			synchroned = Synchroned.synchronedOff;
 		graphType = newProgramSettings.getType();
+	}
+
+	public void loadProgram() {
+		try {
+			JFileChooser programLoader = new JFileChooser("./");
+			String path = "";
+			int value = programLoader.showOpenDialog(null);
+			if (value == JFileChooser.APPROVE_OPTION) {
+				File file = programLoader.getSelectedFile();
+				path = file.getPath();
+				System.out.println(path);
+			}
+			Runtime.getRuntime().exec("bash algorithms/compile.sh " + path);
+			GUI.model.path = path + ".bin";
+			System.out.println(GUI.model.path);
+			GUI.controls.canvas.repaint();
+		} catch (Exception e) {
+			Dialog.showError("Something went horribly wrong");
+		}
 	}
 }

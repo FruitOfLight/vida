@@ -8,7 +8,7 @@ public class Menu {
 
 	static final String[] menuItems = { "App", "Graph", "Program" };
 	static final String[][] allMenuItems = { { "Configure", "Quit" },
-			{ "New", "Open", "Save" }, { "Open", "Configure" } };
+			{ "New", "Open", "Save" }, { "Open", "Settings" } };
 
 	static void performAction(int r, int c) {
 		switch (r) {
@@ -65,6 +65,9 @@ public class Menu {
 			if (GUI.model.running != RunState.stopped)
 				break;
 			switch (c) {
+			case 0:
+				ModelSettings.getInstance().loadProgram();
+				break;
 			case 1:
 				ModelSettings.getInstance().setSettings();
 				break;

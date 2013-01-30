@@ -84,10 +84,14 @@ public class Graph implements Drawable {
 			if (!deleting && !moving) {
 				if (GUI.model.running != RunState.stopped)
 					return;
+				if (ModelSettings.getInstance().getGraphType() != GraphType.none)
+					return;
 				addVertex(mouse);
 			}
 			if (deleting) {
 				if (GUI.model.running != RunState.stopped)
+					return;
+				if (ModelSettings.getInstance().getGraphType() != GraphType.none)
 					return;
 				Vertex vertex = findVertex(mouse.getX(), mouse.getY());
 				if (vertex != null) {
