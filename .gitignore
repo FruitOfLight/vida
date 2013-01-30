@@ -41,3 +41,9 @@ Thumbs.db
 # Temporary files #
 ###################
 *.swp
+
+# .in files #
+#############
+settings.in
+graph.in
+model.in
