@@ -45,5 +45,5 @@ Thumbs.db
 # .in files #
 #############
 settings.in
-graph.in
-model.in
+graf.in
+program.in
