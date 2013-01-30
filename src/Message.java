@@ -28,7 +28,7 @@ class Message {
         g.setColor(new Color(200, 255, 200));
         Canvas.realFillRect(g, rX, rY, rW, rH);
         if (qX < qSize) {
-            g.setColor(new Color(255, 150, 50));
+            g.setColor(new Color(255, 50, 40));
             Canvas.realFillRect(g, rX, rY, offset * zoom - rX, rH);
         }
         g.setColor(new Color(0, 0, 0));
@@ -107,7 +107,7 @@ class Message {
 
     double qX, qY, qSpeed;
     double qSize;
-    static final double vspeed = 1.0;
+    static final double vspeed = 0.02;
     static final double hspeed = 0.012;
 
     public void born(int index) {
@@ -121,7 +121,7 @@ class Message {
 
     public void queueStep(long time, int index) {
         if (state == MessageState.born) {
-            qSize += vspeed * time * 0.001;
+            qSize += vspeed * time * 0.001 * MessageQueue.getInstance().getRealSendSpeed();
             if (qSize > 1.0) {
                 qSize = 1.0;
                 state = MessageState.main;
@@ -142,9 +142,7 @@ class Message {
                     qX += shift;
                     qY = 0.1;
                 }
-
             }
-
             if (qX < 0.0) {
                 MessageQueue.getInstance().mainList.remove(index);
                 MessageQueue.getInstance().deadList.add(this);
