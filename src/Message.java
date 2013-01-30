@@ -8,17 +8,10 @@ class Message {
     String content;
     MessageState state;
     double ePosition, eSpeed;
-    long expectedRecieve;
 
     public Message(int port, String content) {
         this.fromPort = port;
         this.content = content;
-        state = MessageState.born;
-        ePosition = eSpeed = 0.0;
-        qSpeed = 0.0;
-        qY = 0.0;
-        qX = 10;
-        qSize = 0.0;
     }
 
     public void setEdge(Edge edge) {
@@ -26,13 +19,18 @@ class Message {
     }
 
     public void queueDraw(Graphics g, double offset, double zoom) {
-        double rX = qX * zoom;
-        double rY = CONST.queueHeight - (qY - (state == MessageState.sleep ? 0.0 : qSize)) * zoom;
-        double rW = qSize * zoom;
-        double rH = qSize * zoom;
+        double rX = (offset + qX - qSize) * zoom;
+        double rY = CONST.queueHeight - (qY + (state == MessageState.sleep ? 0.0 : qSize)) * zoom;
+        double rW = qSize * zoom - 2;
+        double rH = qSize * zoom - 2;
+        //System.err.println(" " + rX + " " + rY + " " + rW + " " + rH);
 
         g.setColor(new Color(200, 255, 200));
         Canvas.realFillRect(g, rX, rY, rW, rH);
+        if (qX < qSize) {
+            g.setColor(new Color(255, 150, 50));
+            Canvas.realFillRect(g, rX, rY, offset * zoom - rX, rH);
+        }
         g.setColor(new Color(0, 0, 0));
         Canvas.realDrawRect(g, rX, rY, rW, rH);
         if (rH > 18) {
@@ -42,7 +40,7 @@ class Message {
                 g.drawString(Canvas.shorten(g, content, (int) rW - 2, Preference.begin),
                         (int) (rX) + 1, (int) rY + 32);
                 if (rH > 44)
-                    g.drawString(Canvas.shorten(g, content, (int) rW - 2, Preference.begin),
+                    g.drawString(Canvas.shorten(g, content, (int) rW - 2, Preference.end),
                             (int) (rX) + 1, (int) rY + 44);
             }
         }
@@ -70,18 +68,24 @@ class Message {
         // g.drawString(((Integer) edge.to.getID()).toString(), x, y);
     }
 
-    public void setRecieveness(long time) {
+    /*public void setRecieveness(long time) {
         if (time < 0) {
             expectedRecieve = 0;
             state = MessageState.dead;
             return;
         }
         expectedRecieve = time;
-    }
+    }*/
+    long expectedRecieve;
 
     public void edgeStep(long time) {
         // System.err.println("time " + time + " expected " + expectedTime);
-        double expectedTime = (expectedRecieve - System.currentTimeMillis()) * 0.001;
+        //double expectedTime = (expectedRecieve - System.currentTimeMillis()) * 0.001;
+        double expectedTime = (1.0 - qSize) / vspeed + qX
+                / (hspeed * MessageQueue.getInstance().getSendSpeed());
+        if (state == MessageState.dead)
+            expectedTime = 0;
+
         double expectedSpeed;
         if (expectedTime < 1e-2) {
             expectedSpeed = 1;
@@ -103,26 +107,50 @@ class Message {
 
     double qX, qY, qSpeed;
     double qSize;
-    static final double vspeed = 0.5;
-    static final double hspeed = 0.01;
+    static final double vspeed = 0.8;
+    static final double hspeed = 0.6;
 
-    public void queueStep(long time, int prevInd, int ind) {
+    public void born(int index) {
+        state = MessageState.born;
+        ePosition = eSpeed = 0.0;
+        qSpeed = 0.0;
+        qY = 0.0;
+        qX = index + 2;
+        qSize = 0.0;
+    }
+
+    public void queueStep(long time, int index) {
         if (state == MessageState.born) {
             qSize += vspeed * time * 0.001;
             if (qSize > 1.0) {
                 qSize = 1.0;
                 state = MessageState.main;
             }
-        } else if (state == MessageState.main) {
-            qX -= hspeed * time * 0.001;
+        }
+        if (state == MessageState.main) {
+            Message prev = (index > 0) ? MessageQueue.getInstance().mainList.get(index - 1) : null;
+            double shift = hspeed * time * 0.001 * MessageQueue.getInstance().getSendSpeed();
+            if (prev == null || prev.qX + prev.qSize < qX) {
+                qX -= shift;
+                qY = 0.0;
+            } else if (prev != null && prev.qX + prev.qSize > qX + shift) {
+                qX += shift;
+                qY = 0.2;
+            } else {
+                qY = 0.1;
+            }
+
             if (qX < 0.0) {
+                MessageQueue.getInstance().mainList.remove(index);
+                MessageQueue.getInstance().deadList.add(this);
                 state = MessageState.dead;
             }
-        } else if (state == MessageState.sleep) {
-
-        } else if (state == MessageState.dead) {
+        }
+        if (state == MessageState.sleep) {
 
         }
+        if (state == MessageState.dead) {
 
+        }
     }
 }

@@ -59,10 +59,10 @@ public class MessageQueue implements Drawable {
 
     static class QueueEvent extends TimerTask {
         public void run() {
-            if (getInstance().model == null || getInstance().model.running != RunState.running)
+            /*if (getInstance().model == null || getInstance().model.running != RunState.running)
                 return;
             getInstance().deliverFirstMessage();
-            getInstance().timer.schedule(new QueueEvent(), getInstance().sendInterval);
+            getInstance().timer.schedule(new QueueEvent(), getInstance().sendInterval);*/
         }
     }
 
@@ -97,10 +97,14 @@ public class MessageQueue implements Drawable {
     }
 
     void queueMessage(Message message) {
-        mainList.add(message);
+        int index = 0;
+        if (mainList.size() > 0)
+            index = GUI.random.nextInt(mainList.size()) + 1;
+        mainList.add(index, message);
+        message.born(index);
     }
 
-    void deliverFirstMessage() {
+    /*void deliverFirstMessage() {
         if (mainList.size() <= 0)
             return;
         Message message = mainList.get(0);
@@ -117,13 +121,13 @@ public class MessageQueue implements Drawable {
         nextSend = System.currentTimeMillis() + sendInterval;
         refreshRecieveness();
         canvas.repaint();
-    }
+    }*/
 
     void refreshRecieveness() {
-        for (int i = 0; i < mainList.size(); i++)
-            mainList.get(i).setRecieveness(nextSend + i * sendInterval);
-        for (int i = 0; i < deadList.size(); i++)
-            deadList.get(i).setRecieveness(-1);
+        /*  for (int i = 0; i < mainList.size(); i++)
+              mainList.get(i).setRecieveness(nextSend + i * sendInterval);
+          for (int i = 0; i < deadList.size(); i++)
+              deadList.get(i).setRecieveness(-1);*/
     }
 
     // zobudi frontu - pozor! pouziva sa aj pri zobudeni z pauzy, nie len pri
@@ -166,7 +170,7 @@ public class MessageQueue implements Drawable {
          * ((expectedSize < size) ? 0.001 : 0.0001) * time; */
 
         for (int i = 0; i < mainList.size(); ++i) {
-            mainList.get(i).queueStep(time, i - 1, i);
+            mainList.get(i).queueStep(time, i);
         }
 
     }
