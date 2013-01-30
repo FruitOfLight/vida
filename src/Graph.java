@@ -154,10 +154,10 @@ public class Graph implements Drawable {
 
 		@Override
 		public void keyReleased(KeyEvent key) {
-			if (key.getKeyCode() == 16) {
+			if (key.getKeyCode() == CONST.shiftKey) {
 				moving = false;
 			}
-			if (key.getKeyCode() == 17) {
+			if (key.getKeyCode() == CONST.controlKey) {
 				deleting = false;
 			}
 		}
@@ -357,36 +357,38 @@ public class Graph implements Drawable {
 	}
 
 	public void createNew() {
-		Dialog.DialogNewGraph newGraphDialog = new Dialog.DialogNewGraph();
+		Dialog.DialogNewGraph newGraphDialog = new Dialog.DialogNewGraph(
+				ModelSettings.getInstance().getGraphType());
 		int ok = JOptionPane.showConfirmDialog(null, newGraphDialog.getPanel(),
 				"New graph", JOptionPane.OK_CANCEL_OPTION);
+		if (ok == JOptionPane.OK_OPTION)
+			createNew(newGraphDialog);
 		// { "Empty", "Clique", "Circle", "Grid", "Wheel", "Random" };
-		if (ok == JOptionPane.OK_OPTION) {
-			emptyGraph();
-			switch (newGraphDialog.getType()) {
-			case 0:
-				break;
-			case 1:
-				createClique(newGraphDialog.getInputValue(0),
-						newGraphDialog.getEdges());
-				break;
-			case 2:
-				createCycle(newGraphDialog.getInputValue(0),
-						newGraphDialog.getEdges());
-				break;
-			case 3:
-				createGrid(newGraphDialog.getInputValue(0),
-						newGraphDialog.getInputValue(1),
-						newGraphDialog.getEdges());
-				break;
-			case 4:
-				createWheel(newGraphDialog.getInputValue(0),
-						newGraphDialog.getEdges());
-				break;
-			case 5:
-				break;
-			}
+	}
 
+	public void createNew(Dialog.DialogNewGraph newGraphDialog) {
+		emptyGraph();
+		switch (newGraphDialog.getType()) {
+		case 0:
+			break;
+		case 1:
+			createClique(newGraphDialog.getInputValue(0),
+					newGraphDialog.getEdges());
+			break;
+		case 2:
+			createCycle(newGraphDialog.getInputValue(0),
+					newGraphDialog.getEdges());
+			break;
+		case 3:
+			createGrid(newGraphDialog.getInputValue(0),
+					newGraphDialog.getInputValue(1), newGraphDialog.getEdges());
+			break;
+		case 4:
+			createWheel(newGraphDialog.getInputValue(0),
+					newGraphDialog.getEdges());
+			break;
+		case 5:
+			break;
 		}
 		canvas.repaint();
 	}

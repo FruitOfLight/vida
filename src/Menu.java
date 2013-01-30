@@ -62,6 +62,8 @@ public class Menu {
 			}
 			break;
 		case 2:
+			if (GUI.model.running != RunState.stopped)
+				break;
 			switch (c) {
 			case 1:
 				ModelSettings.getInstance().setSettings();

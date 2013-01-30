@@ -5,6 +5,8 @@ public class ModelSettings {
 	private static ModelSettings instance = new ModelSettings();
 	private Anonym anonym;
 	private Synchroned synchroned;
+	private GraphType graphType;
+	private boolean[] locked;
 
 	public static ModelSettings getInstance() {
 		return instance;
@@ -13,6 +15,9 @@ public class ModelSettings {
 	private ModelSettings() {
 		this.anonym = Anonym.anonymOff;
 		this.synchroned = Synchroned.synchronedOff;
+		this.graphType = GraphType.none;
+		locked = new boolean[3];
+		locked[0] = locked[1] = locked[2] = false;
 	}
 
 	public void setAnonym(Anonym anonym) {
@@ -29,6 +34,22 @@ public class ModelSettings {
 
 	public Synchroned getSynchroned() {
 		return synchroned;
+	}
+
+	public void setGraphType(GraphType graphType) {
+		this.graphType = graphType;
+	}
+
+	public GraphType getGraphType() {
+		return graphType;
+	}
+
+	public void setLocked(int i, boolean t) {
+		locked[i] = t;
+	}
+
+	public boolean getLocked(int i) {
+		return locked[i];
 	}
 
 	public void setSettings() {
@@ -48,6 +69,10 @@ public class ModelSettings {
 			UnanonymModifier visitor = new UnanonymModifier();
 			GUI.graph.accept(visitor);
 		}
+		if (newProgramSettings.getSynchroned())
+			synchroned = Synchroned.synchronedOn;
+		else
+			synchroned = Synchroned.synchronedOff;
+		graphType = newProgramSettings.getType();
 	}
-
 }

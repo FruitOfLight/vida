@@ -46,21 +46,24 @@ public class Dialog {
 
 	static class DialogNewGraph implements ActionListener {
 		private JPanel panel = new JPanel();
-		String[] graphTypes = { "Empty", "Clique", "Circle", "Grid", "Wheel",
+		String[] graphTypes = { "Empty", "Clique", "Cycle", "Grid", "Wheel",
 				"Random" };
 		String[][] labelTexts = {
 				{ "", "Vertices", "Vertices", "Rows", "Sides", "Vertices" },
 				{ "", "", "", "Columns", "", "Edges" } };
 
-		private JComboBox choose = new JComboBox(graphTypes);
+		private JComboBox<String> choose = new JComboBox<String>(graphTypes);
 		private JCheckBox edges = new JCheckBox();
 		private InputField[] inputFields = new InputField[2];
 		private JLabel[] labels = new JLabel[2];
 
-		public DialogNewGraph() {
+		public DialogNewGraph(GraphType graphType) {
 			panel.setLayout(new GridLayout(4, 2, 5, 5));
 			panel.add(new JLabel("Type "));
+			setIndex(graphType);
 			choose.addActionListener(this);
+			if (graphType != GraphType.none)
+				choose.setEnabled(false);
 			panel.add(choose);
 			for (int i = 0; i < 2; ++i) {
 				labels[i] = new JLabel();
@@ -72,6 +75,15 @@ public class Dialog {
 			panel.add(edges);
 			edges.setSelected(true);
 			actionPerformed(null);
+		}
+
+		private void setIndex(GraphType graphType) {
+			if (graphType == GraphType.none)
+				choose.setSelectedIndex(0);
+			if (graphType == GraphType.clique)
+				choose.setSelectedIndex(1);
+			if (graphType == GraphType.cycle)
+				choose.setSelectedIndex(2);
 		}
 
 		public int getInputValue(int id) {
@@ -102,20 +114,71 @@ public class Dialog {
 		}
 	}
 
-	static class DialogProgramSettings {
+	static class DialogProgramSettings implements ActionListener {
 		private JPanel panel = new JPanel();
 
+		String[] graphTypes = { "Empty", "Clique", "Cycle" };
+
+		private JComboBox<String> chooseGraphType = new JComboBox<String>(
+				graphTypes);
 		private JCheckBox anonym = new JCheckBox();
+		private JCheckBox synchroned = new JCheckBox();
 
 		public DialogProgramSettings() {
-			panel.setLayout(new GridLayout(1, 2, 5, 5));
+			panel.setLayout(new GridLayout(3, 2, 5, 5));
 			panel.add(new JLabel("Anonym "));
 			panel.add(anonym);
 			anonym.setSelected(ModelSettings.getInstance().getAnonym() == Anonym.anonymOn);
+			panel.add(new JLabel("Synchroned "));
+			panel.add(synchroned);
+			panel.add(new JLabel("Graph type "));
+			setIndex(ModelSettings.getInstance().getGraphType());
+			chooseGraphType.addActionListener(this);
+			panel.add(chooseGraphType);
+			synchroned
+					.setSelected(ModelSettings.getInstance().getSynchroned() == Synchroned.synchronedOn);
+			anonym.setEnabled(!ModelSettings.getInstance().getLocked(0));
+			synchroned.setEnabled(!ModelSettings.getInstance().getLocked(1));
+			chooseGraphType.setEnabled(!ModelSettings.getInstance()
+					.getLocked(2));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			Dialog.DialogNewGraph newGraphDialog = new Dialog.DialogNewGraph(
+					getGraphType(chooseGraphType.getSelectedIndex()));
+			JOptionPane.showMessageDialog(null, newGraphDialog.getPanel(),
+					"New graph", JOptionPane.OK_CANCEL_OPTION);
+			GUI.graph.createNew(newGraphDialog);
+		}
+
+		private void setIndex(GraphType graphType) {
+			if (graphType == GraphType.none)
+				chooseGraphType.setSelectedIndex(0);
+			if (graphType == GraphType.clique)
+				chooseGraphType.setSelectedIndex(1);
+			if (graphType == GraphType.cycle)
+				chooseGraphType.setSelectedIndex(2);
+		}
+
+		public GraphType getGraphType(int i) {
+			if (i == 1)
+				return GraphType.clique;
+			if (i == 2)
+				return GraphType.cycle;
+			return GraphType.none;
+		}
+
+		public GraphType getType() {
+			return getGraphType(chooseGraphType.getSelectedIndex());
 		}
 
 		public boolean getAnonym() {
 			return anonym.isSelected();
+		}
+
+		public boolean getSynchroned() {
+			return synchroned.isSelected();
 		}
 
 		public JComponent getPanel() {

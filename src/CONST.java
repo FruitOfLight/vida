@@ -19,6 +19,7 @@ public class CONST {
 
 	// Queue
 	public static final double speedFactor = 1.2;
+
 	// o kolko sa zrychli beh, pri stlaceni forward
 
 	// Model
@@ -46,4 +47,8 @@ enum Anonym {
 
 enum Synchroned {
 	synchronedOn, synchronedOff
+}
+
+enum GraphType {
+	none, cycle, clique
 }
