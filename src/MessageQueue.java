@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -52,8 +53,7 @@ public class MessageQueue implements Drawable {
         return sendSpeed;
     }
 
-    ArrayList<Message> sleepList = new ArrayList<Message>();
-    ArrayList<Message> bornList = new ArrayList<Message>();
+    private LinkedList<Message> bornList = new LinkedList<Message>();
     ArrayList<Message> mainList = new ArrayList<Message>();
     ArrayList<Message> deadList = new ArrayList<Message>();
 
@@ -92,10 +92,12 @@ public class MessageQueue implements Drawable {
         }
     }
 
-    void pushMessage(Message message) {
+    synchronized void pushMessage(Message message) {
+        bornList.addLast(message);
+    }
+
+    void queueMessage(Message message) {
         mainList.add(message);
-        refreshRecieveness();
-        canvas.repaint();
     }
 
     void deliverFirstMessage() {
@@ -139,20 +141,34 @@ public class MessageQueue implements Drawable {
     }
 
     void clear() {
+        bornList.clear();
         mainList.clear();
         deadList.clear();
         canvas.repaint();
     }
 
-    double size = 50;
-    double expectedSize = 50;
+    double zoom = 50.0;
+    static final double deadWidth = 1.0;
+
+    private synchronized void bornMessages() {
+        for (Message message : bornList) {
+            queueMessage(message);
+        }
+        bornList.clear();
+    }
 
     public void step(long time) {
-        expectedSize = 50.0;
-        int messageCount = mainList.size() + deadList.size() + 1;
-        if (messageCount * expectedSize > width)
-            expectedSize = width / messageCount;
-        size += (expectedSize - size) * ((expectedSize < size) ? 0.001 : 0.0001) * time;
+        bornMessages();
+
+        /* expectedSize = 50.0; int messageCount = mainList.size() +
+         * deadList.size() + 1; if (messageCount * expectedSize > width)
+         * expectedSize = width / messageCount; size += (expectedSize - size) *
+         * ((expectedSize < size) ? 0.001 : 0.0001) * time; */
+
+        for (int i = 0; i < mainList.size(); ++i) {
+            mainList.get(i).queueStep(time, i - 1, i);
+        }
+
     }
 
     public void draw(Graphics g) {
@@ -162,18 +178,14 @@ public class MessageQueue implements Drawable {
         g.fillRect(0, 0, width, height);
         g.setColor(new Color(0, 0, 0));
         g.drawRect(0, 0, width - 1, height - 1);
-        try {
-            for (int i = 0; i < deadList.size(); i++) {
-                deadList.get(i).queueDraw(g, 5 + (size * i), size);
-            }
-            int deadsize = deadList.size();
-            for (int i = 0; i < mainList.size(); i++) {
-                mainList.get(i).queueDraw(g, 5 + (size * i + deadsize), size);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            draw(g);
+
+        g.fillRect((int) (deadWidth * zoom) - 1, CONST.queueHeight - 20, 2, 20);
+
+        /* for (int i = 0; i < deadList.size(); i++) {
+         * deadList.get(i).queueDraw(g, double offset, double zoom); } */
+        for (int i = 0; i < mainList.size(); i++) {
+            mainList.get(i).queueDraw(g, deadWidth, zoom);
         }
-        g.fillRect((int) (size * deadList.size()), CONST.queueHeight - 10, 10, 5);
+
     }
 }

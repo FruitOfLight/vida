@@ -8,8 +8,6 @@ class Message {
     String content;
     MessageState state;
     double ePosition, eSpeed;
-    double qX, qY, qSpeed;
-    double qSize;
     long expectedRecieve;
 
     public Message(int port, String content) {
@@ -18,28 +16,34 @@ class Message {
         state = MessageState.born;
         ePosition = eSpeed = 0.0;
         qSpeed = 0.0;
-
+        qY = 0.0;
+        qX = 10;
+        qSize = 0.0;
     }
 
     public void setEdge(Edge edge) {
         this.edge = edge;
     }
 
-    public void queueDraw(Graphics g, double position, double size) {
+    public void queueDraw(Graphics g, double offset, double zoom) {
+        double rX = qX * zoom;
+        double rY = CONST.queueHeight - (qY - (state == MessageState.sleep ? 0.0 : qSize)) * zoom;
+        double rW = qSize * zoom;
+        double rH = qSize * zoom;
 
         g.setColor(new Color(200, 255, 200));
-        Canvas.realFillRect(g, position + 1, 5, size - 2, size);
+        Canvas.realFillRect(g, rX, rY, rW, rH);
         g.setColor(new Color(0, 0, 0));
-        Canvas.realDrawRect(g, position + 1, 5, size - 2, size);
-        if (size > 18) {
-            g.drawString(Canvas.shorten(g, ((Integer) edge.to.getID()).toString(), (int) size - 5,
-                    Preference.begin), (int) (5 + position), 20);
-            if (size > 30) {
-                g.drawString(Canvas.shorten(g, content, (int) size - 5, Preference.begin),
-                        (int) (5 + position), 32);
-                if (size > 40)
-                    g.drawString(Canvas.shorten(g, content, (int) size - 5, Preference.end),
-                            (int) (5 + position), 44);
+        Canvas.realDrawRect(g, rX, rY, rW, rH);
+        if (rH > 18) {
+            g.drawString(Canvas.shorten(g, ((Integer) edge.to.getID()).toString(), (int) rW - 2,
+                    Preference.begin), (int) (rX) + 1, (int) rY + 18);
+            if (rH > 32) {
+                g.drawString(Canvas.shorten(g, content, (int) rW - 2, Preference.begin),
+                        (int) (rX) + 1, (int) rY + 32);
+                if (rH > 44)
+                    g.drawString(Canvas.shorten(g, content, (int) rW - 2, Preference.begin),
+                            (int) (rX) + 1, (int) rY + 44);
             }
         }
     }
@@ -97,7 +101,28 @@ class Message {
         }
     }
 
-    public void queueStep(long time) {
+    double qX, qY, qSpeed;
+    double qSize;
+    static final double vspeed = 0.5;
+    static final double hspeed = 0.01;
+
+    public void queueStep(long time, int prevInd, int ind) {
+        if (state == MessageState.born) {
+            qSize += vspeed * time * 0.001;
+            if (qSize > 1.0) {
+                qSize = 1.0;
+                state = MessageState.main;
+            }
+        } else if (state == MessageState.main) {
+            qX -= hspeed * time * 0.001;
+            if (qX < 0.0) {
+                state = MessageState.dead;
+            }
+        } else if (state == MessageState.sleep) {
+
+        } else if (state == MessageState.dead) {
+
+        }
 
     }
 }
