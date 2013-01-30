@@ -397,7 +397,7 @@ public class Graph implements Drawable {
 		canvas.repaint();
 	}
 
-	private void emptyGraph() {
+	public void emptyGraph() {
 		GUI.graph.vertices.clear();
 		GUI.graph.edges.clear();
 

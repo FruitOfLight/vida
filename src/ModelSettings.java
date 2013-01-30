@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.JFileChooser;
@@ -18,6 +19,10 @@ public class ModelSettings {
 	}
 
 	private ModelSettings() {
+		setValues();
+	}
+
+	private void setValues() {
 		this.anonym = Anonym.anonymOff;
 		this.synchroned = Synchroned.synchronedOff;
 		this.graphType = GraphType.none;
@@ -87,7 +92,10 @@ public class ModelSettings {
 			String path = "";
 			int value = programLoader.showOpenDialog(null);
 			if (value == JFileChooser.APPROVE_OPTION) {
+				GUI.graph.emptyGraph();
+				GUI.graph.canvas.repaint();
 				File file = programLoader.getSelectedFile();
+				readHeader(file);
 				path = file.getPath();
 			}
 			compile(path);
@@ -105,6 +113,56 @@ public class ModelSettings {
 			Runtime.getRuntime().exec("bash algorithms/compile.sh " + path);
 		} catch (Exception e) {
 			Dialog.showError("Something went horribly wrong");
+		}
+	}
+
+	public void readHeader(File f) {
+		setValues();
+		try {
+			Scanner in = new Scanner(f);
+			String header = in.nextLine();
+			if (!header.contains("/*"))
+				return;
+			while (true) {
+				String line = in.nextLine();
+				header += line;
+				if (line.contains("*/"))
+					break;
+			}
+			int pos = 0;
+			while (header.charAt(pos) != '*')
+				pos++;
+			pos++;
+			ArrayList<String> words = new ArrayList<String>();
+			String word = "";
+			while (header.charAt(pos) != '*') {
+				if (header.charAt(pos) <= 32) {
+					if (!word.equals(""))
+						words.add(word);
+					word = "";
+				} else
+					word += header.charAt(pos);
+				pos++;
+			}
+			if (!word.equals(""))
+				words.add(word);
+			for (int i = 0; i < words.size() / 2; i++) {
+				if (words.get(2 * i).equals("anonym")) {
+					setAnonym(CONST.StringToAnonym(words.get(2 * i + 1)));
+					locked[0] = true;
+				}
+				if (words.get(2 * i).equals("synchroned")) {
+					setSynchroned(CONST
+							.StringToSynchroned(words.get(2 * i + 1)));
+					locked[1] = true;
+				}
+				if (words.get(2 * i).equals("graph")) {
+					setGraphType(CONST.StringToGraphType(words.get(2 * i + 1)));
+					locked[2] = true;
+				}
+			}
+		} catch (Exception e) {
+			System.out.println();
 		}
 	}
 

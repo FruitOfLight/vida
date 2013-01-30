@@ -1,3 +1,8 @@
+/*
+ anonym yes
+ graph cycle
+*/
+
 //Fruit of Light
 //Apple Strawberry
 
