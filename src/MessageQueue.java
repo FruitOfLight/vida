@@ -39,12 +39,11 @@ public class MessageQueue implements Drawable {
         this.height = height;
     }
 
-    private long sendInterval;
     private double sendSpeed;
 
     public void setSendSpeed(double value) {
         sendSpeed = value;
-        sendInterval = (int) (1000.0 / sendSpeed);
+
     }
 
     public double getSendSpeed() {
@@ -134,7 +133,7 @@ public class MessageQueue implements Drawable {
         int messageCount = mainList.size() + deadList.size();
         if (messageCount * expectedSize > width)
             expectedSize = width / messageCount;
-        zoom += (expectedSize - zoom) * ((expectedSize < zoom) ? 0.0005 : 0.0001) * time;
+        zoom += (expectedSize - zoom) * ((expectedSize < zoom) ? 0.001 : 0.0004) * time;
 
         for (int i = 0; i < mainList.size(); ++i) {
             mainList.get(i).queueStep(time, i);

@@ -77,6 +77,15 @@ public class Dialog {
 			actionPerformed(null);
 		}
 
+		private void setIndex(GraphType graphType) {
+			if (graphType == GraphType.none)
+				choose.setSelectedIndex(0);
+			if (graphType == GraphType.clique)
+				choose.setSelectedIndex(1);
+			if (graphType == GraphType.cycle)
+				choose.setSelectedIndex(2);
+		}
+
 		public int getInputValue(int id) {
 			return inputFields[id].getInt(-1, 0, 100);
 		}
