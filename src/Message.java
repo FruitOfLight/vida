@@ -67,6 +67,8 @@ class Message {
                     * (i + ids.length + 1) - g.getFontMetrics().getLeading()
                     - g.getFontMetrics().getDescent());
 
+        g.setColor(gColor);
+        Canvas.realFillRect(g, rX, rY - 1, rW, 3);
     }
 
     public void edgeDraw(Graphics g) {
