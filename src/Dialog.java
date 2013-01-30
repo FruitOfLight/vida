@@ -60,7 +60,7 @@ public class Dialog {
 		public DialogNewGraph(GraphType graphType) {
 			panel.setLayout(new GridLayout(4, 2, 5, 5));
 			panel.add(new JLabel("Type "));
-			setIndex(graphType);
+			choose.setSelectedIndex(CONST.GraphTypeToInt(graphType));
 			choose.addActionListener(this);
 			if (graphType != GraphType.none)
 				choose.setEnabled(false);
@@ -75,15 +75,6 @@ public class Dialog {
 			panel.add(edges);
 			edges.setSelected(true);
 			actionPerformed(null);
-		}
-
-		private void setIndex(GraphType graphType) {
-			if (graphType == GraphType.none)
-				choose.setSelectedIndex(0);
-			if (graphType == GraphType.clique)
-				choose.setSelectedIndex(1);
-			if (graphType == GraphType.cycle)
-				choose.setSelectedIndex(2);
 		}
 
 		public int getInputValue(int id) {
@@ -132,7 +123,8 @@ public class Dialog {
 			panel.add(new JLabel("Synchroned "));
 			panel.add(synchroned);
 			panel.add(new JLabel("Graph type "));
-			setIndex(ModelSettings.getInstance().getGraphType());
+			chooseGraphType.setSelectedIndex(CONST.GraphTypeToInt(ModelSettings
+					.getInstance().getGraphType()));
 			chooseGraphType.addActionListener(this);
 			panel.add(chooseGraphType);
 			synchroned
@@ -146,31 +138,14 @@ public class Dialog {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			Dialog.DialogNewGraph newGraphDialog = new Dialog.DialogNewGraph(
-					getGraphType(chooseGraphType.getSelectedIndex()));
+					CONST.IntToGraphType(chooseGraphType.getSelectedIndex()));
 			JOptionPane.showMessageDialog(null, newGraphDialog.getPanel(),
 					"New graph", JOptionPane.OK_CANCEL_OPTION);
 			GUI.graph.createNew(newGraphDialog);
 		}
 
-		private void setIndex(GraphType graphType) {
-			if (graphType == GraphType.none)
-				chooseGraphType.setSelectedIndex(0);
-			if (graphType == GraphType.clique)
-				chooseGraphType.setSelectedIndex(1);
-			if (graphType == GraphType.cycle)
-				chooseGraphType.setSelectedIndex(2);
-		}
-
-		public GraphType getGraphType(int i) {
-			if (i == 1)
-				return GraphType.clique;
-			if (i == 2)
-				return GraphType.cycle;
-			return GraphType.none;
-		}
-
 		public GraphType getType() {
-			return getGraphType(chooseGraphType.getSelectedIndex());
+			return CONST.IntToGraphType(chooseGraphType.getSelectedIndex());
 		}
 
 		public boolean getAnonym() {

@@ -2,7 +2,11 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.PrintStream;
 import java.util.Random;
+import java.util.Scanner;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -81,12 +85,56 @@ public class GUI {
 			frame.setResizable(false);
 			frame.setVisible(true);
 
+			frame.addWindowListener(new java.awt.event.WindowAdapter() {
+
+				@Override
+				public void windowClosing(WindowEvent e) {
+					saveApp();
+				}
+
+			});
+
 		}
 	}
 
-	/**
-	 * @param args
-	 */
+	public static void saveApp() {
+		try {
+			File file = new File("backup/graf.in");
+			PrintStream out = new PrintStream(file);
+			graph.print(out);
+			out.close();
+			file = new File("backup/program.in");
+			out = new PrintStream(file);
+			model.print(out);
+			out.close();
+			file = new File("backup/settings.in");
+			out = new PrintStream(file);
+			ModelSettings.getInstance().print(out);
+			out.close();
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+	}
+
+	public static void loadApp() {
+		try {
+			File file = new File("backup/graf.in");
+			Scanner in = new Scanner(file);
+			graph.read(in);
+			in.close();
+			file = new File("backup/program.in");
+			in = new Scanner(file);
+			model.read(in);
+			in.close();
+			file = new File("backup/settings.in");
+			in = new Scanner(file);
+			ModelSettings.getInstance().read(in);
+			in.close();
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+	}
+
 	public static void main(String[] args) {
 		// TODO spravit krajsie
 		graph = new Graph();
@@ -96,6 +144,7 @@ public class GUI {
 		graph.messages = MessageQueue.getInstance();
 		final Window window = new Window();
 		SwingUtilities.invokeLater(window);
+		loadApp();
 	}
 
 }

@@ -1,4 +1,6 @@
 import java.io.File;
+import java.io.PrintStream;
+import java.util.Scanner;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -87,14 +89,35 @@ public class ModelSettings {
 			if (value == JFileChooser.APPROVE_OPTION) {
 				File file = programLoader.getSelectedFile();
 				path = file.getPath();
-				System.out.println(path);
 			}
 			Runtime.getRuntime().exec("bash algorithms/compile.sh " + path);
 			GUI.model.path = path + ".bin";
-			System.out.println(GUI.model.path);
 			GUI.controls.canvas.repaint();
 		} catch (Exception e) {
 			Dialog.showError("Something went horribly wrong");
 		}
 	}
+
+	public void print(PrintStream out) {
+		out.println(CONST.AnonymToInt(anonym));
+		out.println(CONST.SynchronedToInt(synchroned));
+		out.println(CONST.GraphTypeToInt(graphType));
+		for (int i = 0; i < 3; i++)
+			if (locked[i])
+				out.println("1");
+			else
+				out.println("0");
+	}
+
+	public void read(Scanner in) {
+		anonym = CONST.IntToAnonym(in.nextInt());
+		synchroned = CONST.IntToSynchroned(in.nextInt());
+		graphType = CONST.IntToGraphType(in.nextInt());
+		for (int i = 0; i < 3; i++)
+			if (in.nextInt() == 0)
+				locked[i] = false;
+			else
+				locked[i] = true;
+	}
+
 }

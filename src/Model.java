@@ -1,3 +1,6 @@
+import java.io.PrintStream;
+import java.util.Scanner;
+
 public class Model {
 	/*
 	 * TODO parametre ako synchronny? anonymny? synchronne zobudenie.... maju
@@ -47,4 +50,13 @@ public class Model {
 	void pause() {
 		running = RunState.paused;
 	}
+
+	public void print(PrintStream out) {
+		out.println(path);
+	}
+
+	public void read(Scanner in) {
+		path = in.nextLine();
+	}
+
 }

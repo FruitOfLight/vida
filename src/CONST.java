@@ -27,6 +27,46 @@ public class CONST {
 	// public static final int paused = 1;
 	// public static final int stoped = 0;
 
+	public static int AnonymToInt(Anonym a) {
+		if (a == Anonym.anonymOff)
+			return 0;
+		return 1;
+	}
+
+	public static int SynchronedToInt(Synchroned a) {
+		if (a == Synchroned.synchronedOff)
+			return 0;
+		return 1;
+	}
+
+	public static int GraphTypeToInt(GraphType g) {
+		if (g == GraphType.clique)
+			return 1;
+		if (g == GraphType.cycle)
+			return 2;
+		return 0;
+	}
+
+	public static Anonym IntToAnonym(int a) {
+		if (a == 0)
+			return Anonym.anonymOff;
+		return Anonym.anonymOn;
+	}
+
+	public static Synchroned IntToSynchroned(int a) {
+		if (a == 0)
+			return Synchroned.synchronedOff;
+		return Synchroned.synchronedOn;
+	}
+
+	public static GraphType IntToGraphType(int a) {
+		if (a == 1)
+			return GraphType.clique;
+		if (a == 2)
+			return GraphType.cycle;
+		return GraphType.none;
+	}
+
 }
 
 enum RunState {

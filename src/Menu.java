@@ -18,6 +18,7 @@ public class Menu {
 				Dialog.showMessage("Nothing to do");
 				break;
 			case 1:
+				GUI.saveApp();
 				System.exit(0);
 				return;
 			default:
