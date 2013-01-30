@@ -125,6 +125,9 @@ public class GUI {
 			file = new File("backup/program.in");
 			in = new Scanner(file);
 			model.read(in);
+			if (!model.path.equals(""))
+				ModelSettings.getInstance().compile(
+						model.path.substring(0, model.path.length() - 4));
 			in.close();
 			file = new File("backup/settings.in");
 			in = new Scanner(file);

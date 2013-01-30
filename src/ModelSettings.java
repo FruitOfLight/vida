@@ -90,9 +90,19 @@ public class ModelSettings {
 				File file = programLoader.getSelectedFile();
 				path = file.getPath();
 			}
-			Runtime.getRuntime().exec("bash algorithms/compile.sh " + path);
+			compile(path);
 			GUI.model.path = path + ".bin";
 			GUI.controls.canvas.repaint();
+		} catch (Exception e) {
+			Dialog.showError("Something went horribly wrong");
+		}
+	}
+
+	public void compile(String path) {
+		if (path.equals(""))
+			return;
+		try {
+			Runtime.getRuntime().exec("bash algorithms/compile.sh " + path);
 		} catch (Exception e) {
 			Dialog.showError("Something went horribly wrong");
 		}
