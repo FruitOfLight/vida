@@ -53,7 +53,7 @@ class Message {
 
         // tuto to mozno nie je uplne najrychljeise
 
-        String[] ids = Canvas.shortenWrap(g, ((Integer) edge.from.getID()).toString() + " > "
+        String[] ids = Canvas.shortenWrap(g, ((Integer) edge.from.getID()).toString() + ">"
                 + ((Integer) edge.to.getID()).toString(), (int) rW - 2, ">");
         for (int i = 0; i < ids.length
                 && g.getFontMetrics().getHeight() * (i + 1) < rH + g.getFontMetrics().getLeading(); ++i)
