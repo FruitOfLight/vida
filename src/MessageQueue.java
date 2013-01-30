@@ -92,8 +92,12 @@ public class MessageQueue implements Drawable {
 
     void queueMessage(Message message) {
         int index = 0;
-        if (mainList.size() > 0)
-            index = GUI.random.nextInt(mainList.size()) + 1;
+        // TODO zrychlit
+        for (int i = 0; i < mainList.size(); ++i)
+            if (mainList.get(i).edge == message.edge)
+                index = i;
+        if (index < mainList.size())
+            index = GUI.random.nextInt(mainList.size() - index) + index + 1;
         mainList.add(index, message);
         message.born(index);
     }
