@@ -5,13 +5,30 @@ class Message {
     int fromPort;
     int toPort;
     Edge edge;
-    String content;
+    String rawContent;
     MessageState state;
     double ePosition, eSpeed;
+    Color gColor;
 
     public Message(int port, String content) {
         this.fromPort = port;
-        this.content = content;
+        this.rawContent = content;
+        gColor = Color.red;
+        processContent();
+    }
+
+    void processContent() {
+        int pos = 0;
+        while ((pos = rawContent.indexOf("$", pos)) != -1) {
+            pos++;
+            if (rawContent.charAt(pos) == 'C') {
+                try {
+                    gColor = new Color(Integer.parseInt(rawContent.substring(pos + 1, pos + 7), 16));
+                } catch (Exception e) {
+                    gColor = Color.black;
+                }
+            }
+        }
     }
 
     public void setEdge(Edge edge) {
@@ -33,21 +50,27 @@ class Message {
         }
         g.setColor(new Color(0, 0, 0));
         Canvas.realDrawRect(g, rX, rY, rW, rH);
-        if (rH > 18) {
-            g.drawString(Canvas.shorten(g, ((Integer) edge.to.getID()).toString(), (int) rW - 2,
-                    Preference.begin), (int) (rX) + 1, (int) rY + 18);
-            if (rH > 32) {
-                g.drawString(Canvas.shorten(g, content, (int) rW - 2, Preference.begin),
-                        (int) (rX) + 1, (int) rY + 32);
-                if (rH > 44)
-                    g.drawString(Canvas.shorten(g, content, (int) rW - 2, Preference.end),
-                            (int) (rX) + 1, (int) rY + 44);
-            }
-        }
+
+        // tuto to mozno nie je uplne najrychljeise
+
+        String[] ids = Canvas.shortenWrap(g, ((Integer) edge.from.getID()).toString() + " > "
+                + ((Integer) edge.to.getID()).toString(), (int) rW - 2, ">");
+        for (int i = 0; i < ids.length
+                && g.getFontMetrics().getHeight() * (i + 1) < rH + g.getFontMetrics().getLeading(); ++i)
+            g.drawString(ids[i], (int) (rX) + 1, (int) rY + g.getFontMetrics().getHeight()
+                    * (i + 1) - g.getFontMetrics().getLeading() - g.getFontMetrics().getDescent());
+        String[] contents = Canvas.multiGet(g, rawContent, (int) rW - 2);
+        for (int i = 0; i < contents.length
+                && g.getFontMetrics().getHeight() * (i + ids.length + 1) < rH
+                        + g.getFontMetrics().getLeading(); ++i)
+            g.drawString(contents[i], (int) (rX) + 1, (int) rY + g.getFontMetrics().getHeight()
+                    * (i + ids.length + 1) - g.getFontMetrics().getLeading()
+                    - g.getFontMetrics().getDescent());
+
     }
 
     public void edgeDraw(Graphics g) {
-        g.setColor(new Color(255, 0, 0));
+        g.setColor(gColor);
         int x = (int) Math.round(edge.from.getX() * (1.0 - ePosition) + edge.to.getX()
                 * (ePosition));
         int y = (int) Math.round(edge.from.getY() * (1.0 - ePosition) + edge.to.getY()
@@ -76,7 +99,7 @@ class Message {
         }
         expectedRecieve = time;
     }*/
-    long expectedRecieve;
+    //long expectedRecieve;
 
     public void edgeStep(long time) {
         // System.err.println("time " + time + " expected " + expectedTime);
@@ -98,9 +121,10 @@ class Message {
         eSpeed = expectedSpeed;
         // speed += (expectedSpeed-speed)*(0.01);
         ePosition += eSpeed * time * 0.001;
-        if (state == MessageState.dead && ePosition >= 1.0) {
-            MessageQueue.getInstance().deadList.remove(this);
+        if (ePosition >= 1.0)
             ePosition = 1.0;
+        if (state == MessageState.dead) {
+            MessageQueue.getInstance().deadList.remove(this);
             edge.to.receive(this);
         }
     }

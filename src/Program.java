@@ -105,7 +105,7 @@ public class Program extends Thread {
         // System.err.println("receive " + id + " " + message.toPort + " "
         // + message.content);
 
-        in.println("@ " + ports.get(message.toPort) + " : " + message.content);
+        in.println("@ " + ports.get(message.toPort) + " : " + message.rawContent);
         in.flush();
     }
 }
