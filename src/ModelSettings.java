@@ -121,14 +121,17 @@ public class ModelSettings {
 		try {
 			Scanner in = new Scanner(f);
 			String header = in.nextLine();
-			if (!header.contains("/*"))
+			if (!header.contains("/*")) {
+				in.close();
 				return;
+			}
 			while (true) {
 				String line = in.nextLine();
 				header += line;
 				if (line.contains("*/"))
 					break;
 			}
+			in.close();
 			int pos = 0;
 			while (header.charAt(pos) != '*')
 				pos++;
