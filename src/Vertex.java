@@ -78,7 +78,7 @@ public class Vertex {
         g.drawOval(rX, rY, rR, rR);
 
         if (showID) {
-            g.setFont(new Font(Font.DIALOG, Font.PLAIN, (int) (15 * zoom)));
+            g.setFont(new Font(Font.DIALOG, Font.PLAIN, (int) (13 * Math.sqrt(zoom))));
             String caption = Canvas.shorten(g, ((Integer) ID).toString(), rR, Preference.begin);
             if (caption.endsWith(".."))
                 caption = "V";
