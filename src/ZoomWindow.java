@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
@@ -31,8 +32,8 @@ public class ZoomWindow implements Drawable {
         g.drawRect(0, 0, width - 1, height - 1);
         if (vertex == null)
             return;
-        double zoom = Math.min((width - 20) / vertex.getRadius() / 2,
-                (height - 20) / vertex.getRadius() / 2);
+        double zoom = Math.min((width - 50) / vertex.getRadius() / 2,
+                (height - 50) / vertex.getRadius() / 2);
         double offsetX = -vertex.getX() * zoom + width / 2;
         double offsetY = -vertex.getY() * zoom + height / 2;
         int centerX = (int) (offsetX + vertex.getX() * zoom);
@@ -49,5 +50,17 @@ public class ZoomWindow implements Drawable {
                     height / 2 + (int) (-pom * Math.cos(i * 2 * Math.PI / n)));
         }
         vertex.draw(g, offsetX, offsetY, zoom, false);
+        for (int i = 0; i < n; i++) {
+            String caption = Canvas.shorten(g, ((Integer) neigh.get(i).getID()).toString(), 10,
+                    Preference.begin);
+            if (caption.endsWith(".."))
+                caption = "V";
+            g.setFont(new Font(Font.DIALOG, Font.BOLD, (int) 15));
+            int rX = centerX
+                    + (int) ((vertex.getRadius() - 1.5) * zoom * Math.sin(i * 2 * Math.PI / n)), rY = centerY
+                    + (int) (-(vertex.getRadius() - 1.5) * zoom * Math.cos(i * 2 * Math.PI / n));
+            g.drawString(caption, rX + (10 - g.getFontMetrics().stringWidth(caption)) / 2, rY
+                    + (10 + g.getFontMetrics().getAscent()) / 2);
+        }
     }
 }
