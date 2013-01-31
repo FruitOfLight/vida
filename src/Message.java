@@ -93,19 +93,7 @@ class Message {
         // g.drawString(((Integer) edge.to.getID()).toString(), x, y);
     }
 
-    /*public void setRecieveness(long time) {
-        if (time < 0) {
-            expectedRecieve = 0;
-            state = MessageState.dead;
-            return;
-        }
-        expectedRecieve = time;
-    }*/
-    //long expectedRecieve;
-
     public void edgeStep(long time) {
-        // System.err.println("time " + time + " expected " + expectedTime);
-        //double expectedTime = (expectedRecieve - System.currentTimeMillis()) * 0.001;
         double expectedTime = (1.0 - qSize) / vspeed + qX
                 / (hspeed * MessageQueue.getInstance().getRealSendSpeed());
         if (state == MessageState.dead)
@@ -154,21 +142,7 @@ class Message {
             }
         }
         if (state == MessageState.main) {
-            Message prev = (index > 0) ? MessageQueue.getInstance().mainList.get(index - 1) : null;
-            double shift = hspeed * time * 0.001 * MessageQueue.getInstance().getRealSendSpeed();
-            if (prev == null || prev.qX + qSize < qX) {
-                if (MessageQueue.getInstance().model.running == RunState.running) {
-                    qX -= shift;
-                    qY = 0.0;
-                }
-            } else {
-                if (prev.qX + qSize - qX < shift) {
-                    qX = prev.qX + qSize;
-                } else {
-                    qX += shift;
-                    qY = 0.1;
-                }
-            }
+            moveForward(time, index);
             if (qX < 0.0) {
                 MessageQueue.getInstance().mainList.remove(index);
                 MessageQueue.getInstance().deadList.add(this);
@@ -182,4 +156,24 @@ class Message {
 
         }
     }
+
+    void moveForward(long time, int index) {
+        Message prev = (index > 0) ? MessageQueue.getInstance().mainList.get(index - 1) : null;
+        double shift = hspeed * time * 0.001 * MessageQueue.getInstance().getRealSendSpeed();
+        if (prev == null || prev.qX + qSize < qX) {
+            if (MessageQueue.getInstance().model.running == RunState.running) {
+                qX -= shift;
+                qY = 0.0;
+            }
+        } else {
+            if (prev.qX + qSize - qX < shift) {
+                qX = prev.qX + qSize;
+            } else {
+                qX += shift;
+                qY = 0.1;
+            }
+        }
+
+    }
+
 }
