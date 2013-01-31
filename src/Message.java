@@ -64,22 +64,24 @@ class Message {
         String[] ids = Canvas.shortenWrap(g, ((Integer) edge.from.getID()).toString() + ">"
                 + ((Integer) edge.to.getID()).toString(), rW - 2, ">");
         for (int i = 0; i < ids.length
-                && g.getFontMetrics().getHeight() * (i + 1) < rH + g.getFontMetrics().getLeading(); ++i)
-            g.drawString(ids[i], (rX) + 1, rY + g.getFontMetrics().getHeight() * (i + 1)
+                && g.getFontMetrics().getHeight() * (i + 1) < rH + g.getFontMetrics().getLeading(); ++i) {
+            g.drawString(ids[i], rX + 1, rY + g.getFontMetrics().getHeight() * (i + 1)
                     - g.getFontMetrics().getLeading() - g.getFontMetrics().getDescent());
+        }
         String[] contents = Canvas.multiGet(g, rawContent, rW - 2);
         for (int i = 0; i < contents.length
                 && g.getFontMetrics().getHeight() * (i + ids.length + 1) < rH
-                        + g.getFontMetrics().getLeading(); ++i)
-            g.drawString(contents[i], (rX) + 1, rY + g.getFontMetrics().getHeight()
+                        + g.getFontMetrics().getLeading(); ++i) {
+            g.drawString(contents[i], rX + 1, rY + g.getFontMetrics().getHeight()
                     * (i + ids.length + 1) - g.getFontMetrics().getLeading()
                     - g.getFontMetrics().getDescent());
+        }
     }
 
     public void edgeDraw(Graphics g, double offsetx, double offsety, double zoom) {
         g.setColor(gColor);
-        double x = (edge.from.getX() * (1.0 - ePosition) + edge.to.getX() * (ePosition));
-        double y = (edge.from.getY() * (1.0 - ePosition) + edge.to.getY() * (ePosition));
+        double x = edge.from.getX() * (1.0 - ePosition) + edge.to.getX() * ePosition;
+        double y = edge.from.getY() * (1.0 - ePosition) + edge.to.getY() * ePosition;
         int rX = (int) (offsetx + x * zoom);
         int rY = (int) (offsety + y * zoom);
         // Tu sa da nastavovat velkost trojuholnika
@@ -103,8 +105,9 @@ class Message {
     public void edgeStep(long time) {
         double expectedTime = (1.0 - qSize) / vspeed + qX
                 / (hspeed * MessageQueue.getInstance().getRealSendSpeed());
-        if (state == MessageState.dead)
+        if (state == MessageState.dead) {
             expectedTime = 0;
+        }
 
         double expectedSpeed;
         if (expectedTime < 1e-2) {
@@ -112,14 +115,16 @@ class Message {
         } else {
             expectedSpeed = (1.0 - ePosition) / expectedTime;
         }
-        if (expectedSpeed > 1.0)
+        if (expectedSpeed > 1.0) {
             expectedSpeed = 1.0;
+        }
 
         eSpeed = expectedSpeed;
         // speed += (expectedSpeed-speed)*(0.01);
         ePosition += eSpeed * time * 0.001;
-        if (ePosition >= 1.0)
+        if (ePosition >= 1.0) {
             ePosition = 1.0;
+        }
         if (state == MessageState.dead) {
             MessageQueue.getInstance().deadList.remove(this);
             edge.to.receive(this);
@@ -143,6 +148,12 @@ class Message {
     }
 
     public void queueStep(long time, int index) {
+        Message prev = index > 0 ? MessageQueue.getInstance().mainList.get(index - 1) : null;
+        if (prev == null) {
+            blockingQx = -faraway;
+        } else {
+            blockingQx = Math.max(prev.qX, prev.blockingQx);
+        }
         if (state == MessageState.born) {
             qSize += vspeed * time * 0.001 * MessageQueue.getInstance().getRealSendSpeed();
             if (qSize > 1.0) {
@@ -159,7 +170,7 @@ class Message {
             }
         }
         if (state == MessageState.sleep) {
-            qY = (CONST.queueHeight / MessageQueue.getInstance().zoom) - qSize;
+            qY = CONST.queueHeight / MessageQueue.getInstance().zoom - qSize;
         } else {
             qY = 0.0;
         }
@@ -169,20 +180,23 @@ class Message {
     }
 
     void moveForward(long time, int index) {
-        Message prev = (index > 0) ? MessageQueue.getInstance().mainList.get(index - 1) : null;
-        if (prev == null)
-            blockingQx = -faraway;
-        else
-            blockingQx = Math.max(prev.qX, prev.blockingQx);
+        Message prev = index > 0 ? MessageQueue.getInstance().mainList.get(index - 1) : null;
         double shift = hspeed * time * 0.001 * MessageQueue.getInstance().getRealSendSpeed();
-        if (prev == null || blockingQx + qSize < qX) {
+
+        if (prev != null && prev.state == MessageState.sleep && (qX < prev.qX + qSize + shift)) {
+            boolean success = MessageQueue.getInstance().swapMessages(index - 1, index);
+            if (!success && (blockingQx + qSize < qX)) {
+                state = MessageState.sleep;
+            }
+        }
+        if (blockingQx + qSize < qX) {
             if (MessageQueue.getInstance().model.running == RunState.running) {
                 qX -= shift;
                 qY = 0.0;
             }
         } else {
             if (blockingQx + qSize - qX < shift) {
-                qX = prev.qX + qSize;
+                qX = blockingQx + qSize;
             } else {
                 qX += shift;
                 qY = 0.1;
@@ -192,11 +206,12 @@ class Message {
     }
 
     public boolean isOnPoint(double x, double y) {
-        if (x < qX - qSize || x > qX)
+        if (x < qX - qSize || x > qX) {
             return false;
-        if (y > qY + qSize || y < qY)
+        }
+        if (y > qY + qSize || y < qY) {
             return false;
-        System.out.println("on point");
+        }
         return true;
     }
 

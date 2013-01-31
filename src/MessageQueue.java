@@ -6,6 +6,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -62,16 +63,18 @@ public class MessageQueue implements Drawable {
         return sendSpeed / zoom;
     }
 
-    private LinkedList<Message> bornList = new LinkedList<Message>();
+    private final LinkedList<Message> bornList = new LinkedList<Message>();
     ArrayList<Message> mainList = new ArrayList<Message>();
     ArrayList<Message> deadList = new ArrayList<Message>();
 
     static class StepEvent extends TimerTask {
         static long time = 0;
 
+        @Override
         public void run() {
-            if (getInstance().model == null || getInstance().model.running == RunState.stopped)
+            if (getInstance().model == null || getInstance().model.running == RunState.stopped) {
                 return;
+            }
             long prevTime = time;
             time = System.currentTimeMillis();
             long delay = time - prevTime;
@@ -81,11 +84,13 @@ public class MessageQueue implements Drawable {
 
             if (getInstance().model.running == RunState.running) {
                 // Spravy v grafe
-                for (Message message : getInstance().mainList)
+                for (Message message : getInstance().mainList) {
                     message.edgeStep(delay);
+                }
                 // toto by nemal byt foreach, lebo sa zoznam meni pocas behu
-                for (int i = 0; i < getInstance().deadList.size(); ++i)
+                for (int i = 0; i < getInstance().deadList.size(); ++i) {
                     getInstance().deadList.get(i).edgeStep(delay);
+                }
             }
 
             getInstance().canvas.repaint();
@@ -101,20 +106,32 @@ public class MessageQueue implements Drawable {
     void queueMessage(Message message) {
         int index = 0;
         // TODO zrychlit
-        for (int i = 0; i < mainList.size(); ++i)
-            if (mainList.get(i).edge == message.edge)
+        for (int i = 0; i < mainList.size(); ++i) {
+            if (mainList.get(i).edge == message.edge) {
                 index = i;
-        if (index < mainList.size())
+            }
+        }
+        if (index < mainList.size()) {
             index = GUI.random.nextInt(mainList.size() - index) + index + 1;
+        }
         mainList.add(index, message);
         message.born(index);
+    }
+
+    boolean swapMessages(int i, int j) {
+        if (mainList.get(i).edge == mainList.get(j).edge) {
+            return false;
+        }
+        Collections.swap(mainList, i, j);
+        return true;
     }
 
     // zobudi frontu - pozor! pouziva sa aj pri zobudeni z pauzy, nie len pri
     // prvom starte
     void start() {
-        if (timer != null)
+        if (timer != null) {
             timer.cancel();
+        }
         timer = new Timer();
         StepEvent.time = System.currentTimeMillis();
         MessageQueue.getInstance().timer.schedule(new MessageQueue.StepEvent(), 0);
@@ -140,9 +157,10 @@ public class MessageQueue implements Drawable {
 
         double expectedSize = 50.0;
         int messageCount = mainList.size() + deadList.size();
-        if (messageCount * expectedSize > width)
+        if (messageCount * expectedSize > width) {
             expectedSize = width / messageCount;
-        zoom += (expectedSize - zoom) * ((expectedSize < zoom) ? 0.001 : 0.0004) * time;
+        }
+        zoom += (expectedSize - zoom) * (expectedSize < zoom ? 0.001 : 0.0004) * time;
 
         for (int i = 0; i < mainList.size(); ++i) {
             mainList.get(i).queueStep(time, i);
@@ -150,6 +168,7 @@ public class MessageQueue implements Drawable {
 
     }
 
+    @Override
     public void draw(Graphics g) {
         offset = deadWidth * zoom;
         this.width = canvas.getWidth();
@@ -159,7 +178,7 @@ public class MessageQueue implements Drawable {
         g.setColor(new Color(0, 0, 0));
         g.drawRect(0, 0, width - 1, height - 1);
 
-        g.fillRect((int) (offset) - 1, CONST.queueHeight - 20, 2, 20);
+        g.fillRect((int) offset - 1, CONST.queueHeight - 20, 2, 20);
 
         /* for (int i = 0; i < deadList.size(); i++) {
          * deadList.get(i).queueDraw(g, double offset, double zoom); } */
@@ -170,8 +189,9 @@ public class MessageQueue implements Drawable {
 
     Message getMessage(double x, double y) {
         for (Message message : mainList) {
-            if (message.isOnPoint(x, y))
+            if (message.isOnPoint(x, y)) {
                 return message;
+            }
         }
         return null;
     }
@@ -201,8 +221,9 @@ public class MessageQueue implements Drawable {
         @Override
         public void mouseClicked(MouseEvent mouse) {
             Message message = getMessage(mouseGetX(mouse), mouseGetY(mouse));
-            if (message == null)
+            if (message == null) {
                 return;
+            }
             message.onClick();
         }
 
