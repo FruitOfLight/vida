@@ -78,10 +78,12 @@ public class Graph implements Drawable {
         }
         // vykresli spravy
         try {
-            for (Message message : messages.deadList)
+            for (Message message : messages.deadList) {
                 message.edgeDraw(g, offX, offY, zoom);
-            for (Message message : messages.mainList)
+            }
+            for (Message message : messages.mainList) {
                 message.edgeDraw(g, offX, offY, zoom);
+            }
         } catch (ConcurrentModificationException e) {
             e.printStackTrace();
             draw(g);
@@ -92,14 +94,17 @@ public class Graph implements Drawable {
 
         @Override
         public void mouseClicked(MouseEvent mouse) {
-            if (dontClick)
+            if (dontClick) {
                 return;
+            }
             if (GUI.gkl.isPressed(CONST.deleteKey)) {
-                if (GUI.model.running != RunState.stopped)
+                if (GUI.model.running != RunState.stopped) {
                     return;
+                }
                 // TODO dovolit, ale opravit graf
-                if (ModelSettings.getInstance().getGraphType() != GraphType.none)
+                if (ModelSettings.getInstance().getGraphType() != GraphType.none) {
                     return;
+                }
                 deleteMouse(mouse);
                 canvas.repaint();
                 return;
@@ -124,8 +129,9 @@ public class Graph implements Drawable {
 
         @Override
         public void mouseReleased(MouseEvent mouse) {
-            if (GUI.model.running == RunState.stopped)
+            if (GUI.model.running == RunState.stopped) {
                 createEdge(begin, getVertex(mouseGetX(mouse), mouseGetY(mouse)));
+            }
             canvas.repaint();
             begin = null;
             xlast = -1;
@@ -155,8 +161,9 @@ public class Graph implements Drawable {
                 canvas.repaint();
 
             } else {
-                if (GUI.model.running != RunState.stopped)
+                if (GUI.model.running != RunState.stopped) {
                     return;
+                }
                 repaintBetween((int) (offX + begin.getX() * zoom), (int) (offY + begin.getY()
                         * zoom), xlast, ylast);
                 xlast = mouse.getX();
@@ -201,11 +208,12 @@ public class Graph implements Drawable {
     }
 
     public void clickMouse(MouseEvent mouse) {
-        if (GUI.model.running != RunState.stopped)
+        if (GUI.model.running != RunState.stopped) {
             return;
+        }
         double x = mouseGetX(mouse);
         double y = mouseGetY(mouse);
-        double newRadius = (double) CONST.vertexSize;
+        double newRadius = CONST.vertexSize;
         for (Vertex vertex : vertices) {
             if (vertex.isNearPoint(x, y, 0)) {
                 vertex.onClicked();
@@ -240,24 +248,29 @@ public class Graph implements Drawable {
     }
 
     public int getNewVertexID(int size) {
-        if (ModelSettings.getInstance().getAnonym() == Anonym.anonymOn)
+        if (ModelSettings.getInstance().getAnonym() == Anonym.anonymOn) {
             return 0;
+        }
         int bound = size * 2;
-        if (bound < 10)
+        if (bound < 10) {
             bound = 10;
-        if (bound > 100 && size < 80)
+        }
+        if (bound > 100 && size < 80) {
             bound = 100;
+        }
 
         while (true) {
             int id = GUI.random.nextInt(bound);
             boolean good = true;
-            for (Vertex v : vertices)
+            for (Vertex v : vertices) {
                 if (v.getID() == id) {
                     good = false;
                     break;
                 }
-            if (good)
+            }
+            if (good) {
                 return id;
+            }
         }
     }
 
@@ -315,11 +328,11 @@ public class Graph implements Drawable {
     }
 
     double mouseGetX(MouseEvent mouse) {
-        return ((mouse.getX() - offX) / zoom);
+        return (mouse.getX() - offX) / zoom;
     }
 
     double mouseGetY(MouseEvent mouse) {
-        return ((mouse.getY() - offY) / zoom);
+        return (mouse.getY() - offY) / zoom;
     }
 
     Vertex getVertex(double x, double y) {
@@ -398,9 +411,10 @@ public class Graph implements Drawable {
                 .getInstance().getGraphType());
         int ok = JOptionPane.showConfirmDialog(null, newGraphDialog.getPanel(), "New graph",
                 JOptionPane.OK_CANCEL_OPTION);
-        if (ok == JOptionPane.OK_OPTION)
+        if (ok == JOptionPane.OK_OPTION) {
             createNew(newGraphDialog);
-        // { "Empty", "Clique", "Circle", "Grid", "Wheel", "Random" };
+            // { "Empty", "Clique", "Circle", "Grid", "Wheel", "Random" };
+        }
     }
 
     public void createNew(Dialog.DialogNewGraph newGraphDialog) {
@@ -438,38 +452,47 @@ public class Graph implements Drawable {
     private void createClique(int n, boolean edges) {
         double d = CONST.graphWidth / 3;
 
-        for (int i = 0; i < n; ++i)
+        for (int i = 0; i < n; ++i) {
             createVertex(d * Math.sin(i * 2 * Math.PI / n), -d * Math.cos(i * 2 * Math.PI / n),
                     getNewVertexID());
-        if (edges)
-            for (int i = 0; i < n; ++i)
-                for (int j = i + 1; j < n; ++j)
+        }
+        if (edges) {
+            for (int i = 0; i < n; ++i) {
+                for (int j = i + 1; j < n; ++j) {
                     createEdge(vertices.get(i), vertices.get(j));
+                }
+            }
+        }
     }
 
     private void createCycle(int n, boolean edges) {
         int d = CONST.graphWidth / 3;
 
-        for (int i = 0; i < n; ++i)
+        for (int i = 0; i < n; ++i) {
             createVertex(d * Math.sin(i * 2 * Math.PI / n), -d * Math.cos(i * 2 * Math.PI / n),
                     getNewVertexID());
-        if (edges)
-            for (int i = 0; i < n; ++i)
+        }
+        if (edges) {
+            for (int i = 0; i < n; ++i) {
                 createEdge(vertices.get(i), vertices.get((i + 1) % n));
+            }
+        }
     }
 
     private void createWheel(int n, boolean edges) {
         int d = CONST.graphWidth / 3;
 
         createVertex(0.0, 0.0, getNewVertexID());
-        for (int i = 0; i < n; ++i)
+        for (int i = 0; i < n; ++i) {
             createVertex(d * Math.sin(i * 2 * Math.PI / n), -d * Math.cos(i * 2 * Math.PI / n),
                     getNewVertexID());
-        if (edges)
+        }
+        if (edges) {
             for (int i = 0; i < n; ++i) {
                 createEdge(vertices.get(i + 1), vertices.get((i + 1) % n + 1));
                 createEdge(vertices.get(0), vertices.get(i + 1));
             }
+        }
     }
 
     private void createGrid(int m, int n, boolean edges) {
@@ -478,17 +501,22 @@ public class Graph implements Drawable {
         double dy = (CONST.graphHeight - 30) / (double) (m - 1);
         double dx = (CONST.graphWidth - 30) / (double) (n - 1);
         System.out.println(dx + " " + dy);
-        for (int i = 0; i < m; i++)
+        for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 createVertex(15 + j * dx, 15 + i * dy, getNewVertexID());
             }
-        if (edges)
-            for (int i = 0; i < m; i++)
+        }
+        if (edges) {
+            for (int i = 0; i < m; i++) {
                 for (int j = 0; j < n; j++) {
-                    if (j != n - 1)
+                    if (j != n - 1) {
                         createEdge(vertices.get(i * n + j), vertices.get(i * n + j + 1));
-                    if (i != m - 1)
+                    }
+                    if (i != m - 1) {
                         createEdge(vertices.get(i * n + j), vertices.get(i * n + j + n));
+                    }
                 }
+            }
+        }
     }
 }
