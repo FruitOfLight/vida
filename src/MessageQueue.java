@@ -154,6 +154,7 @@ public class MessageQueue implements Drawable {
 
     public void step(long time) {
         bornMessages();
+        bucketReduce();
 
         double expectedSize = 50.0;
         int messageCount = mainList.size() + deadList.size();
@@ -166,6 +167,26 @@ public class MessageQueue implements Drawable {
             mainList.get(i).queueStep(time, i);
         }
 
+    }
+
+    private ArrayList<ArrayList<Message>> buckets;
+
+    public void bucketReduce() {
+        double maximalPosition = 0.0;
+        for (Message m : mainList) {
+            maximalPosition = Math.max(maximalPosition, m.qX);
+        }
+        buckets = new ArrayList<ArrayList<Message>>();
+        for (int i = 0; i < (int) maximalPosition + 3; ++i) {
+            buckets.add(new ArrayList<Message>());
+        }
+        for (Message m : mainList) {
+            getBucket(m.qX).add(m);
+        }
+    }
+
+    public ArrayList<Message> getBucket(double qx) {
+        return buckets.get((int) qx + 1);
     }
 
     @Override
@@ -188,6 +209,12 @@ public class MessageQueue implements Drawable {
     }
 
     Message getMessage(double x, double y) {
+        // zive maju prednost
+        for (Message message : mainList) {
+            if (message.state == MessageState.main && message.isOnPoint(x, y)) {
+                return message;
+            }
+        }
         for (Message message : mainList) {
             if (message.isOnPoint(x, y)) {
                 return message;
