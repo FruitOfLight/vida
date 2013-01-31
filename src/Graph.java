@@ -181,9 +181,9 @@ public class Graph implements Drawable {
 
         @Override
         public void mouseWheelMoved(MouseWheelEvent e) {
-            if (mousePressed && begin == null) {
+            if (true) {
                 int ticks = e.getWheelRotation();
-                double scale = 1 + ticks * 0.1;
+                double scale = 1 - ticks * 0.1;
 
                 offX = (offX - e.getX()) * scale + e.getX();
                 offY = (offY - e.getY()) * scale + e.getY();
@@ -194,7 +194,7 @@ public class Graph implements Drawable {
                 oldOffY = offY;
 
                 //System.out.println("Mouse wheel " + ticks);
-                dontClick = true;
+                //dontClick = true;
                 canvas.repaint();
             }
 
