@@ -128,8 +128,10 @@ class Message {
 
     double qX, qY, qSpeed;
     double qSize;
+    double blockingQx;
     static final double vspeed = 50;
     static final double hspeed = 50;
+    static final double faraway = 1e10;
 
     public void born(int index) {
         state = MessageState.born;
@@ -168,14 +170,18 @@ class Message {
 
     void moveForward(long time, int index) {
         Message prev = (index > 0) ? MessageQueue.getInstance().mainList.get(index - 1) : null;
+        if (prev == null)
+            blockingQx = -faraway;
+        else
+            blockingQx = Math.max(prev.qX, prev.blockingQx);
         double shift = hspeed * time * 0.001 * MessageQueue.getInstance().getRealSendSpeed();
-        if (prev == null || prev.qX + qSize < qX) {
+        if (prev == null || blockingQx + qSize < qX) {
             if (MessageQueue.getInstance().model.running == RunState.running) {
                 qX -= shift;
                 qY = 0.0;
             }
         } else {
-            if (prev.qX + qSize - qX < shift) {
+            if (blockingQx + qSize - qX < shift) {
                 qX = prev.qX + qSize;
             } else {
                 qX += shift;
