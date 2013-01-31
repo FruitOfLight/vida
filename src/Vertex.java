@@ -2,28 +2,32 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
-public class Vertex implements Drawable {
+import javax.swing.JOptionPane;
 
-    private int x, y, radius, ID;
+public class Vertex {
+
+    private double x, y, radius;
+    private int ID;
 
     //@formatter:off
     public int getID() { return ID; }
     public void setID(int ID) { this.ID = ID; }
-    public int getX() { return x; }
-    public int getY() { return y; }
-    public void setX(int x) { this.x = x; }
-    public void setY(int y) { this.y = y; }
-    public int getRadius() { return radius; }
+    public double getX() { return x; }
+    public double getY() { return y; }
+    public double getRadius() { return radius; }
+    public void move(double x, double y) { this.x = x; this.y = y; }
+    //public void setX(int x) { this.x = x; }
+    //public void setY(int y) { this.y = y; }
     //@formatter:on
 
     ArrayList<Edge> edges;
     Program program;
 
-    public Vertex(int x, int y) {
+    public Vertex(double x, double y) {
         this(x, y, 0);
     }
 
-    public Vertex(int x, int y, int ID) {
+    public Vertex(double x, double y, int ID) {
         edges = new ArrayList<Edge>();
         this.x = x;
         this.y = y;
@@ -41,32 +45,47 @@ public class Vertex implements Drawable {
         program.receive(message);
     }
 
-    @Override
-    public void draw(Graphics g) {
-        g.setColor(new Color(0, 255, 0));
-        g.fillOval(x - radius, y - radius, 2 * radius, 2 * radius);
-        g.setColor(new Color(0, 0, 0));
-        g.drawOval(x - radius, y - radius, 2 * radius, 2 * radius);
+    public void draw(Graphics g, double offsetx, double offsety, double zoom) {
+        int rX = (int) ((offsetx + x - radius) * zoom);
+        int rY = (int) ((offsety + y - radius) * zoom);
+        int rR = (int) (radius * zoom * 2);
 
-        String caption = Canvas.shorten(g, ((Integer) ID).toString(), 2 * radius, Preference.begin);
+        g.setColor(new Color(0, 255, 0));
+        g.fillOval(rX, rY, rR, rR);
+        g.setColor(new Color(0, 0, 0));
+        g.drawOval(rX, rY, rR, rR);
+
+        String caption = Canvas.shorten(g, ((Integer) ID).toString(), rR, Preference.begin);
         if (caption.endsWith(".."))
             caption = "V";
-        g.drawString(caption, x - g.getFontMetrics().stringWidth(caption) / 2, y
-                + g.getFontMetrics().getAscent() / 2);
+        g.drawString(caption, rX + (rR - g.getFontMetrics().stringWidth(caption)) / 2, rY
+                + (rR + g.getFontMetrics().getAscent()) / 2);
 
     }
 
-    public boolean isOnPoint(int x1, int y1) {
-        return isNearPoint(x1, y1, 0);
+    public boolean isOnPoint(double x, double y) {
+        return isNearPoint(x, y, 0.0);
     }
 
-    public boolean isNearPoint(int x1, int y1, int distance) {
+    public boolean isNearPoint(double x1, double y1, double distance) {
         return (x1 - x) * (x1 - x) + (y1 - y) * (y1 - y) < (radius + distance)
                 * (radius + distance);
     }
 
-    public void repaint(Canvas canvas) {
-        canvas.repaint(x - 2 * radius, y - 2 * radius, 4 * radius, 4 * radius);
+    public void clicked() {
+        Dialog.DialogNewVertex newVertexDialog = new Dialog.DialogNewVertex(getID());
+        int ok = JOptionPane.showConfirmDialog(null, newVertexDialog.getPanel(), "Edit vertex",
+                JOptionPane.OK_CANCEL_OPTION);
+        if (ok == JOptionPane.OK_OPTION) {
+            setID(newVertexDialog.getID());
+        }
+    }
+
+    public void repaint(Canvas canvas, double offsetx, double offsety, double zoom) {
+        int rX = (int) ((offsetx + x - radius) * zoom);
+        int rY = (int) ((offsety + y - radius) * zoom);
+        int rR = (int) (radius * zoom * 2);
+        canvas.repaint(rX - rR, rY - rR, 2 * rR, 2 * rR);
     }
 
     public void removeEdge(Edge edge) {

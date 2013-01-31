@@ -71,18 +71,20 @@ class Message {
         Canvas.realFillRect(g, rX, rY - 1, rW, 3);
     }
 
-    public void edgeDraw(Graphics g) {
+    public void edgeDraw(Graphics g, double offsetx, double offsety, double zoom) {
         g.setColor(gColor);
-        int x = (int) Math.round(edge.from.getX() * (1.0 - ePosition) + edge.to.getX()
-                * (ePosition));
-        int y = (int) Math.round(edge.from.getY() * (1.0 - ePosition) + edge.to.getY()
-                * (ePosition));
-        int xPoints[] = new int[3], yPoints[] = new int[3];
-        xPoints[0] = x;
-        yPoints[0] = y;
-        double ux = edge.from.getY() - edge.to.getY(), uy = edge.to.getX() - edge.from.getX();
+        double x = (edge.from.getX() * (1.0 - ePosition) + edge.to.getX() * (ePosition));
+        double y = (edge.from.getY() * (1.0 - ePosition) + edge.to.getY() * (ePosition));
+        int rX = (int) ((offsetx + x) * zoom);
+        int rY = (int) ((offsety + y) * zoom);
         // Tu sa da nastavovat velkost trojuholnika
-        double k = 12.0 / Math.sqrt(ux * ux + uy * uy);
+        int rR = (int) (12.0 * zoom);
+        int xPoints[] = new int[3], yPoints[] = new int[3];
+        xPoints[0] = rX;
+        yPoints[0] = rY;
+        double ux = edge.from.getY() - edge.to.getY(), uy = edge.to.getX() - edge.from.getX();
+
+        double k = rR / Math.sqrt(ux * ux + uy * uy);
         double vx = ux * k;
         double vy = uy * k;
         xPoints[1] = (int) Math.round(x + vx + vy / 2.0);
