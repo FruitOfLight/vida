@@ -202,14 +202,12 @@ public class Graph implements Drawable {
     }
 
     public void clickMouse(MouseEvent mouse) {
-        if (GUI.model.running != RunState.stopped) {
-            return;
-        }
         double x = mouseGetX(mouse);
         double y = mouseGetY(mouse);
         double newRadius = CONST.vertexSize;
         for (Vertex vertex : vertices) {
-            if (vertex.isNearPoint(x, y, 0) && mouse.getClickCount() == 2) {
+            if (vertex.isNearPoint(x, y, 0) && mouse.getClickCount() == 2
+                    && GUI.model.running == RunState.stopped) {
                 vertex.onClicked();
                 vertex.repaint(canvas, offX, offY, zoom);
                 return;
@@ -217,6 +215,9 @@ public class Graph implements Drawable {
                 GUI.zoomWindow.drawVertex(vertex);
                 return;
             }
+        }
+        if (GUI.model.running != RunState.stopped) {
+            return;
         }
         for (Vertex vertex : vertices) {
             if (vertex.isNearPoint(x, y, newRadius)) {
