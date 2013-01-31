@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 class Message {
     int fromPort;
@@ -143,7 +144,7 @@ class Message {
         ePosition = eSpeed = 0.0;
         qSpeed = 0.0;
         qY = 0.0;
-        qX = index + 2;
+        qX = index > 0 ? MessageQueue.getInstance().mainList.get(index - 1).qX : 5.0;
         qSize = 0.0;
     }
 
@@ -202,7 +203,20 @@ class Message {
                 qY = 0.1;
             }
         }
+    }
 
+    public ArrayList<Message> getCollidedMessages() {
+        ArrayList<Message> list = new ArrayList<Message>();
+        for (int i = -1; i <= 1; ++i) {
+            for (Message message : MessageQueue.getInstance().getBucket(qX + i))
+                if (collide(message, this))
+                    list.add(message);
+        }
+        return list;
+    }
+
+    static boolean collide(Message m1, Message m2) {
+        return (Math.max(m1.qX - m1.qSize, m2.qX - m2.qSize) < Math.min(m1.qX, m2.qX));
     }
 
     public boolean isOnPoint(double x, double y) {
