@@ -4,6 +4,8 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
@@ -24,6 +26,8 @@ public class Graph implements Drawable {
     int xlast, ylast;
     // pozicia
     double offX, offY, zoom;
+    double oldOffX, oldOffY;
+    int preClickX, preClickY;
 
     //boolean moving = false, deleting = false;
 
@@ -33,6 +37,7 @@ public class Graph implements Drawable {
         setCanvas(new Canvas(this));
         xlast = -1;
         ylast = -1;
+        emptyGraph();
     }
 
     public void setCanvas(Canvas canvas) {
@@ -40,8 +45,8 @@ public class Graph implements Drawable {
         GraphListener listener = new GraphListener();
         this.canvas.addMouseListener(listener);
         this.canvas.addMouseMotionListener(listener);
-        this.canvas.setFocusable(true);
-
+        this.canvas.addMouseWheelListener(listener);
+        //this.canvas.setFocusable(true);
     }
 
     @Override
@@ -79,7 +84,7 @@ public class Graph implements Drawable {
         }
     }
 
-    class GraphListener implements MouseListener, MouseMotionListener {
+    class GraphListener implements MouseListener, MouseMotionListener, MouseWheelListener {
 
         @Override
         public void mouseClicked(MouseEvent mouse) {
@@ -89,12 +94,12 @@ public class Graph implements Drawable {
                 // TODO dovolit, ale opravit graf
                 if (ModelSettings.getInstance().getGraphType() != GraphType.none)
                     return;
-                deleteOnMouse(mouse);
+                deleteMouse(mouse);
                 canvas.repaint();
                 return;
             }
             if (!GUI.gkl.isPressed(CONST.deleteKey) && !GUI.gkl.isPressed(CONST.moveKey)) {
-                clickOnMouse(mouse);
+                clickMouse(mouse);
             }
         }
 
@@ -103,6 +108,10 @@ public class Graph implements Drawable {
             begin = getVertex(mouseGetX(mouse), mouseGetY(mouse));
             xlast = mouse.getX();
             ylast = mouse.getY();
+            preClickX = mouse.getX();
+            preClickY = mouse.getY();
+            oldOffX = offX;
+            oldOffY = offY;
         }
 
         @Override
@@ -118,6 +127,11 @@ public class Graph implements Drawable {
         @Override
         public void mouseDragged(MouseEvent mouse) {
             if (begin == null) {
+                if (GUI.gkl.isPressed(CONST.moveKey)) {
+                    offX = oldOffX + (mouse.getX() - preClickX) / zoom;
+                    offY = oldOffY + (mouse.getY() - preClickY) / zoom;
+                    canvas.repaint();
+                }
                 return;
             }
             if (GUI.gkl.isPressed(CONST.moveKey)) {
@@ -153,9 +167,17 @@ public class Graph implements Drawable {
         @Override
         public void mouseMoved(MouseEvent mouse) {
         }
+
+        @Override
+        public void mouseWheelMoved(MouseWheelEvent e) {
+            // TODO Auto-generated method stub
+
+        }
     }
 
-    public void clickOnMouse(MouseEvent mouse) {
+    public void clickMouse(MouseEvent mouse) {
+        if (GUI.model.running != RunState.stopped)
+            return;
         double x = mouseGetX(mouse);
         double y = mouseGetY(mouse);
         double newRadius = (double) CONST.vertexSize;
@@ -175,7 +197,7 @@ public class Graph implements Drawable {
         canvas.repaint();
     }
 
-    public void deleteOnMouse(MouseEvent mouse) {
+    public void deleteMouse(MouseEvent mouse) {
         Vertex v = getVertex(mouseGetX(mouse), mouseGetY(mouse));
         if (v != null) {
             removeVertex(v);
@@ -383,9 +405,8 @@ public class Graph implements Drawable {
         offX = CONST.graphWidth / 2;
         offY = CONST.graphHeight / 2;
         zoom = 1.0;
-        GUI.graph.vertices.clear();
-        GUI.graph.edges.clear();
-
+        vertices.clear();
+        edges.clear();
     }
 
     private void createClique(int n, boolean edges) {
@@ -413,10 +434,8 @@ public class Graph implements Drawable {
 
     private void createWheel(int n, boolean edges) {
         int d = CONST.graphWidth / 3;
-        int middlex = CONST.graphWidth / 2;
-        int middley = CONST.graphHeight / 2;
 
-        createVertex(middlex, middley, getNewVertexID());
+        createVertex(0.0, 0.0, getNewVertexID());
         for (int i = 0; i < n; ++i)
             createVertex(d * Math.sin(i * 2 * Math.PI / n), -d * Math.cos(i * 2 * Math.PI / n),
                     getNewVertexID());
@@ -428,6 +447,8 @@ public class Graph implements Drawable {
     }
 
     private void createGrid(int m, int n, boolean edges) {
+        offX = 0;
+        offY = 0;
         double dy = (CONST.graphHeight - 30) / (double) (m - 1);
         double dx = (CONST.graphWidth - 30) / (double) (n - 1);
         System.out.println(dx + " " + dy);

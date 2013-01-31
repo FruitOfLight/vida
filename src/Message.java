@@ -87,10 +87,10 @@ class Message {
         double k = rR / Math.sqrt(ux * ux + uy * uy);
         double vx = ux * k;
         double vy = uy * k;
-        xPoints[1] = (int) Math.round(x + vx + vy / 2.0);
-        yPoints[1] = (int) Math.round(y + vy - vx / 2.0);
-        xPoints[2] = (int) Math.round(x + vx - vy / 2.0);
-        yPoints[2] = (int) Math.round(y + vy + vx / 2.0);
+        xPoints[1] = (int) Math.round(rX + vx + vy / 2.0);
+        yPoints[1] = (int) Math.round(rY + vy - vx / 2.0);
+        xPoints[2] = (int) Math.round(rX + vx - vy / 2.0);
+        yPoints[2] = (int) Math.round(rY + vy + vx / 2.0);
         g.fillPolygon(xPoints, yPoints, 3);
         // g.drawString(((Integer) edge.to.getID()).toString(), x, y);
     }
