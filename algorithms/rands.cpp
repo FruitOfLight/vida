@@ -1,6 +1,6 @@
 /*
- anonym yes
- graph cycle
+ anonym no
+ graph none
 */
 
 //Fruit of Light

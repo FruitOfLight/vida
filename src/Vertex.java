@@ -72,7 +72,7 @@ public class Vertex {
                 * (radius + distance);
     }
 
-    public void clicked() {
+    public void onClicked() {
         Dialog.DialogNewVertex newVertexDialog = new Dialog.DialogNewVertex(getID());
         int ok = JOptionPane.showConfirmDialog(null, newVertexDialog.getPanel(), "Edit vertex",
                 JOptionPane.OK_CANCEL_OPTION);

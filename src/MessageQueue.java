@@ -1,5 +1,10 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Timer;
@@ -8,10 +13,6 @@ import java.util.TimerTask;
 /**
  * Fronta pre správy
  * 
- * každý odoslaný list sa zaradí do fronty, tam chvíľu pobudne a keď sa dostane
- * na začiatok, doručí sa
- * 
- * neposielajú sa priamo správy, ale listy
  */
 public class MessageQueue implements Drawable {
     private static MessageQueue instance = new MessageQueue();
@@ -26,12 +27,16 @@ public class MessageQueue implements Drawable {
     Timer timer;
 
     private MessageQueue() {
-        canvas = new Canvas(this);
+        setCanvas(new Canvas(this));
         setSendSpeed(1.2);
     }
 
     public void setCanvas(Canvas canvas) {
         this.canvas = canvas;
+        QueueListener listener = new QueueListener();
+        this.canvas.addMouseListener(listener);
+        this.canvas.addMouseMotionListener(listener);
+        this.canvas.addMouseWheelListener(listener);
     }
 
     public void setPosition(int width, int height) {
@@ -40,6 +45,9 @@ public class MessageQueue implements Drawable {
     }
 
     private double sendSpeed;
+    double zoom = 50.0;
+    double offset = 50;
+    static final double deadWidth = 1.0;
 
     public void setSendSpeed(double value) {
         sendSpeed = value;
@@ -51,7 +59,7 @@ public class MessageQueue implements Drawable {
     }
 
     public double getRealSendSpeed() {
-        return sendSpeed * zoom;
+        return sendSpeed / zoom;
     }
 
     private LinkedList<Message> bornList = new LinkedList<Message>();
@@ -120,9 +128,6 @@ public class MessageQueue implements Drawable {
         canvas.repaint();
     }
 
-    double zoom = 50.0;
-    static final double deadWidth = 1.0;
-
     private synchronized void bornMessages() {
         for (Message message : bornList) {
             queueMessage(message);
@@ -146,6 +151,7 @@ public class MessageQueue implements Drawable {
     }
 
     public void draw(Graphics g) {
+        offset = deadWidth * zoom;
         this.width = canvas.getWidth();
         this.height = canvas.getHeight();
         g.setColor(new Color(255, 255, 255));
@@ -153,13 +159,83 @@ public class MessageQueue implements Drawable {
         g.setColor(new Color(0, 0, 0));
         g.drawRect(0, 0, width - 1, height - 1);
 
-        g.fillRect((int) (deadWidth * zoom) - 1, CONST.queueHeight - 20, 2, 20);
+        g.fillRect((int) (offset) - 1, CONST.queueHeight - 20, 2, 20);
 
         /* for (int i = 0; i < deadList.size(); i++) {
          * deadList.get(i).queueDraw(g, double offset, double zoom); } */
         for (int i = 0; i < mainList.size(); i++) {
-            mainList.get(i).queueDraw(g, deadWidth, zoom);
+            mainList.get(i).queueDraw(g, offset, zoom);
+        }
+    }
+
+    Message getMessage(double x, double y) {
+        for (Message message : mainList) {
+            if (message.isOnPoint(x, y))
+                return message;
+        }
+        return null;
+    }
+
+    class QueueListener implements MouseListener, MouseMotionListener, MouseWheelListener {
+
+        @Override
+        public void mouseWheelMoved(MouseWheelEvent e) {
+            int ticks = e.getWheelRotation();
+            double scale = 1 - ticks * 0.05;
+            zoom *= scale;
+            canvas.repaint();
         }
 
+        @Override
+        public void mouseDragged(MouseEvent mouse) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent mouse) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent mouse) {
+            Message message = getMessage(mouseGetX(mouse), mouseGetY(mouse));
+            if (message == null)
+                return;
+            message.onClick();
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent mouse) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent mouse) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void mousePressed(MouseEvent mouse) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent mouse) {
+            // TODO Auto-generated method stub
+
+        }
+    }
+
+    double mouseGetX(MouseEvent mouse) {
+        return (mouse.getX() - offset) / zoom;
+    }
+
+    double mouseGetY(MouseEvent mouse) {
+        return (CONST.queueHeight - mouse.getY()) / zoom;
     }
 }

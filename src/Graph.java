@@ -209,7 +209,7 @@ public class Graph implements Drawable {
         double newRadius = (double) CONST.vertexSize;
         for (Vertex vertex : vertices) {
             if (vertex.isNearPoint(x, y, 0)) {
-                vertex.clicked();
+                vertex.onClicked();
                 vertex.repaint(canvas, offX, offY, zoom);
                 return;
             }

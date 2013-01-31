@@ -36,39 +36,44 @@ class Message {
     }
 
     public void queueDraw(Graphics g, double offset, double zoom) {
-        double rX = (offset + qX - qSize) * zoom;
-        double rY = CONST.queueHeight - (qY + (state == MessageState.sleep ? 0.0 : qSize)) * zoom;
+        double rX = offset + (qX - qSize) * zoom;
+        double rY = CONST.queueHeight - (qY + qSize) * zoom;
         double rW = qSize * zoom - 2;
         double rH = qSize * zoom - 2;
+
         //System.err.println(" " + rX + " " + rY + " " + rW + " " + rH);
 
         g.setColor(new Color(200, 255, 200));
         Canvas.realFillRect(g, rX, rY, rW, rH);
         if (qX < qSize) {
             g.setColor(new Color(255, 50, 40));
-            Canvas.realFillRect(g, rX, rY, offset * zoom - rX, rH);
+            Canvas.realFillRect(g, rX, rY, offset - rX, rH);
         }
         g.setColor(new Color(0, 0, 0));
         Canvas.realDrawRect(g, rX, rY, rW, rH);
 
-        // tuto to mozno nie je uplne najrychljeise
-
-        String[] ids = Canvas.shortenWrap(g, ((Integer) edge.from.getID()).toString() + ">"
-                + ((Integer) edge.to.getID()).toString(), (int) rW - 2, ">");
-        for (int i = 0; i < ids.length
-                && g.getFontMetrics().getHeight() * (i + 1) < rH + g.getFontMetrics().getLeading(); ++i)
-            g.drawString(ids[i], (int) (rX) + 1, (int) rY + g.getFontMetrics().getHeight()
-                    * (i + 1) - g.getFontMetrics().getLeading() - g.getFontMetrics().getDescent());
-        String[] contents = Canvas.multiGet(g, rawContent, (int) rW - 2);
-        for (int i = 0; i < contents.length
-                && g.getFontMetrics().getHeight() * (i + ids.length + 1) < rH
-                        + g.getFontMetrics().getLeading(); ++i)
-            g.drawString(contents[i], (int) (rX) + 1, (int) rY + g.getFontMetrics().getHeight()
-                    * (i + ids.length + 1) - g.getFontMetrics().getLeading()
-                    - g.getFontMetrics().getDescent());
+        drawInfo(g, (int) rX, (int) rY, (int) rW, (int) rH);
 
         g.setColor(gColor);
         Canvas.realFillRect(g, rX, rY - 1, rW, 3);
+    }
+
+    public void drawInfo(Graphics g, int rX, int rY, int rW, int rH) {
+        // tuto to mozno nie je uplne najrychljeise
+
+        String[] ids = Canvas.shortenWrap(g, ((Integer) edge.from.getID()).toString() + ">"
+                + ((Integer) edge.to.getID()).toString(), rW - 2, ">");
+        for (int i = 0; i < ids.length
+                && g.getFontMetrics().getHeight() * (i + 1) < rH + g.getFontMetrics().getLeading(); ++i)
+            g.drawString(ids[i], (rX) + 1, rY + g.getFontMetrics().getHeight() * (i + 1)
+                    - g.getFontMetrics().getLeading() - g.getFontMetrics().getDescent());
+        String[] contents = Canvas.multiGet(g, rawContent, rW - 2);
+        for (int i = 0; i < contents.length
+                && g.getFontMetrics().getHeight() * (i + ids.length + 1) < rH
+                        + g.getFontMetrics().getLeading(); ++i)
+            g.drawString(contents[i], (rX) + 1, rY + g.getFontMetrics().getHeight()
+                    * (i + ids.length + 1) - g.getFontMetrics().getLeading()
+                    - g.getFontMetrics().getDescent());
     }
 
     public void edgeDraw(Graphics g, double offsetx, double offsety, double zoom) {
@@ -123,8 +128,8 @@ class Message {
 
     double qX, qY, qSpeed;
     double qSize;
-    static final double vspeed = 0.02;
-    static final double hspeed = 0.012;
+    static final double vspeed = 50;
+    static final double hspeed = 50;
 
     public void born(int index) {
         state = MessageState.born;
@@ -152,7 +157,9 @@ class Message {
             }
         }
         if (state == MessageState.sleep) {
-
+            qY = (CONST.queueHeight / MessageQueue.getInstance().zoom) - qSize;
+        } else {
+            qY = 0.0;
         }
         if (state == MessageState.dead) {
 
@@ -176,6 +183,26 @@ class Message {
             }
         }
 
+    }
+
+    public boolean isOnPoint(double x, double y) {
+        if (x < qX - qSize || x > qX)
+            return false;
+        if (y > qY + qSize || y < qY)
+            return false;
+        System.out.println("on point");
+        return true;
+    }
+
+    public void onClick() {
+        if (state == MessageState.sleep) {
+            state = MessageState.main;
+            return;
+        }
+        if (state == MessageState.main) {
+            state = MessageState.sleep;
+            return;
+        }
     }
 
 }
