@@ -185,9 +185,13 @@ public class Graph implements Drawable {
                 int ticks = e.getWheelRotation();
                 double scale = 1 + ticks * 0.1;
 
-                //offX = (offX - mouseGetX(e)) * scale + mouseGetX(e);
-                //offY = (offY - mouseGetY(e)) * scale + mouseGetY(e);
+                offX = (offX - e.getX()) * scale + e.getX();
+                offY = (offY - e.getY()) * scale + e.getY();
                 zoom *= scale;
+                preClickX = e.getX();
+                preClickY = e.getY();
+                oldOffX = offX;
+                oldOffY = offY;
 
                 //System.out.println("Mouse wheel " + ticks);
                 dontClick = true;
