@@ -24,10 +24,12 @@ public class Graph implements Drawable {
     // premenne pre listenery
     public Vertex begin = null;
     int xlast, ylast;
-    // pozicia
-    double offX, offY, zoom;
     double oldOffX, oldOffY;
     int preClickX, preClickY;
+    boolean mousePressed;
+    boolean dontClick;
+    // pozicia
+    double offX, offY, zoom;
 
     //boolean moving = false, deleting = false;
 
@@ -37,6 +39,8 @@ public class Graph implements Drawable {
         setCanvas(new Canvas(this));
         xlast = -1;
         ylast = -1;
+        mousePressed = false;
+        dontClick = false;
         emptyGraph();
     }
 
@@ -88,6 +92,8 @@ public class Graph implements Drawable {
 
         @Override
         public void mouseClicked(MouseEvent mouse) {
+            if (dontClick)
+                return;
             if (GUI.gkl.isPressed(CONST.deleteKey)) {
                 if (GUI.model.running != RunState.stopped)
                     return;
@@ -112,6 +118,8 @@ public class Graph implements Drawable {
             preClickY = mouse.getY();
             oldOffX = offX;
             oldOffY = offY;
+            mousePressed = true;
+            dontClick = false;
         }
 
         @Override
@@ -122,10 +130,12 @@ public class Graph implements Drawable {
             begin = null;
             xlast = -1;
             ylast = -1;
+            mousePressed = false;
         }
 
         @Override
         public void mouseDragged(MouseEvent mouse) {
+            dontClick = true;
             if (begin == null) {
                 if (GUI.gkl.isPressed(CONST.moveKey)) {
                     offX = oldOffX + (mouse.getX() - preClickX) / zoom;
@@ -170,7 +180,13 @@ public class Graph implements Drawable {
 
         @Override
         public void mouseWheelMoved(MouseWheelEvent e) {
-            // TODO Auto-generated method stub
+            if (mousePressed && begin == null) {
+                int ticks = e.getWheelRotation();
+                zoom *= 1 + ticks * 0.1;
+                //System.out.println("Mouse wheel " + ticks);
+                dontClick = true;
+                canvas.repaint();
+            }
 
         }
     }
