@@ -75,8 +75,8 @@ class Message {
         g.setColor(gColor);
         double x = (edge.from.getX() * (1.0 - ePosition) + edge.to.getX() * (ePosition));
         double y = (edge.from.getY() * (1.0 - ePosition) + edge.to.getY() * (ePosition));
-        int rX = (int) ((offsetx + x) * zoom);
-        int rY = (int) ((offsety + y) * zoom);
+        int rX = (int) (offsetx + x * zoom);
+        int rY = (int) (offsety + y * zoom);
         // Tu sa da nastavovat velkost trojuholnika
         int rR = (int) (12.0 * zoom);
         int xPoints[] = new int[3], yPoints[] = new int[3];

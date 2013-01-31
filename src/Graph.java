@@ -29,7 +29,8 @@ public class Graph implements Drawable {
     boolean mousePressed;
     boolean dontClick;
     // pozicia
-    double offX, offY, zoom;
+    double offX, offY;
+    double zoom;
 
     //boolean moving = false, deleting = false;
 
@@ -65,7 +66,7 @@ public class Graph implements Drawable {
         if (begin != null && !GUI.gkl.isPressed(CONST.deleteKey)
                 && !GUI.gkl.isPressed(CONST.moveKey)) {
             g.setColor(new Color(0, 0, 0));
-            g.drawLine((int) ((offX + begin.getX()) * zoom), (int) ((offY + begin.getY()) * zoom),
+            g.drawLine((int) (offX + begin.getX() * zoom), (int) (offY + begin.getY() * zoom),
                     xlast, ylast);
         }
         // vykresli vrcholy a hrany
@@ -138,8 +139,8 @@ public class Graph implements Drawable {
             dontClick = true;
             if (begin == null) {
                 if (GUI.gkl.isPressed(CONST.moveKey)) {
-                    offX = oldOffX + (mouse.getX() - preClickX) / zoom;
-                    offY = oldOffY + (mouse.getY() - preClickY) / zoom;
+                    offX = oldOffX + (mouse.getX() - preClickX);
+                    offY = oldOffY + (mouse.getY() - preClickY);
                     canvas.repaint();
                 }
                 return;
@@ -157,12 +158,12 @@ public class Graph implements Drawable {
             } else {
                 if (GUI.model.running != RunState.stopped)
                     return;
-                repaintBetween((int) ((offX + begin.getX()) * zoom),
-                        (int) ((offY + begin.getY()) * zoom), xlast, ylast);
+                repaintBetween((int) (offX + begin.getX() * zoom), (int) (offY + begin.getY()
+                        * zoom), xlast, ylast);
                 xlast = mouse.getX();
                 ylast = mouse.getY();
-                repaintBetween((int) ((offX + begin.getX()) * zoom),
-                        (int) ((offY + begin.getY()) * zoom), xlast, ylast);
+                repaintBetween((int) (offX + begin.getX() * zoom), (int) (offY + begin.getY()
+                        * zoom), xlast, ylast);
             }
         }
 
@@ -182,7 +183,12 @@ public class Graph implements Drawable {
         public void mouseWheelMoved(MouseWheelEvent e) {
             if (mousePressed && begin == null) {
                 int ticks = e.getWheelRotation();
-                zoom *= 1 + ticks * 0.1;
+                double scale = 1 + ticks * 0.1;
+
+                //offX = (offX - mouseGetX(e)) * scale + mouseGetX(e);
+                //offY = (offY - mouseGetY(e)) * scale + mouseGetY(e);
+                zoom *= scale;
+
                 //System.out.println("Mouse wheel " + ticks);
                 dontClick = true;
                 canvas.repaint();
@@ -305,11 +311,11 @@ public class Graph implements Drawable {
     }
 
     double mouseGetX(MouseEvent mouse) {
-        return ((double) mouse.getX() / zoom) - offX;
+        return ((mouse.getX() - offX) / zoom);
     }
 
     double mouseGetY(MouseEvent mouse) {
-        return ((double) mouse.getY() / zoom) - offY;
+        return ((mouse.getY() - offY) / zoom);
     }
 
     Vertex getVertex(double x, double y) {

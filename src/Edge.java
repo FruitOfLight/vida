@@ -20,10 +20,10 @@ public class Edge {
 
     public void draw(Graphics g, double offsetx, double offsety, double zoom) {
         g.setColor(new Color(0, 0, 0));
-        int x1 = (int) ((offsetx + from.getX()) * zoom);
-        int y1 = (int) ((offsety + from.getY()) * zoom);
-        int x2 = (int) ((offsetx + to.getX()) * zoom);
-        int y2 = (int) ((offsety + to.getY()) * zoom);
+        int x1 = (int) (offsetx + from.getX() * zoom);
+        int y1 = (int) (offsety + from.getY() * zoom);
+        int x2 = (int) (offsetx + to.getX() * zoom);
+        int y2 = (int) (offsety + to.getY() * zoom);
         g.drawLine(x1, y1, x2, y2);
     }
 

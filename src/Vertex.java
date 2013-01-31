@@ -46,8 +46,8 @@ public class Vertex {
     }
 
     public void draw(Graphics g, double offsetx, double offsety, double zoom) {
-        int rX = (int) ((offsetx + x - radius) * zoom);
-        int rY = (int) ((offsety + y - radius) * zoom);
+        int rX = (int) (offsetx + (x - radius) * zoom);
+        int rY = (int) (offsety + (y - radius) * zoom);
         int rR = (int) (radius * zoom * 2);
 
         g.setColor(new Color(0, 255, 0));
@@ -82,8 +82,8 @@ public class Vertex {
     }
 
     public void repaint(Canvas canvas, double offsetx, double offsety, double zoom) {
-        int rX = (int) ((offsetx + x - radius) * zoom);
-        int rY = (int) ((offsety + y - radius) * zoom);
+        int rX = (int) (offsetx + (x - radius) * zoom);
+        int rY = (int) (offsety + (y - radius) * zoom);
         int rR = (int) (radius * zoom * 2);
         canvas.repaint(rX - rR, rY - rR, 2 * rR, 2 * rR);
     }
