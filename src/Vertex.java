@@ -116,21 +116,28 @@ public class Vertex {
                     - edgeHeight, indent + (i + 1) * (width / down), CONST.zoomWindowHeight
                     - indent);
         }
+        int fontSize = 1000;
+        for (Vertex vertex : neigh) {
+            fontSize = Math
+                    .min(fontSize,
+                            findFontSize(g, width / down, edgeHeight,
+                                    ((Integer) vertex.getID()).toString()));
+        }
         for (int i = 0; i < up; i++) {
-            g.setFont(new Font(null, Font.PLAIN, edgeHeight));
-            String caption = ((Integer) neigh.get(i).getID()).toString();
-            int textWidth = g.getFontMetrics().stringWidth(caption);
             int boxWidth = width / up;
+            String caption = ((Integer) neigh.get(i).getID()).toString();
+            g.setFont(new Font(null, Font.PLAIN, fontSize));
+            int textWidth = g.getFontMetrics().stringWidth(caption);
             g.drawString(((Integer) neigh.get(i).getID()).toString(), indent + i * boxWidth
                     + (boxWidth - textWidth) / 2, indent + edgeHeight - 1);
             g.drawLine(indent + i * boxWidth + boxWidth / 2, indent, indent + i * boxWidth
                     + boxWidth / 2, 0);
         }
         for (int i = 0; i < down; i++) {
-            g.setFont(new Font(null, Font.PLAIN, edgeHeight));
-            String caption = ((Integer) neigh.get(up + i).getID()).toString();
-            int textWidth = g.getFontMetrics().stringWidth(caption);
             int boxWidth = width / down;
+            String caption = ((Integer) neigh.get(up + i).getID()).toString();
+            g.setFont(new Font(null, Font.PLAIN, fontSize));
+            int textWidth = g.getFontMetrics().stringWidth(caption);
             g.drawString(((Integer) neigh.get(up + i).getID()).toString(), indent + i * boxWidth
                     + (boxWidth - textWidth) / 2, CONST.zoomWindowHeight - indent - 1);
             g.drawLine(indent + i * boxWidth + boxWidth / 2, CONST.zoomWindowHeight - indent,
@@ -139,6 +146,19 @@ public class Vertex {
         g.setFont(new Font(null, Font.PLAIN, 15));
         g.drawString("ID: " + ((Integer) this.getID()).toString(), indent + 5, indent + edgeHeight
                 + 15);
+    }
+
+    public int findFontSize(Graphics g, int boxWidth, int maxSize, String caption) {
+        int z = 1, k = maxSize;
+        while (k - z > 1) {
+            int mid = (k + z) / 2;
+            g.setFont(new Font(null, Font.PLAIN, mid));
+            if (g.getFontMetrics().stringWidth(caption) > boxWidth - 2)
+                k = mid;
+            else
+                z = mid;
+        }
+        return z;
     }
 
     public boolean isOnPoint(double x, double y) {
