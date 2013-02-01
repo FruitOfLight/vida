@@ -78,11 +78,8 @@ public class Graph implements Drawable {
         }
         // vykresli spravy
         try {
-            for (Message message : messages.deadList) {
-                message.edgeDraw(g, offX, offY, zoom);
-            }
-            for (Message message : messages.mainList) {
-                message.edgeDraw(g, offX, offY, zoom);
+            for (Cube cube : Cube.getAllCubes()) {
+                cube.message.edgeDraw(g, offX, offY, zoom);
             }
         } catch (ConcurrentModificationException e) {
             e.printStackTrace();

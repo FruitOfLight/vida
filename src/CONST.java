@@ -95,8 +95,8 @@ enum Preference {
     begin, end, special, wrap
 }
 
-enum MessageState {
-    born, main, sleep, dead
+enum CubeState {
+    alive, asleep, wakeup, dead
 }
 
 enum Anonym {
