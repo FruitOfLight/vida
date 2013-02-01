@@ -216,15 +216,20 @@ public class Graph implements Drawable {
                 return;
             }
         }
-        if (GUI.model.running != RunState.stopped) {
-            return;
-        }
         for (Vertex vertex : vertices) {
             if (vertex.isNearPoint(x, y, newRadius)) {
                 return;
             }
         }
-        createVertex(x, y, getNewVertexID());
+        if (GUI.model.running == RunState.running) {
+            GUI.model.pause();
+            GUI.controls.canvas.repaint();
+        } else if (GUI.model.running == RunState.paused) {
+            GUI.model.start();
+            GUI.controls.canvas.repaint();
+        } else {
+            createVertex(x, y, getNewVertexID());
+        }
         canvas.repaint();
     }
 

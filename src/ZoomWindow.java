@@ -51,10 +51,11 @@ public class ZoomWindow implements Drawable {
         }
         vertex.draw(g, offsetX, offsetY, zoom, false);
         for (int i = 0; i < n; i++) {
-            String caption = Canvas.shorten(g, ((Integer) neigh.get(i).getID()).toString(), 10,
+            /*String caption = Canvas.shorten(g, ((Integer) neigh.get(i).getID()).toString(), 20,
                     Preference.begin);
             if (caption.endsWith(".."))
-                caption = "V";
+                caption = "V";*/
+            String caption = ((Integer) neigh.get(i).getID()).toString();
             g.setFont(new Font(Font.DIALOG, Font.BOLD, (int) 15));
             int rX = centerX
                     + (int) ((vertex.getRadius() - 1.5) * zoom * Math.sin(i * 2 * Math.PI / n)), rY = centerY
