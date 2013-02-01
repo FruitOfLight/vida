@@ -88,6 +88,59 @@ public class Vertex {
 
     }
 
+    public void zoomDraw(Graphics g) {
+        int edgeHeight = 20;
+        int indent = 25;
+        int width = CONST.zoomWindowWidth - 2 * indent, height = CONST.zoomWindowHeight - 2
+                * indent;
+        g.setColor(new Color(0, 255, 0));
+        g.fillRect(indent, indent, width, height);
+        g.setColor(new Color(0, 0, 0));
+        g.drawRect(indent, indent, width, height);
+        g.drawLine(indent, indent + edgeHeight, width + indent, indent + edgeHeight);
+        g.drawLine(indent, height + indent - edgeHeight, width + indent, height + indent
+                - edgeHeight);
+        ArrayList<Vertex> neigh = new ArrayList<Vertex>();
+        for (Edge edge : edges) {
+            if (!neigh.contains(edge.to))
+                neigh.add(edge.to);
+        }
+        int n = neigh.size();
+        int up = n / 2, down = n / 2 + n % 2;
+        for (int i = 0; i < up - 1; i++) {
+            g.drawLine(indent + (i + 1) * (width / up), indent, indent + (i + 1) * (width / up),
+                    indent + edgeHeight);
+        }
+        for (int i = 0; i < down - 1; i++) {
+            g.drawLine(indent + (i + 1) * (width / down), CONST.zoomWindowHeight - indent
+                    - edgeHeight, indent + (i + 1) * (width / down), CONST.zoomWindowHeight
+                    - indent);
+        }
+        for (int i = 0; i < up; i++) {
+            g.setFont(new Font(null, Font.PLAIN, edgeHeight));
+            String caption = ((Integer) neigh.get(i).getID()).toString();
+            int textWidth = g.getFontMetrics().stringWidth(caption);
+            int boxWidth = width / up;
+            g.drawString(((Integer) neigh.get(i).getID()).toString(), indent + i * boxWidth
+                    + (boxWidth - textWidth) / 2, indent + edgeHeight - 1);
+            g.drawLine(indent + i * boxWidth + boxWidth / 2, indent, indent + i * boxWidth
+                    + boxWidth / 2, 0);
+        }
+        for (int i = 0; i < down; i++) {
+            g.setFont(new Font(null, Font.PLAIN, edgeHeight));
+            String caption = ((Integer) neigh.get(up + i).getID()).toString();
+            int textWidth = g.getFontMetrics().stringWidth(caption);
+            int boxWidth = width / down;
+            g.drawString(((Integer) neigh.get(up + i).getID()).toString(), indent + i * boxWidth
+                    + (boxWidth - textWidth) / 2, CONST.zoomWindowHeight - indent - 1);
+            g.drawLine(indent + i * boxWidth + boxWidth / 2, CONST.zoomWindowHeight - indent,
+                    indent + i * boxWidth + boxWidth / 2, CONST.zoomWindowHeight);
+        }
+        g.setFont(new Font(null, Font.PLAIN, 15));
+        g.drawString("ID: " + ((Integer) this.getID()).toString(), indent + 5, indent + edgeHeight
+                + 15);
+    }
+
     public boolean isOnPoint(double x, double y) {
         return isNearPoint(x, y, 0.0);
     }
