@@ -25,9 +25,11 @@ public class InformationPanel {
         panel.setText("");
     }
 
-    public void printInformation(Vertex vertex, String information) {
-        scrollPanel.setFont(new Font(null, Font.PLAIN, 12));
-        panel.append(((Integer) vertex.getID()).toString() + " say: " + information + "\n");
+    public synchronized void printInformation(Vertex vertex, String information) {
+        panel.setFont(new Font(null, Font.PLAIN, 13));
+        panel.append(((Integer) vertex.getID()).toString() + " say: ");
+        panel.append(information + "\n");
         panel.setCaretPosition(panel.getDocument().getLength());
     }
+
 }
