@@ -39,22 +39,47 @@ namespace Messager {
             str->clear();
             while(scanf("%c",&ch)>0 && ch!='\n') (*str) += ch;
         }
+
+        // zmaze so spravy 
+        void clean(string *str){
+        }
     }
 
+    // kazda prijata sprava sa ohlasi fuknciou 'func'
     void setMessageListener(MFunc func){
         details::mFunc = func;
     }
+
+    // ked ma program zacat bezat, zavola sa 'func'
     void setInitListener(IFunc func){
         details::iFunc = func;
     }
-    void sendMessage(int port, const string &str){
-        printf("@ %d : %s\n", port, str.c_str());
+
+    // posli spravu po porte 'port' s textom 'str'
+    // 'str' moze obsahovat len alfanumericke znaky a medzery
+    //   s vyjnimkou ze viete, co robite
+    //
+    // nepovinny parameter 'color' nastavi sprave farbu
+    //   priklad biela = 'FFFFFF'  
+    void sendMessage(int port, const string &str, const string &color = ""){
+        printf("@ %d :", port);
+        // znak $ znamena, ze podplatime spravu aby nieco spravila
+        if (color.size()>0) printf(" $C%s", color.c_str());
+        printf(" %s\n", str.c_str());
         fflush(stdout);
     }
+
+    // oznami, ze premenna 'name' zmenila hotnotu na 'value'
+    void sendValue(const string &name, const string & value){
+        printf("$ %s : %s\n", name.c_str(), value.c_str());
+    }
+
     void sendInformation(const string &str){
         printf("# %s\n",str.c_str());
         fflush(stdout);
     }
+
+    // spusti pocuvanie
     void run();
 };
 
@@ -76,13 +101,12 @@ void Messager::run(){
                     scanf("%d", &portid);
                     Property::ports.push_back(portid);
                 }
+            } else if(!strcmp(str,"id")) {
+                int _id;
+                scanf(" : %d",&_id);
+                Property::id = _id;
             } else if (!strcmp(str,"start")){
                 iFunc();
-            }
-            else if(!strcmp(str,"id")) {
-                int ID;
-                scanf(" : %d",&ID);
-                Property::id = ID;
             }
             readline();
         }
@@ -90,6 +114,7 @@ void Messager::run(){
             int port = -1;
             scanf("%d : ", &port);
             readline(&line);
+            clean(&line);
             mFunc(port, line);
         }
         else if(ch == '!') {
