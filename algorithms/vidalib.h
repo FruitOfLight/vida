@@ -79,6 +79,11 @@ void Messager::run(){
             } else if (!strcmp(str,"start")){
                 iFunc();
             }
+            else if(!strcmp(str,"id")) {
+                int ID;
+                scanf(" : %d",&ID);
+                Property::id = ID;
+            }
             readline();
         }
         else if(ch == '@') {

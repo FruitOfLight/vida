@@ -35,9 +35,8 @@ void recieve(int port, string message) {
 
 void init(){
     freePorts = ports.size();
-    char inf[100];
-    sprintf(inf,"My ID: %d",myID);
-    sendInformation(string(inf));
+    myID = id;
+    maximalID = myID;
     for(int i=0; i<ports.size(); i++)
     {
         char buffer[100];
@@ -47,10 +46,6 @@ void init(){
 }
 
 int main(){
-    srand(time(NULL)+getpid());
-    int randid = rand()%1000;
-    myID = randid;
-    maximalID = myID;
 
     setInitListener(init);
     setMessageListener(recieve);
