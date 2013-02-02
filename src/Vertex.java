@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.JOptionPane;
 
@@ -68,11 +69,6 @@ public class Vertex {
     }
 
     public Map<String, Integer> watchVariables;
-
-    public void addVariable(String name, Integer value) {
-        watchVariables.put(name, value);
-        GUI.zoomWindow.canvas.repaint();
-    }
 
     public void setVariable(String name, Integer value) {
         watchVariables.remove(name);
@@ -163,10 +159,10 @@ public class Vertex {
         g.setFont(new Font(null, Font.PLAIN, 15));
         g.drawString("ID: " + ((Integer) this.getID()).toString(), indent + 5, indent + edgeHeight
                 + 15);
-        Iterator it = watchVariables.entrySet().iterator();
+        Iterator<Entry<String, Integer>> it = watchVariables.entrySet().iterator();
         int count = 2;
         while (it.hasNext()) {
-            Map.Entry<String, Integer> me = (Map.Entry) it.next();
+            Map.Entry<String, Integer> me = it.next();
             g.drawString(me.getKey() + ": " + ((Integer) me.getValue()).toString(), indent + 5,
                     indent + edgeHeight + 15 * count);
             count++;

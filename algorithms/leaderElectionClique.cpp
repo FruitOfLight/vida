@@ -22,14 +22,14 @@ void recieve(int port, string message) {
     if(getValue("maximalID")<ID) {
         setValue("maximalID",ID);
         char inf[100];
-        sprintf(inf,"I recieve bigger ID, leader will be: %d",ID);
+        sprintf(inf,"I've recieved bigger ID, leader will be: %d",ID);
         sendInformation(string(inf));
     }
     freePorts--;
     if(freePorts==0)
     {
         char inf[100];
-        sprintf(inf,"Leader have ID: %d, God bless king",getValue("maximalID"));
+        sprintf(inf,"Leader has ID: %d, God bless king",getValue("maximalID"));
         sendInformation(string(inf));
     }
 }
@@ -37,7 +37,7 @@ void recieve(int port, string message) {
 void init(){
     freePorts = ports.size();
     myID = id;
-    addVariable("maximalID",myID);
+    setValue("maximalID",myID);
     for(int i=0; i<ports.size(); i++)
     {
         char buffer[100];

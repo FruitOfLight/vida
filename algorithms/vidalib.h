@@ -27,25 +27,19 @@ namespace Property {
 }
 
 namespace WatchVariables {
-
-    map<string,int> variables;
-
-    void addVariable(string name, int value) {
-        variables.insert(make_pair(name,value));
-        printf("Wa %s : %d\n",name.c_str(),value);
-        fflush(stdout);
+    namespace details{
+        map<string,int> variables;
     }
 
     int getValue(string name) {
-        return variables[name];
+        return details::variables[name];
     }
 
     void setValue(string name, int value) {
-        variables[name]=value;
-        printf("Wc %s : %d\n",name.c_str(),value);
+        details::variables[name]=value;
+        printf("$ %s : %d\n",name.c_str(),value);
         fflush(stdout);
-    }
-
+    } 
 }
 
 namespace Messager {
@@ -63,8 +57,16 @@ namespace Messager {
             while(scanf("%c",&ch)>0 && ch!='\n') (*str) += ch;
         }
 
-        // zmaze so spravy 
-        void clean(string *str){
+        // zmaze zo spravy $ 
+        string clean(string str){
+            string res = "";
+            bool active = true;
+            For(i, str.size()-1) {
+                if (str[i]=='$') active = false;
+                if (!active) res+=str[i];
+                if (str[i]==' ') active = true;                
+            }
+            return res;            
         }
     }
 
@@ -90,11 +92,6 @@ namespace Messager {
         if (color.size()>0) printf(" $C%s", color.c_str());
         printf(" %s\n", str.c_str());
         fflush(stdout);
-    }
-
-    // oznami, ze premenna 'name' zmenila hotnotu na 'value'
-    void sendValue(const string &name, const string & value){
-        printf("$ %s : %s\n", name.c_str(), value.c_str());
     }
 
     void sendInformation(const string &str){
@@ -137,7 +134,7 @@ void Messager::run(){
             int port = -1;
             scanf("%d : ", &port);
             readline(&line);
-            clean(&line);
+            line = clean(line);
             mFunc(port, line);
         }
         else if(ch == '!') {
