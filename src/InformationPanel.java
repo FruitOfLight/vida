@@ -1,16 +1,18 @@
 import java.awt.Color;
-import java.awt.Font;
 
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+import javax.swing.text.Document;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 
 public class InformationPanel {
 
-    public JTextArea panel;
+    public JTextPane panel;
     public JScrollPane scrollPanel;
 
     public InformationPanel() {
-        panel = new JTextArea();
+        panel = new JTextPane();
         scrollPanel = new JScrollPane(panel);
         settings();
     }
@@ -26,10 +28,20 @@ public class InformationPanel {
     }
 
     public synchronized void printInformation(Vertex vertex, String information) {
-        panel.setFont(new Font(null, Font.PLAIN, 13));
-        panel.append(((Integer) vertex.getID()).toString() + " say: ");
-        panel.append(information + "\n");
-        panel.setCaretPosition(panel.getDocument().getLength());
+        try {
+            SimpleAttributeSet attributeSet = new SimpleAttributeSet();
+            StyleConstants.setBold(attributeSet, true);
+            StyleConstants.setFontSize(attributeSet, 13);
+            panel.setCharacterAttributes(attributeSet, true);
+            Document document = panel.getStyledDocument();
+            document.insertString(document.getLength(), ((Integer) vertex.getID()).toString()
+                    + " say: ", attributeSet);
+            StyleConstants.setBold(attributeSet, false);
+            panel.setCharacterAttributes(attributeSet, true);
+            document = panel.getStyledDocument();
+            document.insertString(document.getLength(), information + "\n", attributeSet);
+            panel.setCaretPosition(panel.getDocument().getLength());
+        } catch (Exception e) {
+        }
     }
-
 }
