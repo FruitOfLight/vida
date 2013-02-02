@@ -63,7 +63,7 @@ namespace Messager {
             bool active = true;
             For(i, str.size()-1) {
                 if (str[i]=='$') active = false;
-                if (!active) res+=str[i];
+                if (active) res+=str[i];
                 if (str[i]==' ') active = true;                
             }
             return res;            
