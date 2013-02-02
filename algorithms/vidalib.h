@@ -99,6 +99,11 @@ namespace Messager {
         fflush(stdout);
     }
 
+    void sendVertexColorChange(const string &str) {
+        printf("+ %s\n",str.c_str());
+        fflush(stdout);
+    }
+
     // spusti pocuvanie
     void run();
 };

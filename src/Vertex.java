@@ -13,6 +13,7 @@ public class Vertex {
 
     private double x, y, radius;
     private int ID;
+    private Color color;
 
     // @formatter:off
 	public int getID() {
@@ -39,6 +40,14 @@ public class Vertex {
 		this.x = x;
 		this.y = y;
 	}
+	
+	public Color getColor() {
+	    return color;
+	}
+	
+	public void setColor(Color color) {
+	    this.color = color;
+	}
 
 	// @formatter:on
 
@@ -56,6 +65,7 @@ public class Vertex {
         this.ID = ID;
         radius = CONST.vertexSize;
         watchVariables = new HashMap<String, Integer>();
+        color = new Color(0, 255, 0);
     }
 
     void send(Message message) {
@@ -85,7 +95,7 @@ public class Vertex {
         int rY = (int) (offsety + (y - radius) * zoom);
         int rR = (int) (radius * zoom * 2);
 
-        g.setColor(new Color(0, 255, 0));
+        g.setColor(color);
         g.fillOval(rX, rY, rR, rR);
         g.setColor(new Color(0, 0, 0));
         g.drawOval(rX, rY, rR, rR);

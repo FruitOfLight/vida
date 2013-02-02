@@ -31,6 +31,15 @@ void recieve(int port, string message) {
         char inf[100];
         sprintf(inf,"Leader has ID: %d, God bless king",getValue("maximalID"));
         sendInformation(string(inf));
+        char color[100];
+        if(myID == getValue("maximalID")) {
+            sprintf(color,"50,50,255");
+            sendVertexColorChange(string(color));
+        }
+        else {
+            sprintf(color,"255,0,0");
+            sendVertexColorChange(string(color));
+        }
     }
 }
 
