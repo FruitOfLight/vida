@@ -31,6 +31,7 @@ public class GUI {
     static MessageQueue messageQueue;
     static GlobalKeyListener gkl;
     static ZoomWindow zoomWindow;
+    static InformationPanel informationPanel;
 
     static void addElement(Container to, Component what, int x, int y, int w, int h) {
         what.setLocation(x, y);
@@ -83,6 +84,8 @@ public class GUI {
             addElement(frame, zoomWindow.canvas, CONST.graphWidth, CONST.menuHeight
                     + CONST.queueHeight + CONST.graphHeight / 2, CONST.zoomWindowWidth,
                     CONST.zoomWindowHeight);
+            addElement(frame, informationPanel.scrollPanel, CONST.graphWidth, CONST.menuHeight
+                    + CONST.queueHeight, CONST.informationWidth, CONST.informationHeight);
 
             frame.setSize(CONST.windowWidth, CONST.windowHeight);
             frame.setResizable(false);
@@ -153,6 +156,7 @@ public class GUI {
         graph.messages = MessageQueue.getInstance();
         gkl = new GlobalKeyListener();
         zoomWindow = new ZoomWindow();
+        informationPanel = new InformationPanel();
         final Window window = new Window();
         SwingUtilities.invokeLater(window);
         loadApp();

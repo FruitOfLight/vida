@@ -51,6 +51,10 @@ namespace Messager {
         printf("@ %d : %s\n", port, str.c_str());
         fflush(stdout);
     }
+    void sendInformation(const string &str){
+        printf("# %s\n",str.c_str());
+        fflush(stdout);
+    }
     void run();
 };
 
@@ -85,7 +89,7 @@ void Messager::run(){
         }
         else if(ch == '!') {
             readline();
-        }    
+        }
     }
 }
 

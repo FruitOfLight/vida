@@ -48,6 +48,12 @@ public class Program extends Thread {
                     String[] parts = line.substring(1).split(":", 2);
                     send(Integer.parseInt(parts[0].trim()), parts[1].trim());
                 }
+                if (line.charAt(0) == '#') {
+                    String[] parts = line.substring(1).split(":", 2);
+                    GUI.informationPanel.printInformation(vertex,
+                            parts[0].trim() + " " + parts[1].trim());
+                    System.out.println(parts[0].trim() + " " + parts[1].trim());
+                }
             }
             out.close();
         } catch (Exception e) {

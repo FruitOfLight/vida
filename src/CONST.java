@@ -13,6 +13,8 @@ public class CONST {
     public static final int controlsWidth = 700;
     public static final int zoomWindowWidth = 300;
     public static final int zoomWindowHeight = 250;
+    public static final int informationWidth = 300;
+    public static final int informationHeight = 250;
 
     // Graph
     public static final int vertexSize = 10;
