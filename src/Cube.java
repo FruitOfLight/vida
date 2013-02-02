@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class Cube {
@@ -70,31 +71,35 @@ public class Cube {
         // TODO
     }
 
+    private static final ArrayList<Cube> cubes = new ArrayList<Cube>();
+
     public static Collection<Cube> getAllCubes() {
-        //TODO
-        return null;
+        return cubes;
+    }
+
+    public static void deleteAllCubes() {
+        cubes.clear();
     }
 
     public static void addCube(Message message) {
-        // TODO
-        /*
         int index = 0;
         // TODO zrychlit
-        for (int i = 0; i < mainList.size(); ++i) {
-            if (mainList.get(i).edge == message.edge) {
+        for (int i = 0; i < cubes.size(); ++i) {
+            if (cubes.get(i).message.edge == message.edge) {
                 index = i;
             }
         }
-        if (index < mainList.size()) {
-            index = GUI.random.nextInt(mainList.size() - index) + index + 1;
+        if (index < cubes.size()) {
+            index = GUI.random.nextInt(cubes.size() - index) + index + 1;
         }
-        mainList.add(index, message);
-        message.born(index);
-         */
-
+        Cube cube = new Cube(message);
+        cubes.add(index, cube);
     }
 
-    static boolean swapMessages(int i, int j) {
+    public static void removeCube(int index) {
+    }
+
+    static boolean swap(int i, int j) {
         //TODO
         /*if (mainList.get(i).edge == mainList.get(j).edge) {
             return false;
@@ -105,28 +110,21 @@ public class Cube {
     }
 
     static Cube getCube(double x, double y) {
-        // TODO
-        // zive maju prednost
-        /*for (Message message : mainList) {
-            if (message.state == MessageState.main && message.isOnPoint(x, y)) {
-                return message;
+        Cube chosen = null;
+        for (Cube cube : cubes) {
+            if (cube.isOnPoint(x, y)) {
+                // TODO priority
+                chosen = cube;
             }
         }
-        for (Message message : mainList) {
-            if (message.isOnPoint(x, y)) {
-                return message;
-            }
-        }*/
-        return null;
+        return chosen;
     }
 
     static Cube getCube(int index) {
-        //TODO
-        /*if (index < 0 || index >= mainList.size()) {
+        if (index < 0 || index >= cubes.size()) {
             return null;
         }
-        return mainList.get(index);*/
-        return null;
+        return cubes.get(index);
     }
 
     //private ArrayList<ArrayList<Message>> buckets;

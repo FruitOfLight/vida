@@ -80,6 +80,8 @@ class Message {
     }
 
     public void edgeStep(long time) {
+        ePosition = 0.5;
+
         /*double expectedTime = (1.0 - qSize) / vspeed + qX
                 / (hspeed * MessageQueue.getInstance().getRealSendSpeed());
         if (state == MessageState.dead) {

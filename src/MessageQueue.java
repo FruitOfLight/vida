@@ -112,6 +112,7 @@ public class MessageQueue implements Drawable {
 
     void clear() {
         bornList.clear();
+        Cube.deleteAllCubes();
         canvas.repaint();
     }
 
