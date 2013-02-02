@@ -311,7 +311,7 @@ public class Graph implements Drawable {
                 edgeFrom = edge;
             }
             if (edge.from.equals(to) && edge.to.equals(from)) {
-                edgeFrom = edge;
+                edgeTo = edge;
             }
         }
         if (edgeFrom == null) {
