@@ -7,6 +7,7 @@
 #include<cstring>
 #include<algorithm>
 #include<vector>
+#include <map>
 
 using namespace std;
 
@@ -23,6 +24,28 @@ typedef void (IFunc)();
 namespace Property {
     vi ports;
     int id;
+}
+
+namespace WatchVariables {
+
+    map<string,int> variables;
+
+    void addVariable(string name, int value) {
+        variables.insert(make_pair(name,value));
+        printf("Wa %s : %d\n",name.c_str(),value);
+        fflush(stdout);
+    }
+
+    int getValue(string name) {
+        return variables[name];
+    }
+
+    void setValue(string name, int value) {
+        variables[name]=value;
+        printf("Wc %s : %d\n",name.c_str(),value);
+        fflush(stdout);
+    }
+
 }
 
 namespace Messager {

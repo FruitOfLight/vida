@@ -2,6 +2,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 
@@ -51,6 +54,7 @@ public class Vertex {
         this.y = y;
         this.ID = ID;
         radius = CONST.vertexSize;
+        watchVariables = new HashMap<String, Integer>();
     }
 
     void send(Message message) {
@@ -61,6 +65,19 @@ public class Vertex {
 
     void receive(Message message) {
         program.receive(message);
+    }
+
+    public Map<String, Integer> watchVariables;
+
+    public void addVariable(String name, Integer value) {
+        watchVariables.put(name, value);
+        GUI.zoomWindow.canvas.repaint();
+    }
+
+    public void setVariable(String name, Integer value) {
+        watchVariables.remove(name);
+        watchVariables.put(name, value);
+        GUI.zoomWindow.canvas.repaint();
     }
 
     public void draw(Graphics g, double offsetx, double offsety, double zoom) {
@@ -146,6 +163,14 @@ public class Vertex {
         g.setFont(new Font(null, Font.PLAIN, 15));
         g.drawString("ID: " + ((Integer) this.getID()).toString(), indent + 5, indent + edgeHeight
                 + 15);
+        Iterator it = watchVariables.entrySet().iterator();
+        int count = 2;
+        while (it.hasNext()) {
+            Map.Entry<String, Integer> me = (Map.Entry) it.next();
+            g.drawString(me.getKey() + ": " + ((Integer) me.getValue()).toString(), indent + 5,
+                    indent + edgeHeight + 15 * count);
+            count++;
+        }
     }
 
     public int findFontSize(Graphics g, int boxWidth, int maxSize, String caption) {
