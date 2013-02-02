@@ -54,6 +54,15 @@ public class Program extends Thread {
                             parts[0].trim() + " " + parts[1].trim());
                     System.out.println(parts[0].trim() + " " + parts[1].trim());
                 }
+                if (line.charAt(0) == 'W') {
+                    if (line.charAt(1) == 'a') {
+                        String parts[] = line.substring(2).split(":", 2);
+                        vertex.addVariable(parts[0].trim(), Integer.parseInt(parts[1].trim()));
+                    } else {
+                        String parts[] = line.substring(2).split(":", 2);
+                        vertex.setVariable(parts[0].trim(), Integer.parseInt(parts[1].trim()));
+                    }
+                }
             }
             out.close();
         } catch (Exception e) {
