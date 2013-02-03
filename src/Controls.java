@@ -76,6 +76,7 @@ public class Controls implements Drawable {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     GUI.model.stop();
+                    GUI.graph.defaultSettings();
                     GUI.graph.canvas.repaint();
                     canvas.repaint();
                 }

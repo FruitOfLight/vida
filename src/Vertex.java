@@ -68,6 +68,11 @@ public class Vertex {
         color = new Color(0, 255, 0);
     }
 
+    public void defaultSettings() {
+        color = new Color(0, 255, 0);
+        radius = CONST.vertexSize;
+    }
+
     void send(Message message) {
         message.setEdge(edges.get(message.fromPort));
         message.toPort = message.edge.to.edges.indexOf(message.edge.oppositeEdge);

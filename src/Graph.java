@@ -522,4 +522,10 @@ public class Graph implements Drawable {
             }
         }
     }
+
+    public void defaultSettings() {
+        for (Vertex vertex : vertices)
+            vertex.defaultSettings();
+    }
+
 }
