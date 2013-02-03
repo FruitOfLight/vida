@@ -2,12 +2,14 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.Collections;
 
 public class Cube {
     Message message;
     double x, y, xsp, ysp, oldx, oldy;
     double width, height;
-    double gravity, pull;
+    double gravity, pull, depth;
     CubeState state;
 
     Cube(Message message) {
@@ -18,7 +20,9 @@ public class Cube {
         xsp = ysp = 0.;
         gravity = 1;
         pull = 0;
-
+        depth = 0.;
+        y = 0.;
+        x = 5.;
     }
 
     public void draw(Graphics g, double offset, double zoom) {
@@ -63,18 +67,84 @@ public class Cube {
         }
     }
 
+    public void moveByState(long time) {
+        if (state == CubeState.alive) {
+            if (y > 0.0)
+                y = 0.0;
+            //y = Math.max(0.0, y - 0.5 * time * 0.001);
+        }
+        if (state == CubeState.asleep) {
+            if (y < 0.0)
+                y = CONST.queueHeight / MessageQueue.getInstance().zoom - height;
+            message.expectedSpeed = 0.0;
+        }
+        if (state == CubeState.wakeup) {
+
+        }
+        if (state == CubeState.dead) {
+            message.expectedSpeed = 1.0;
+        }
+        if (width < 1.)
+            width += 1 * time * 0.001;
+        if (height < 1.)
+            height += 1 * time * 0.001;
+    }
+
+    public void moveForward(long time) {
+        xsp = MessageQueue.getInstance().getRealSendSpeed();
+        x -= xsp * time * 0.001;
+        message.expectedSpeed = xsp / x;
+        System.out.println("Cube xywh " + x + " " + y + " " + width + " " + height + " ");
+    }
+
+    public void calculateCollisions(long time) {
+
+    }
+
+    public void resolveCollisions(long time) {
+
+    }
+
+    static CubeSorting sortedBy = CubeSorting.none;
+
     public static void stepAll(long time) {
-        // TODO
+        sortBy(CubeSorting.position);
+        for (Cube cube : cubes) {
+            cube.moveByState(time);
+            cube.moveForward(time);
+        }
+        for (Cube cube : cubes) {
+            cube.calculateCollisions(time);
+        }
+        for (Cube cube : cubes) {
+            cube.resolveCollisions(time);
+        }
+        removeDead();
     }
 
     public static void drawAll(Graphics g, double offset, double zoom) {
-        // TODO
+        sortBy(CubeSorting.depth);
+        for (Cube cube : cubes) {
+            cube.draw(g, offset, zoom);
+        }
     }
 
-    private static final ArrayList<Cube> cubes = new ArrayList<Cube>();
+    private static ArrayList<Cube> cubes = new ArrayList<Cube>();
 
     public static Collection<Cube> getAllCubes() {
         return cubes;
+    }
+
+    public static void removeDead() {
+        ArrayList<Cube> newCubes = new ArrayList<Cube>();
+        for (Cube cube : cubes) {
+            if ((cube.state == CubeState.dead) && (cube.message.ePosition >= 1.0 - 1e-3)) {
+                cube.message.recieve();
+            } else {
+                newCubes.add(cube);
+            }
+        }
+        cubes = newCubes;
     }
 
     public static void deleteAllCubes() {
@@ -82,6 +152,7 @@ public class Cube {
     }
 
     public static void addCube(Message message) {
+        sortedBy = CubeSorting.none;
         int index = 0;
         // TODO zrychlit
         for (int i = 0; i < cubes.size(); ++i) {
@@ -97,34 +168,38 @@ public class Cube {
     }
 
     public static void removeCube(int index) {
+        cubes.remove(index);
     }
 
-    static boolean swap(int i, int j) {
-        //TODO
-        /*if (mainList.get(i).edge == mainList.get(j).edge) {
-            return false;
-        }
-        Collections.swap(mainList, i, j);
-        return true;*/
-        return false;
+    public static void removeCube(Cube cube) {
+        cubes.remove(cube);
     }
 
     static Cube getCube(double x, double y) {
         Cube chosen = null;
         for (Cube cube : cubes) {
             if (cube.isOnPoint(x, y)) {
-                // TODO priority
-                chosen = cube;
+                if (chosen == null || chosen.depth < cube.depth)
+                    chosen = cube;
             }
         }
         return chosen;
     }
 
-    static Cube getCube(int index) {
+    static Cube getCube(int index, CubeSorting sort) {
+        sortBy(sort);
         if (index < 0 || index >= cubes.size()) {
             return null;
         }
         return cubes.get(index);
+    }
+
+    static boolean sortBy(CubeSorting sort) {
+        if (sort != CubeSorting.none && sortedBy != sort) {
+            Collections.sort(cubes, sort.getComparator());
+        }
+        Cube.sortedBy = sort;
+        return false;
     }
 
     //private ArrayList<ArrayList<Message>> buckets;
@@ -245,4 +320,31 @@ public class Cube {
 
     */
 
+}
+
+class ComparePosition implements Comparator<Cube> {
+    @Override
+    public int compare(Cube c1, Cube c2) {
+        return Double.compare(c1.x, c2.x);
+    }
+}
+
+class CompareDepth implements Comparator<Cube> {
+    @Override
+    public int compare(Cube c1, Cube c2) {
+        return Double.compare(c1.depth, c2.depth);
+    }
+}
+
+enum CubeSorting {
+    none, position, depth;
+    Comparator<Cube> getComparator() {
+        switch (this) {
+        case position:
+            return new ComparePosition();
+        case depth:
+            return new CompareDepth();
+        }
+        return null;
+    }
 }

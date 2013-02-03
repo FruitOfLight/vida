@@ -7,6 +7,7 @@ class Message {
     Edge edge;
     String rawContent;
     double ePosition, eSpeed;
+    double expectedSpeed;
     Color gColor;
     Cube cube;
 
@@ -80,34 +81,16 @@ class Message {
     }
 
     public void edgeStep(long time) {
-        ePosition = 0.5;
-
-        /*double expectedTime = (1.0 - qSize) / vspeed + qX
-                / (hspeed * MessageQueue.getInstance().getRealSendSpeed());
-        if (state == MessageState.dead) {
-            expectedTime = 0;
-        }
-
-        double expectedSpeed;
-        if (expectedTime < 1e-2) {
-            expectedSpeed = 1;
-        } else {
-            expectedSpeed = (1.0 - ePosition) / expectedTime;
-        }
-        if (expectedSpeed > 1.0) {
-            expectedSpeed = 1.0;
-        }
-
-        eSpeed = expectedSpeed;
+        double eSpeed = expectedSpeed;
         // speed += (expectedSpeed-speed)*(0.01);
         ePosition += eSpeed * time * 0.001;
         if (ePosition >= 1.0) {
             ePosition = 1.0;
         }
-        if (state == MessageState.dead) {
-            MessageQueue.getInstance().deadList.remove(this);
-            edge.to.receive(this);
-        }*/
+    }
+
+    public void recieve() {
+        edge.to.receive(this);
     }
 
 }

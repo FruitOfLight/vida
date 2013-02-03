@@ -76,7 +76,7 @@ public class MessageQueue implements Drawable {
             long delay = time - prevTime;
 
             // Spravy vo fronte
-            Cube.stepAll(delay);
+            getInstance().step(delay);
 
             // Spravy v grafe
             if (getInstance().model.running == RunState.running) {
@@ -145,10 +145,8 @@ public class MessageQueue implements Drawable {
         g.fillRect(0, 0, width, height);
         g.setColor(new Color(0, 0, 0));
         g.drawRect(0, 0, width - 1, height - 1);
-
-        g.fillRect((int) offset - 1, CONST.queueHeight - 20, 2, 20);
-
         Cube.drawAll(g, offset, zoom);
+        g.fillRect((int) offset - 1, CONST.queueHeight - 20, 2, 20);
     }
 
     class QueueListener implements MouseListener, MouseMotionListener, MouseWheelListener {
