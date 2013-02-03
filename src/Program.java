@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
 
 //TODO bugfix, ked program posle na neexistujuci port
 
@@ -63,8 +65,10 @@ public class Program extends Thread {
                             .parseInt(parts[1].trim()), Integer.parseInt(parts[2].trim())));
                 }
                 if (line.charAt(0) == '_') {
-                    vertex.setRadius(vertex.getRadius()
-                            + Math.sqrt(Integer.parseInt(line.substring(1).trim())));
+                    vertex.setRadius(CONST.vertexSize
+                            + 2
+                            * Math.sqrt(vertex.getRadius() - CONST.vertexSize
+                                    + Integer.parseInt(line.substring(1).trim())));
                 }
             }
             out.close();
@@ -98,7 +102,12 @@ public class Program extends Thread {
     public void init() {
         // pocet portov a ich hodnoty
         in.print("* ports : " + ports.size());
-        for (int p : ports) {
+        ArrayList<Integer> portsz = new ArrayList<Integer>();
+        for (Integer i : ports)
+            portsz.add(i);
+        long seed = System.nanoTime();
+        Collections.shuffle(portsz, new Random(seed));
+        for (int p : portsz) {
             in.print(" " + p);
         }
         in.println();

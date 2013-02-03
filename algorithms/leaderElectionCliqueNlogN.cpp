@@ -45,6 +45,7 @@ void recieveHelp(int port, pair<int,int> strength, int port1) {
         return;
     }
     if(getValue("state")==2) setValue("state",0);
+    sendVertexColorChange("255,0,0");
     char buff[100];
     sendInformation("I'm defeated");
     sprintf(buff,"defeat {%d}",port1);
