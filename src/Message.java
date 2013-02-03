@@ -1,15 +1,15 @@
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.ArrayList;
 
 class Message {
     int fromPort;
     int toPort;
     Edge edge;
     String rawContent;
-    MessageState state;
     double ePosition, eSpeed;
+    double expectedSpeed;
     Color gColor;
+    Cube cube;
 
     public Message(int port, String content) {
         this.fromPort = port;
@@ -34,29 +34,6 @@ class Message {
 
     public void setEdge(Edge edge) {
         this.edge = edge;
-    }
-
-    public void queueDraw(Graphics g, double offset, double zoom) {
-        double rX = offset + (qX - qSize) * zoom;
-        double rY = CONST.queueHeight - (qY + qSize) * zoom;
-        double rW = qSize * zoom - 2;
-        double rH = qSize * zoom - 2;
-
-        //System.err.println(" " + rX + " " + rY + " " + rW + " " + rH);
-
-        g.setColor(new Color(200, 255, 200));
-        Canvas.realFillRect(g, rX, rY, rW, rH);
-        if (qX < qSize) {
-            g.setColor(new Color(255, 50, 40));
-            Canvas.realFillRect(g, rX, rY, offset - rX, rH);
-        }
-        g.setColor(new Color(0, 0, 0));
-        Canvas.realDrawRect(g, rX, rY, rW, rH);
-
-        drawInfo(g, (int) rX, (int) rY, (int) rW, (int) rH);
-
-        g.setColor(gColor);
-        Canvas.realFillRect(g, rX, rY - 1, rW, 3);
     }
 
     public void drawInfo(Graphics g, int rX, int rY, int rW, int rH) {
@@ -104,140 +81,19 @@ class Message {
     }
 
     public void edgeStep(long time) {
-        double expectedTime = (1.0 - qSize) / vspeed + qX
-                / (hspeed * MessageQueue.getInstance().getRealSendSpeed());
-        if (state == MessageState.dead) {
-            expectedTime = 0;
-        }
-
-        double expectedSpeed;
-        if (expectedTime < 1e-2) {
-            expectedSpeed = 1;
-        } else {
-            expectedSpeed = (1.0 - ePosition) / expectedTime;
-        }
-        if (expectedSpeed > 1.0) {
-            expectedSpeed = 1.0;
-        }
-
-        eSpeed = expectedSpeed;
+        double eSpeed = Math.min(CONST.messageSpeedLimit, expectedSpeed);
         // speed += (expectedSpeed-speed)*(0.01);
         ePosition += eSpeed * time * 0.001;
         if (ePosition >= 1.0) {
             ePosition = 1.0;
         }
-        if (state == MessageState.dead) {
-            MessageQueue.getInstance().deadList.remove(this);
-            edge.to.receive(this);
+        if (ePosition <= 0.0) {
+            ePosition = 0.0;
         }
     }
 
-    double qX, qY, qSpeed;
-    double qSize;
-    double blockingQx;
-    static final double vspeed = 50;
-    static final double hspeed = 50;
-    static final double faraway = 1e10;
-
-    public void born(int index) {
-        state = MessageState.born;
-        ePosition = eSpeed = 0.0;
-        qSpeed = 0.0;
-        qY = 0.0;
-        qX = index > 0 ? MessageQueue.getInstance().mainList.get(index - 1).qX : 5.0;
-        qSize = 0.0;
-    }
-
-    public void queueStep(long time, int index) {
-        Message prev = index > 0 ? MessageQueue.getInstance().mainList.get(index - 1) : null;
-        if (prev == null) {
-            blockingQx = -faraway;
-        } else {
-            blockingQx = Math.max(prev.qX, prev.blockingQx);
-        }
-        if (state == MessageState.born) {
-            qSize += vspeed * time * 0.001 * MessageQueue.getInstance().getRealSendSpeed();
-            if (qSize > 1.0) {
-                qSize = 1.0;
-                state = MessageState.main;
-            }
-        }
-        if (state == MessageState.main) {
-            moveForward(time, index);
-            if (qX < 0.0) {
-                MessageQueue.getInstance().mainList.remove(index);
-                MessageQueue.getInstance().deadList.add(this);
-                state = MessageState.dead;
-            }
-        }
-        if (state == MessageState.sleep) {
-            qY = CONST.queueHeight / MessageQueue.getInstance().zoom - qSize;
-        } else {
-            qY = 0.0;
-        }
-        if (state == MessageState.dead) {
-
-        }
-    }
-
-    void moveForward(long time, int index) {
-        Message prev = index > 0 ? MessageQueue.getInstance().mainList.get(index - 1) : null;
-        double shift = hspeed * time * 0.001 * MessageQueue.getInstance().getRealSendSpeed();
-
-        if (prev != null && prev.state == MessageState.sleep && (qX < prev.qX + qSize + shift)) {
-            boolean success = MessageQueue.getInstance().swapMessages(index - 1, index);
-            if (!success && (blockingQx + qSize < qX)) {
-                state = MessageState.sleep;
-            }
-        }
-        if (blockingQx + qSize < qX) {
-            if (MessageQueue.getInstance().model.running == RunState.running) {
-                qX -= shift;
-                qY = 0.0;
-            }
-        } else {
-            if (blockingQx + qSize - qX < shift) {
-                qX = blockingQx + qSize;
-            } else {
-                qX += shift;
-                qY = 0.1;
-            }
-        }
-    }
-
-    public ArrayList<Message> getCollidedMessages() {
-        ArrayList<Message> list = new ArrayList<Message>();
-        for (int i = -1; i <= 1; ++i) {
-            for (Message message : MessageQueue.getInstance().getBucket(qX + i))
-                if (collide(message, this))
-                    list.add(message);
-        }
-        return list;
-    }
-
-    static boolean collide(Message m1, Message m2) {
-        return (Math.max(m1.qX - m1.qSize, m2.qX - m2.qSize) < Math.min(m1.qX, m2.qX));
-    }
-
-    public boolean isOnPoint(double x, double y) {
-        if (x < qX - qSize || x > qX) {
-            return false;
-        }
-        if (y > qY + qSize || y < qY) {
-            return false;
-        }
-        return true;
-    }
-
-    public void onClick() {
-        if (state == MessageState.sleep) {
-            state = MessageState.main;
-            return;
-        }
-        if (state == MessageState.main) {
-            state = MessageState.sleep;
-            return;
-        }
+    public void recieve() {
+        edge.to.receive(this);
     }
 
 }
