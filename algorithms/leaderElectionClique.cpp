@@ -15,12 +15,9 @@ using namespace WatchVariables;
 int maximalID,myID,freePorts;
 
 void recieve(int port, string message) {
-    int ID = 0;
-    for(int i=0; i<message.length(); i++) {
-        if(message[i]>='0' && message[i]<='9') {ID*=10; ID+=message[i]-'0';}
-    }
-    if(getValue("maximalID")<ID) {
-        setValue("maximalID",ID);
+    int ID = strToInt(message);
+    if(getIValue("maximalID")<ID) {
+        setIValue("maximalID",ID);
         char inf[100];
         sprintf(inf,"I've recieved bigger ID, leader will be: %d",ID);
         sendInformation(string(inf));
@@ -29,16 +26,14 @@ void recieve(int port, string message) {
     if(freePorts==0)
     {
         char inf[100];
-        sprintf(inf,"Leader has ID: %d, God bless king",getValue("maximalID"));
+        sprintf(inf,"Leader has ID: %d, God bless king",getIValue("maximalID"));
         sendInformation(string(inf));
         char color[100];
-        if(myID == getValue("maximalID")) {
-            sprintf(color,"50,50,255");
-            sendVertexColorChange(string(color));
+        if(myID == getIValue("maximalID")) {
+            setSValue("_vertex_color","50,50,255");
         }
         else {
-            sprintf(color,"255,0,0");
-            sendVertexColorChange(string(color));
+            setSValue("_vertex_color","255,0,0");
         }
     }
 }
@@ -46,7 +41,7 @@ void recieve(int port, string message) {
 void init(){
     freePorts = ports.size();
     myID = id;
-    setValue("maximalID",myID);
+    setIValue("maximalID",myID);
     for(int i=0; i<ports.size(); i++)
     {
         char buffer[100];
@@ -56,7 +51,6 @@ void init(){
 }
 
 int main(){
-
     setInitListener(init);
     setMessageListener(recieve);
 

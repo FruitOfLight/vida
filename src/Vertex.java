@@ -16,44 +16,16 @@ public class Vertex {
     private Color color;
 
     // @formatter:off
-	public int getID() {
-		return ID;
-	}
-
-	public void setID(int ID) {
-		this.ID = ID;
-	}
-
-	public double getX() {
-		return x;
-	}
-
-	public double getY() {
-		return y;
-	}
-
-	public double getRadius() {
-		return radius;
-	}
-
-	public void move(double x, double y) {
-		this.x = x;
-		this.y = y;
-	}
-	
-	public Color getColor() {
-	    return color;
-	}
-	
-	public void setColor(Color color) {
-	    this.color = color;
-	}
-	
-	public void setRadius(double radius) {
-	    this.radius = radius;
-	}
-
-	// @formatter:on
+    public int getID() { return ID; }
+    public void setID(int ID) { this.ID = ID; }
+    public double getX() { return x; }
+    public double getY() { return y; }
+    public double getRadius() { return radius; }
+    public void move(double x, double y) { this.x = x; this.y = y; }
+    public Color getColor() { return color; }
+    public void setColor(Color color) { this.color = color; }
+    public void setRadius(double radius) { this.radius = radius; }
+    // @formatter:on
 
     ArrayList<Edge> edges;
     Program program;
@@ -89,9 +61,23 @@ public class Vertex {
 
     public Map<String, Integer> watchVariables;
 
-    public void setVariable(String name, Integer value) {
-        watchVariables.remove(name);
-        watchVariables.put(name, value);
+    public void setVariable(String name, String value) {
+        // TODO Fuj object hore nechceme, ale toto je len provizorne riesenie 
+        if (name.charAt(0) == '_') {
+            if (name.equals("_vertex_color")) {
+                String parts[] = value.split(",", 3);
+                setColor(new Color(Integer.parseInt(parts[0].trim()), Integer.parseInt(parts[1]
+                        .trim()), Integer.parseInt(parts[2].trim())));
+            }
+            if (name.equals("_vertex_size")) {
+                setRadius(CONST.vertexSize
+                        + 2
+                        * Math.sqrt(getRadius() - CONST.vertexSize + Integer.parseInt(value.trim())));
+            }
+        } else {
+            watchVariables.remove(name);
+            watchVariables.put(name, Integer.parseInt(value));
+        }
         GUI.zoomWindow.canvas.repaint();
     }
 

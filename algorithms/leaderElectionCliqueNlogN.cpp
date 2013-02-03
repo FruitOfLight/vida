@@ -18,34 +18,34 @@ using namespace WatchVariables;
 int wait,conquerer;
 
 void recieveCapture(int port, pair<int,int> strength) {
-    if(getValue("state")!=1 && strength>make_pair(getValue("level"),id)) {
+    if(getIValue("state")!=1 && strength>make_pair(getIValue("level"),id)) {
         char inf[100];
         sprintf(inf,"I'm captured by ID %d with level %d",strength.second,strength.first);
         sendInformation(string(inf));
-        setValue("state",1);
-        setValue("parent",port);
-        setValue("leader",0);
-        sendVertexColorChange("255,0,0");
+        setIValue("state",1);
+        setIValue("parent",port);
+        setIValue("leader",0);
+        setSValue("_vertex_color", "255,0,0");
         sendMessage(port,"accept");
     }
-    else if(getValue("state")==1) {
+    else if(getIValue("state")==1) {
         char inf[100];
         sprintf(inf,"I need help from my boss");
         sendInformation(string(inf));
         char buff[100];
         sprintf(buff,"help {%d,%d} %d,",strength.first,strength.second,port);
-        sendMessage(getValue("parent"),string(buff));
+        sendMessage(getIValue("parent"),string(buff));
     }
 }
 
 void recieveHelp(int port, pair<int,int> strength, int port1) {
-    if(strength<make_pair(getValue("level"),id)) {
+    if(strength<make_pair(getIValue("level"),id)) {
         sendInformation("We won");
         sendMessage(port,"victory");
         return;
     }
-    if(getValue("state")==2) setValue("state",0);
-    sendVertexColorChange("255,0,0");
+    if(getIValue("state")==2) setIValue("state",0);
+    setSValue("_vertex_color", "255,0,0");
     char buff[100];
     sendInformation("I'm defeated");
     sprintf(buff,"defeat {%d}",port1);
@@ -53,31 +53,31 @@ void recieveHelp(int port, pair<int,int> strength, int port1) {
 }
 
 void recieveAccept(int port) {
-    if(getValue("state")!=2) return ;
-    setValue("level",getValue("level")+1);
+    if(getIValue("state")!=2) return ;
+    setIValue("level",getIValue("level")+1);
     char inf[100];
-    sprintf(inf,"I get subordinate, my actual level is %d",getValue("level"));
-    int p=getValue("level");
+    sprintf(inf,"I get subordinate, my actual level is %d",getIValue("level"));
+    int p=getIValue("level");
     vector<char> A;
     if(p==0) A.push_back('0');
     char num[100];
-    sprintf(num,"%d",getValue("level"));
-    sendVertexRadiusChange(string(num));
-    if(getValue("level")==ports.size()) {
+    sprintf(num,"%d",getIValue("level"));
+    setSValue("_vertex_size",string(num));
+    if(getIValue("level")==ports.size()) {
         sendInformation("I'm the leader");
         return ;
     }
     char buffer[100];
-    sprintf(buffer,"capture {%d,%d}",getValue("level"),id);
-    wait = getValue("level");
-    sendMessage(ports[getValue("level")],string(buffer));
+    sprintf(buffer,"capture {%d,%d}",getIValue("level"),id);
+    wait = getIValue("level");
+    sendMessage(ports[getIValue("level")],string(buffer));
 }
 
 void recieveDefeat(int port, int port1) {
     char inf[100];
     sprintf(inf,"I'm captured");
     sendInformation(string(inf));
-    setValue("parent",port1);
+    setIValue("parent",port1);
     sendMessage(port1,"accept");
 }
 
@@ -125,12 +125,12 @@ void recieve(int port, string message) {
 }
 
 void init(){
-    setValue("level",0);
-    setValue("parent",-1);
-    setValue("leader",-1);
-    setValue("state",2);
+    setIValue("level",0);
+    setIValue("parent",-1);
+    setIValue("leader",-1);
+    setIValue("state",2);
     char buffer[100];
-    sprintf(buffer,"capture {%d,%d}",getValue("level"),id);
+    sprintf(buffer,"capture {%d,%d}",getIValue("level"),id);
     wait = 0;
     sendMessage(ports[0],string(buffer));
 }

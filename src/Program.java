@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -57,19 +56,19 @@ public class Program extends Thread {
                 }
                 if (line.charAt(0) == '$') {
                     String parts[] = line.substring(1).split(":", 2);
-                    vertex.setVariable(parts[0].trim(), Integer.parseInt(parts[1].trim()));
+                    vertex.setVariable(parts[0].trim(), parts[1].trim());
                 }
-                if (line.charAt(0) == '+') {
-                    String parts[] = line.substring(1).split(",", 3);
-                    vertex.setColor(new Color(Integer.parseInt(parts[0].trim()), Integer
-                            .parseInt(parts[1].trim()), Integer.parseInt(parts[2].trim())));
+                /*if (line.charAt(0) == '+') {
+                String parts[] = line.substring(1).split(",", 3);
+                vertex.setColor(new Color(Integer.parseInt(parts[0].trim()), Integer
+                        .parseInt(parts[1].trim()), Integer.parseInt(parts[2].trim())));
                 }
                 if (line.charAt(0) == '_') {
-                    vertex.setRadius(CONST.vertexSize
-                            + 2
-                            * Math.sqrt(vertex.getRadius() - CONST.vertexSize
-                                    + Integer.parseInt(line.substring(1).trim())));
-                }
+                vertex.setRadius(CONST.vertexSize
+                        + 2
+                        * Math.sqrt(vertex.getRadius() - CONST.vertexSize
+                                + Integer.parseInt(line.substring(1).trim())));
+                }*/
             }
             out.close();
         } catch (Exception e) {

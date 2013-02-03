@@ -27,19 +27,41 @@ namespace Property {
 }
 
 namespace WatchVariables {
+    // pocuve na mena
+    // _vertex_color e.g. "255,47,42"
+    // _vertex_size e.g. "8"
+
     namespace details{
-        map<string,int> variables;
+        map<string,string> stringVariables;
+        map<string,int> intVariables;
     }
 
-    int getValue(string name) {
-        return details::variables[name];
+    string getSValue(string name) {
+        return details::stringVariables[name];
+    }
+    int getIValue(string name) {
+        return details::intVariables[name];
     }
 
-    void setValue(string name, int value) {
-        details::variables[name]=value;
+    void setSValue(string name, string value) {
+        details::stringVariables[name]=value;
+        printf("$ %s : %s\n",name.c_str(),value.c_str());
+        fflush(stdout);
+    }    
+    void setIValue(string name, int value) {
+        details::intVariables[name]=value;
         printf("$ %s : %d\n",name.c_str(),value);
         fflush(stdout);
-    } 
+    }
+
+    string intToStr(int value){
+        return to_string(value);
+    }
+    int strToInt(string str){
+        int value = 0;
+        For(i, str.size()) if (str[i]>='0' && str[i]<='9') value = value*10+str[i]-'0';
+        return value;
+    }
 }
 
 namespace Messager {
@@ -99,6 +121,7 @@ namespace Messager {
         fflush(stdout);
     }
 
+    /*
     void sendVertexColorChange(const string &str) {
         printf("+ %s\n",str.c_str());
         fflush(stdout);
@@ -108,6 +131,7 @@ namespace Messager {
         printf("_ %s\n",str.c_str());
         fflush(stdout);
     }
+    */
 
     // spusti pocuvanie
     void run();
