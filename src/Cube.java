@@ -12,7 +12,7 @@ public class Cube {
     double gravity, pull, depth;
     CubeState state;
 
-    Cube(Message message) {
+    Cube(Message message, int index) {
         this.message = message;
         state = CubeState.alive;
         width = 0.;
@@ -22,7 +22,17 @@ public class Cube {
         pull = 0;
         depth = 0.;
         y = 0.;
-        x = GUI.random.nextDouble() * 5 + 5.;
+        Cube prev = getCube(index - 1, CubeSorting.position);
+        Cube next = getCube(index + 1, CubeSorting.position);
+        if (prev == null && next == null) {
+            x = 10;
+        } else if (next == null) {
+            x = prev.x + 2;
+        } else if (prev == null) {
+            x = next.x - next.width;
+        } else {
+            x = (prev.x + next.x - next.width) / 2;
+        }
     }
 
     public void draw(Graphics g, double offset, double zoom) {
@@ -182,7 +192,7 @@ public class Cube {
         if (index < cubes.size()) {
             index = GUI.random.nextInt(cubes.size() - index) + index + 1;
         }
-        Cube cube = new Cube(message);
+        Cube cube = new Cube(message, index);
         cubes.add(index, cube);
     }
 
@@ -249,17 +259,7 @@ public class Cube {
         ePosition = eSpeed = 0.0;
         qSpeed = 0.0;
         qY = 0.0;
-        Message prev = MessageQueue.getInstance().safeGet(index - 1);
-        Message next = MessageQueue.getInstance().safeGet(index + 1);
-        if (prev == null && next == null) {
-            qX = 10;
-        } else if (next == null) {
-            qX = prev.qX + 1;
-        } else if (prev == null) {
-            qX = next.qX - next.qSize;
-        } else {
-            qX = (prev.qX + next.qX - next.qSize) / 2;
-        }
+        
 
         qSize = 0.1;
     }
