@@ -104,6 +104,11 @@ namespace Messager {
         fflush(stdout);
     }
 
+    void sendVertexRadiusChange(const string &str) {
+        printf("_ %s\n",str.c_str());
+        fflush(stdout);
+    }
+
     // spusti pocuvanie
     void run();
 };

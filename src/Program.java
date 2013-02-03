@@ -51,9 +51,7 @@ public class Program extends Thread {
                     send(Integer.parseInt(parts[0].trim()), parts[1].trim());
                 }
                 if (line.charAt(0) == '#') {
-                    //String[] parts = line.substring(1).split(":", 2);
                     GUI.informationPanel.printInformation(vertex, line.substring(1).trim());
-                    //System.out.println(parts[0].trim() + " " + parts[1].trim());
                 }
                 if (line.charAt(0) == '$') {
                     String parts[] = line.substring(1).split(":", 2);
@@ -63,6 +61,10 @@ public class Program extends Thread {
                     String parts[] = line.substring(1).split(",", 3);
                     vertex.setColor(new Color(Integer.parseInt(parts[0].trim()), Integer
                             .parseInt(parts[1].trim()), Integer.parseInt(parts[2].trim())));
+                }
+                if (line.charAt(0) == '_') {
+                    vertex.setRadius(vertex.getRadius()
+                            + Math.sqrt(Integer.parseInt(line.substring(1).trim())));
                 }
             }
             out.close();

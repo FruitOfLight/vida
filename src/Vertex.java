@@ -48,6 +48,10 @@ public class Vertex {
 	public void setColor(Color color) {
 	    this.color = color;
 	}
+	
+	public void setRadius(double radius) {
+	    this.radius = radius;
+	}
 
 	// @formatter:on
 
