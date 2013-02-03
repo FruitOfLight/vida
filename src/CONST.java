@@ -24,6 +24,7 @@ public class CONST {
     // Queue
     // o kolko sa zrychli beh, pri stlaceni forward
     public static final double speedFactor = 1.2;
+    public static final double messageSpeedLimit = 1.0;
 
     public static int AnonymToInt(Anonym a) {
         if (a == Anonym.anonymOff)

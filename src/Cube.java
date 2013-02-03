@@ -22,10 +22,12 @@ public class Cube {
         pull = 0;
         depth = 0.;
         y = 0.;
-        x = 5.;
+        x = GUI.random.nextDouble() * 5 + 5.;
     }
 
     public void draw(Graphics g, double offset, double zoom) {
+        if (state == CubeState.dead)
+            return;
         int dx = (int) (offset + (x - width) * zoom);
         int dy = (int) (CONST.queueHeight - (y + height) * zoom);
         int dw = (int) (width * zoom - 2);
@@ -61,7 +63,7 @@ public class Cube {
             state = CubeState.wakeup;
             return;
         }
-        if (state == CubeState.alive) {
+        if (state == CubeState.alive || state == CubeState.wakeup) {
             state = CubeState.asleep;
             return;
         }
@@ -69,40 +71,56 @@ public class Cube {
 
     public void moveByState(long time) {
         if (state == CubeState.alive) {
-            if (y > 0.0)
-                y = 0.0;
+            y = 0.0;
             //y = Math.max(0.0, y - 0.5 * time * 0.001);
         }
         if (state == CubeState.asleep) {
-            if (y < 0.0)
-                y = CONST.queueHeight / MessageQueue.getInstance().zoom - height;
-            message.expectedSpeed = 0.0;
+            y = CONST.queueHeight / MessageQueue.getInstance().zoom - height;
         }
         if (state == CubeState.wakeup) {
-
-        }
-        if (state == CubeState.dead) {
-            message.expectedSpeed = 1.0;
+            state = CubeState.alive;
         }
         if (width < 1.)
-            width += 1 * time * 0.001;
+            width += 0.5 * time * 0.001;
         if (height < 1.)
-            height += 1 * time * 0.001;
+            height += 0.5 * time * 0.001;
     }
 
-    public void moveForward(long time) {
-        xsp = MessageQueue.getInstance().getRealSendSpeed();
-        x -= xsp * time * 0.001;
-        message.expectedSpeed = xsp / x;
-        System.out.println("Cube xywh " + x + " " + y + " " + width + " " + height + " ");
+    public void forceForward(long time) {
+        if (y < 1e-2) {
+            xsp = -20 * MessageQueue.getInstance().getRealSendSpeed();
+        } else {
+            xsp = 0.0;
+        }
+        message.expectedSpeed = (1.0 - message.ePosition) * (-xsp / x);
     }
 
     public void calculateCollisions(long time) {
-
+        for (Cube cube : cubes) {
+            double c = collision(this, cube);
+            //double sign = () ? -1. : 1.;
+            if (c > 0 && x >= cube.x)
+                xsp += (5 * c * c + c) * 2 * MessageQueue.getInstance().getSendSpeed();
+        }
     }
 
-    public void resolveCollisions(long time) {
+    public void step(long time) {
+        x += xsp * time * 0.001;
+        if (x <= 0.) {
+            state = CubeState.dead;
+        }
+        if (state == CubeState.dead) {
+            message.expectedSpeed = CONST.messageSpeedLimit;
+        }
+        if (state == CubeState.asleep) {
+            message.expectedSpeed = 0.0;
+        }
+    }
 
+    static double collision(Cube c1, Cube c2) {
+        if (c1 == c2)
+            return -1.;
+        return Math.min(c1.x, c2.x) - Math.max(c1.x - c1.width, c2.x - c2.width);
     }
 
     static CubeSorting sortedBy = CubeSorting.none;
@@ -111,14 +129,15 @@ public class Cube {
         sortBy(CubeSorting.position);
         for (Cube cube : cubes) {
             cube.moveByState(time);
-            cube.moveForward(time);
+            cube.forceForward(time);
         }
         for (Cube cube : cubes) {
             cube.calculateCollisions(time);
+            cube.step(time);
         }
-        for (Cube cube : cubes) {
-            cube.resolveCollisions(time);
-        }
+        /*        for (Cube cube : cubes) {
+                    
+                }*/
         removeDead();
     }
 
@@ -303,7 +322,7 @@ public class Cube {
              }
              
     }
-
+    
     public ArrayList<Message> getCollidedMessages() {
         ArrayList<Message> list = new ArrayList<Message>();
         for (int i = -1; i <= 1; ++i) {
@@ -313,11 +332,6 @@ public class Cube {
         }
         return list;
     }
-
-    static boolean collide(Message m1, Message m2) {
-        return (Math.max(m1.qX - m1.qSize, m2.qX - m2.qSize) < Math.min(m1.qX, m2.qX));
-    }
-
     */
 
 }

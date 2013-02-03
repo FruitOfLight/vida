@@ -81,11 +81,14 @@ class Message {
     }
 
     public void edgeStep(long time) {
-        double eSpeed = expectedSpeed;
+        double eSpeed = Math.min(CONST.messageSpeedLimit, expectedSpeed);
         // speed += (expectedSpeed-speed)*(0.01);
         ePosition += eSpeed * time * 0.001;
         if (ePosition >= 1.0) {
             ePosition = 1.0;
+        }
+        if (ePosition <= 0.0) {
+            ePosition = 0.0;
         }
     }
 
