@@ -25,11 +25,11 @@ public class Graph implements Drawable {
     int xlast, ylast;
     double oldOffX, oldOffY;
     int preClickX, preClickY;
-    boolean mousePressed;
-    boolean dontClick;
     // pozicia
     double offX, offY;
     double zoom;
+    // 
+    private GraphType type;
 
     // boolean moving = false, deleting = false;
 
@@ -39,8 +39,6 @@ public class Graph implements Drawable {
         setCanvas(new Canvas(this));
         xlast = -1;
         ylast = -1;
-        mousePressed = false;
-        dontClick = false;
         emptyGraph();
     }
 
@@ -91,15 +89,12 @@ public class Graph implements Drawable {
 
         @Override
         public void mouseClicked(MouseEvent mouse) {
-            if (dontClick) {
-                return;
-            }
             if (GUI.gkl.isPressed(CONST.deleteKey)) {
                 if (GUI.model.running != RunState.stopped) {
                     return;
                 }
                 // TODO dovolit, ale opravit graf
-                if (ModelSettings.getInstance().getGraphType() != GraphType.none) {
+                if (ModelSettings.getInstance().getGraphType() != GraphType.any) {
                     return;
                 }
                 deleteMouse(mouse);
@@ -120,8 +115,6 @@ public class Graph implements Drawable {
             preClickY = mouse.getY();
             oldOffX = offX;
             oldOffY = offY;
-            mousePressed = true;
-            dontClick = false;
         }
 
         @Override
@@ -133,12 +126,10 @@ public class Graph implements Drawable {
             begin = null;
             xlast = -1;
             ylast = -1;
-            mousePressed = false;
         }
 
         @Override
         public void mouseDragged(MouseEvent mouse) {
-            dontClick = true;
             if (begin == null) {
                 offX = oldOffX + (mouse.getX() - preClickX);
                 offY = oldOffY + (mouse.getY() - preClickY);

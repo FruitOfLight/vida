@@ -11,11 +11,11 @@ public class GlobalKeyListener implements KeyEventDispatcher {
 
     public boolean dispatchKeyEvent(KeyEvent e) {
         if (e.getID() == KeyEvent.KEY_PRESSED) {
-            System.out.println("pressed " + e.getKeyCode());
+            //System.out.println("pressed " + e.getKeyCode());
             pressed.add(e.getKeyCode());
         }
         if (e.getID() == KeyEvent.KEY_RELEASED) {
-            System.out.println("released " + e.getKeyCode());
+            //System.out.println("released " + e.getKeyCode());
             pressed.remove(e.getKeyCode());
         }
         return false;
