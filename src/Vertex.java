@@ -205,11 +205,8 @@ public class Vertex {
         }
     }
 
-    public void repaint(Canvas canvas, double offsetx, double offsety, double zoom) {
-        int rX = (int) (offsetx + (x - radius) * zoom);
-        int rY = (int) (offsety + (y - radius) * zoom);
-        int rR = (int) (radius * zoom * 2);
-        canvas.repaint(rX - rR, rY - rR, 2 * rR, 2 * rR);
+    public void repaint(Canvas canvas) {
+        canvas.repaintBetween(x - radius, y - radius, x + radius, y + radius);
     }
 
     public void removeEdge(Edge edge) {

@@ -39,6 +39,21 @@ public class Canvas extends JPanel {
         }
     }
 
+    void repaintBetween(double x1, double y1, double x2, double y2) {
+        if (x2 < x1) {
+            double x = x1;
+            x1 = x2;
+            x2 = x;
+        }
+        if (y2 < y1) {
+            double y = y1;
+            y1 = y2;
+            y2 = y;
+        }
+        repaint((int) (offX + x1 * zoom), (int) (offY + y1 * zoom), (int) ((x2 - x1) * zoom),
+                (int) ((y2 - y1) * zoom));
+    }
+
     static void realDrawRect(Graphics g, double x, double y, double w, double h) {
         g.drawRect((int) (x), (int) (y), (int) (x + w) - (int) (x), (int) (y + h) - (int) (y));
     }

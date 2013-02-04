@@ -69,7 +69,7 @@ public class Graph implements Drawable {
             if (vertex.isNearPoint(x, y, 0) && mouse.getClickCount() == 2
                     && GUI.model.running == RunState.stopped) {
                 vertex.onClicked();
-                vertex.repaint(canvas, canvas.offX, canvas.offY, canvas.zoom);
+                vertex.repaint(canvas);
                 return;
             } else if (vertex.isNearPoint(x, y, 0)) {
                 GUI.zoomWindow.drawVertex(vertex);
@@ -195,7 +195,7 @@ public class Graph implements Drawable {
 
         // TODO co ak su vrcholy inak velke, pridat parameter max(radius1,
         // radius2)
-        repaintBetween((int) from.getX(), (int) from.getY(), (int) to.getX(), (int) to.getY());
+        canvas.repaintBetween(from.getX(), from.getY(), to.getX(), to.getY());
     }
 
     Vertex getVertex(double x, double y) {
@@ -215,21 +215,6 @@ public class Graph implements Drawable {
             }
         }
         return result;
-    }
-
-    public void repaintBetween(int x1, int y1, int x2, int y2) {
-        if (x1 > x2) {
-            int p = x1;
-            x1 = x2;
-            x2 = p;
-        }
-        if (y1 > y2) {
-            int p = y1;
-            y1 = y2;
-            y2 = p;
-        }
-        canvas.repaint(x1 - CONST.vertexSize, y1 - CONST.vertexSize,
-                x2 - x1 + CONST.vertexSize * 2, y2 - y1 + CONST.vertexSize * 2);
     }
 
     public void accept(GraphModifier visitor) {

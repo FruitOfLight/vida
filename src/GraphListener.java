@@ -81,7 +81,8 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
         if (GUI.gkl.isPressed(CONST.moveKey)) {
             for (Vertex vertex : graph.vertices) {
                 if (!vertex.equals(begin)
-                        && vertex.isNearPoint(mouse.getX(), mouse.getY(), begin.getRadius())) {
+                        && vertex
+                                .isNearPoint(mouseGetX(mouse), mouseGetY(mouse), begin.getRadius())) {
                     return;
                 }
             }
@@ -92,11 +93,10 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
             if (GUI.model.running != RunState.stopped) {
                 return;
             }
-            //TODO repaint betweeen
-            graph.canvas.repaint();
+            graph.canvas.repaintBetween(begin.getX(), begin.getY(), xlast, ylast);
             xlast = mouseGetX(mouse);
             ylast = mouseGetY(mouse);
-            graph.canvas.repaint();
+            graph.canvas.repaintBetween(begin.getX(), begin.getY(), xlast, ylast);
         }
     }
 
