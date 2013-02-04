@@ -1,5 +1,5 @@
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 public class ZoomWindow implements Drawable {
 
@@ -23,7 +23,7 @@ public class ZoomWindow implements Drawable {
         canvas.repaint();
     }
 
-    public void draw(Graphics g) {
+    public void draw(Graphics2D g) {
         g.setColor(new Color(255, 255, 255));
         g.fillRect(0, 0, width, height);
         g.setColor(new Color(0, 0, 0));

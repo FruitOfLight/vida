@@ -1,4 +1,4 @@
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -9,10 +9,11 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 public class Controls implements Drawable {
 
-    Canvas canvas;
+    JPanel panel;
     JButton playButton;
     JButton stopButton;
     JButton pauseButton;
@@ -22,23 +23,23 @@ public class Controls implements Drawable {
     JLabel programLabel;
 
     public Controls() {
-        setCanvas(new Canvas(this));
+        panel = new JPanel();
         createButtons();
         speedLabel = new JLabel();
         programLabel = new JLabel();
-        canvas.removeAll();
-        canvas.add(programLabel);
-        canvas.add(playButton);
-        canvas.add(pauseButton);
-        canvas.add(backwardButton);
-        canvas.add(stopButton);
-        canvas.add(forwardButton);
-        canvas.add(speedLabel);
-        canvas.repaint();
+        panel.removeAll();
+        panel.add(programLabel);
+        panel.add(playButton);
+        panel.add(pauseButton);
+        panel.add(backwardButton);
+        panel.add(stopButton);
+        panel.add(forwardButton);
+        panel.add(speedLabel);
+        panel.repaint();
     }
 
     public void setCanvas(Canvas canvas) {
-        this.canvas = canvas;
+        this.panel = canvas;
     }
 
     public void createButtons() {
@@ -62,14 +63,14 @@ public class Controls implements Drawable {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     GUI.model.start();
-                    canvas.repaint();
+                    panel.repaint();
                 }
             });
             pauseButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     GUI.model.pause();
-                    canvas.repaint();
+                    panel.repaint();
                 }
             });
             stopButton.addActionListener(new ActionListener() {
@@ -78,7 +79,7 @@ public class Controls implements Drawable {
                     GUI.model.stop();
                     GUI.graph.defaultSettings();
                     GUI.graph.canvas.repaint();
-                    canvas.repaint();
+                    panel.repaint();
                 }
             });
             forwardButton.addActionListener(new ActionListener() {
@@ -86,7 +87,7 @@ public class Controls implements Drawable {
                 public void actionPerformed(ActionEvent e) {
                     MessageQueue.getInstance().setSendSpeed(
                             MessageQueue.getInstance().getSendSpeed() * CONST.speedFactor);
-                    canvas.repaint();
+                    panel.repaint();
                 }
             });
             backwardButton.addActionListener(new ActionListener() {
@@ -94,7 +95,7 @@ public class Controls implements Drawable {
                 public void actionPerformed(ActionEvent e) {
                     MessageQueue.getInstance().setSendSpeed(
                             MessageQueue.getInstance().getSendSpeed() / CONST.speedFactor);
-                    canvas.repaint();
+                    panel.repaint();
                 }
             });
         } catch (Exception e) {
@@ -107,7 +108,7 @@ public class Controls implements Drawable {
         button.setContentAreaFilled(false);
     }
 
-    public void draw(Graphics g) {
+    public void draw(Graphics2D g) {
         String programString = "";
         if (GUI.model.path.equals(""))
             programString = "none";
@@ -116,7 +117,8 @@ public class Controls implements Drawable {
             for (int i = 0; i < GUI.model.path.length(); i++)
                 if (GUI.model.path.charAt(i) == '/')
                     last = i;
-            programString = GUI.model.path.substring(last + 1, GUI.model.path.length() - 4);
+            programString = GUI.model.path.substring(last + 1,
+                    Math.max(GUI.model.path.length() - 4, last + 1));
         }
         programLabel.setText("Current program: " + programString);
         String speedString = ((Double) MessageQueue.getInstance().getSendSpeed()).toString();

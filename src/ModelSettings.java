@@ -99,7 +99,7 @@ public class ModelSettings {
             }
             compile(path);
             GUI.model.path = path + ".bin";
-            GUI.controls.canvas.repaint();
+            GUI.controls.panel.repaint();
         } catch (Exception e) {
             Dialog.showError("Something went horribly wrong");
         }

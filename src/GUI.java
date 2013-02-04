@@ -79,7 +79,7 @@ public class GUI {
                     CONST.graphWidth, CONST.graphHeight);
             addElement(frame, MessageQueue.getInstance().canvas, 0, CONST.menuHeight,
                     CONST.windowWidth, CONST.queueHeight);
-            addElement(frame, controls.canvas, 0, CONST.queueHeight + CONST.menuHeight
+            addElement(frame, controls.panel, 0, CONST.queueHeight + CONST.menuHeight
                     + CONST.graphHeight, CONST.controlsWidth, CONST.controlsHeight);
             addElement(frame, zoomWindow.canvas, CONST.graphWidth, CONST.menuHeight
                     + CONST.queueHeight + CONST.graphHeight / 2, CONST.zoomWindowWidth,

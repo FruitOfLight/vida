@@ -1,11 +1,6 @@
-import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
@@ -19,15 +14,9 @@ public class Graph implements Drawable {
     public MessageQueue messages;
     // premenne pre vykreslovanie
     public Canvas canvas;
+    GraphListener listener;
     int width, height;
-    // premenne pre listenery
-    public Vertex begin = null;
-    int xlast, ylast;
-    double oldOffX, oldOffY;
-    int preClickX, preClickY;
-    // pozicia
-    double offX, offY;
-    double zoom;
+
     // 
     private GraphType type;
 
@@ -37,14 +26,12 @@ public class Graph implements Drawable {
         vertices = new ArrayList<Vertex>();
         edges = new ArrayList<Edge>();
         setCanvas(new Canvas(this));
-        xlast = -1;
-        ylast = -1;
         emptyGraph();
     }
 
     public void setCanvas(Canvas canvas) {
         this.canvas = canvas;
-        GraphListener listener = new GraphListener();
+        listener = new GraphListener(this);
         this.canvas.addMouseListener(listener);
         this.canvas.addMouseMotionListener(listener);
         this.canvas.addMouseWheelListener(listener);
@@ -52,32 +39,21 @@ public class Graph implements Drawable {
     }
 
     @Override
-    public void draw(Graphics g) {
-        g.setColor(new Color(255, 255, 255));
-        g.fillRect(0, 0, CONST.graphWidth, CONST.graphHeight);
-        this.width = canvas.getWidth();
-        this.height = canvas.getHeight();
-        g.setColor(new Color(0, 0, 0));
-        g.drawRect(0, 0, width - 1, height - 1);
-        // vykresli polhranu
-        if (begin != null && !GUI.gkl.isPressed(CONST.deleteKey)
-                && !GUI.gkl.isPressed(CONST.moveKey)) {
-            g.setColor(new Color(0, 0, 0));
-            g.drawLine((int) (offX + begin.getX() * zoom), (int) (offY + begin.getY() * zoom),
-                    xlast, ylast);
-        }
+    public void draw(Graphics2D g) {
+
         // vykresli vrcholy a hrany
         g.setFont(new Font(Font.MONOSPACED, Font.ITALIC, 14));
         for (Edge edge : edges) {
-            edge.draw(g, offX, offY, zoom);
+            edge.draw(g);
         }
+        listener.draw(g);
         for (Vertex vertex : vertices) {
-            vertex.draw(g, offX, offY, zoom);
+            vertex.draw(g);
         }
         // vykresli spravy
         try {
             for (Cube cube : Cube.getAllCubes()) {
-                cube.message.edgeDraw(g, offX, offY, zoom);
+                cube.message.edgeDraw(g);
             }
         } catch (ConcurrentModificationException e) {
             e.printStackTrace();
@@ -85,111 +61,7 @@ public class Graph implements Drawable {
         }
     }
 
-    class GraphListener implements MouseListener, MouseMotionListener, MouseWheelListener {
-
-        @Override
-        public void mouseClicked(MouseEvent mouse) {
-            if (GUI.gkl.isPressed(CONST.deleteKey)) {
-                if (GUI.model.running != RunState.stopped) {
-                    return;
-                }
-                // TODO dovolit, ale opravit graf
-                if (ModelSettings.getInstance().getGraphType() != GraphType.any) {
-                    return;
-                }
-                deleteMouse(mouse);
-                canvas.repaint();
-                return;
-            }
-            if (!GUI.gkl.isPressed(CONST.deleteKey) && !GUI.gkl.isPressed(CONST.moveKey)) {
-                clickMouse(mouse);
-            }
-        }
-
-        @Override
-        public void mousePressed(MouseEvent mouse) {
-            begin = getVertex(mouseGetX(mouse), mouseGetY(mouse));
-            xlast = mouse.getX();
-            ylast = mouse.getY();
-            preClickX = mouse.getX();
-            preClickY = mouse.getY();
-            oldOffX = offX;
-            oldOffY = offY;
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent mouse) {
-            if (GUI.model.running == RunState.stopped) {
-                createEdge(begin, getVertex(mouseGetX(mouse), mouseGetY(mouse)));
-            }
-            canvas.repaint();
-            begin = null;
-            xlast = -1;
-            ylast = -1;
-        }
-
-        @Override
-        public void mouseDragged(MouseEvent mouse) {
-            if (begin == null) {
-                offX = oldOffX + (mouse.getX() - preClickX);
-                offY = oldOffY + (mouse.getY() - preClickY);
-                canvas.repaint();
-                return;
-            }
-            if (GUI.gkl.isPressed(CONST.moveKey)) {
-                for (Vertex vertex : vertices) {
-                    if (!vertex.equals(begin)
-                            && vertex.isNearPoint(mouse.getX(), mouse.getY(), begin.getRadius())) {
-                        return;
-                    }
-                }
-                begin.move(mouseGetX(mouse), mouseGetY(mouse));
-                canvas.repaint();
-
-            } else {
-                if (GUI.model.running != RunState.stopped) {
-                    return;
-                }
-                repaintBetween((int) (offX + begin.getX() * zoom), (int) (offY + begin.getY()
-                        * zoom), xlast, ylast);
-                xlast = mouse.getX();
-                ylast = mouse.getY();
-                repaintBetween((int) (offX + begin.getX() * zoom), (int) (offY + begin.getY()
-                        * zoom), xlast, ylast);
-            }
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent mouse) {
-        }
-
-        @Override
-        public void mouseExited(MouseEvent mouse) {
-        }
-
-        @Override
-        public void mouseMoved(MouseEvent mouse) {
-        }
-
-        @Override
-        public void mouseWheelMoved(MouseWheelEvent e) {
-            int ticks = e.getWheelRotation();
-            double scale = 1 - ticks * 0.1;
-
-            offX = (offX - e.getX()) * scale + e.getX();
-            offY = (offY - e.getY()) * scale + e.getY();
-            zoom *= scale;
-            preClickX = e.getX();
-            preClickY = e.getY();
-            oldOffX = offX;
-            oldOffY = offY;
-
-            canvas.repaint();
-
-        }
-    }
-
-    public void clickMouse(MouseEvent mouse) {
+    public void clickWithMouse(MouseEvent mouse) {
         double x = mouseGetX(mouse);
         double y = mouseGetY(mouse);
         double newRadius = CONST.vertexSize;
@@ -197,7 +69,7 @@ public class Graph implements Drawable {
             if (vertex.isNearPoint(x, y, 0) && mouse.getClickCount() == 2
                     && GUI.model.running == RunState.stopped) {
                 vertex.onClicked();
-                vertex.repaint(canvas, offX, offY, zoom);
+                vertex.repaint(canvas, canvas.offX, canvas.offY, canvas.zoom);
                 return;
             } else if (vertex.isNearPoint(x, y, 0)) {
                 GUI.zoomWindow.drawVertex(vertex);
@@ -211,17 +83,17 @@ public class Graph implements Drawable {
         }
         if (GUI.model.running == RunState.running) {
             GUI.model.pause();
-            GUI.controls.canvas.repaint();
+            GUI.controls.panel.repaint();
         } else if (GUI.model.running == RunState.paused) {
             GUI.model.start();
-            GUI.controls.canvas.repaint();
+            GUI.controls.panel.repaint();
         } else {
             createVertex(x, y, getNewVertexID());
         }
         canvas.repaint();
     }
 
-    public void deleteMouse(MouseEvent mouse) {
+    public void deleteWithMouse(MouseEvent mouse) {
         Vertex v = getVertex(mouseGetX(mouse), mouseGetY(mouse));
         if (v != null) {
             removeVertex(v);
@@ -232,6 +104,14 @@ public class Graph implements Drawable {
             edge.removeFromVertex();
             edges.remove(edge);
         }
+    }
+
+    double mouseGetX(MouseEvent mouse) {
+        return (mouse.getX() - canvas.offX) / canvas.zoom;
+    }
+
+    double mouseGetY(MouseEvent mouse) {
+        return (mouse.getY() - canvas.offY) / canvas.zoom;
     }
 
     public int getNewVertexID() {
@@ -318,14 +198,6 @@ public class Graph implements Drawable {
         repaintBetween((int) from.getX(), (int) from.getY(), (int) to.getX(), (int) to.getY());
     }
 
-    double mouseGetX(MouseEvent mouse) {
-        return (mouse.getX() - offX) / zoom;
-    }
-
-    double mouseGetY(MouseEvent mouse) {
-        return (mouse.getY() - offY) / zoom;
-    }
-
     Vertex getVertex(double x, double y) {
         for (Vertex vertex : vertices) {
             if (vertex.isOnPoint(x, y)) {
@@ -338,7 +210,7 @@ public class Graph implements Drawable {
     ArrayList<Edge> getEdges(double x, double y) {
         ArrayList<Edge> result = new ArrayList<Edge>();
         for (Edge edge : edges) {
-            if (edge.isNear(x, y, zoom)) {
+            if (edge.isNear(x, y, canvas.zoom)) {
                 result.add(edge);
             }
         }
@@ -433,9 +305,9 @@ public class Graph implements Drawable {
     }
 
     public void emptyGraph() {
-        offX = CONST.graphWidth / 2;
-        offY = CONST.graphHeight / 2;
-        zoom = 1.0;
+        canvas.offX = CONST.graphWidth / 2;
+        canvas.offY = CONST.graphHeight / 2;
+        canvas.zoom = 1.0;
         vertices.clear();
         edges.clear();
     }
@@ -487,8 +359,8 @@ public class Graph implements Drawable {
     }
 
     private void createGrid(int m, int n, boolean edges) {
-        offX = 0;
-        offY = 0;
+        canvas.offX = 0;
+        canvas.offY = 0;
         double dy = (CONST.graphHeight - 30) / (double) (m - 1);
         double dx = (CONST.graphWidth - 30) / (double) (n - 1);
         System.out.println(dx + " " + dy);

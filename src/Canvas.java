@@ -1,5 +1,7 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
@@ -10,11 +12,28 @@ public class Canvas extends JPanel {
 
     public Canvas(Drawable element) {
         this.element = element;
+        offX = offY = 0;
+        zoom = 1.0;
     }
 
+    // pozicia
+    double offX, offY;
+    double zoom;
+
     @Override
-    public void paintComponent(Graphics g) {
+    protected void paintComponent(Graphics g) {
+        paintComponent((Graphics2D) g);
+    }
+
+    protected void paintComponent(Graphics2D g) {
         super.paintComponent(g);
+        g.setColor(new Color(255, 255, 255));
+        g.fillRect(0, 0, getWidth(), getHeight());
+        g.setColor(new Color(0, 0, 0));
+        g.drawRect(0, 0, getWidth() - 1, getWidth() - 1);
+
+        g.setTransform(new AffineTransform(zoom, 0, 0, zoom, offX, offY));
+
         if (element != null) {
             element.draw(g);
         }

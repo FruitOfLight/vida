@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -79,14 +80,14 @@ public class Vertex {
         GUI.zoomWindow.canvas.repaint();
     }
 
-    public void draw(Graphics g, double offsetx, double offsety, double zoom) {
-        draw(g, offsetx, offsety, zoom, true);
+    public void draw(Graphics2D g) {
+        draw(g, true);
     }
 
-    public void draw(Graphics g, double offsetx, double offsety, double zoom, boolean showID) {
-        int rX = (int) (offsetx + (x - radius) * zoom);
-        int rY = (int) (offsety + (y - radius) * zoom);
-        int rR = (int) (radius * zoom * 2);
+    public void draw(Graphics2D g, boolean showID) {
+        int rX = (int) (x - radius);
+        int rY = (int) (y - radius);
+        int rR = (int) (radius * 2);
 
         g.setColor(color);
         g.fillOval(rX, rY, rR, rR);
@@ -95,7 +96,7 @@ public class Vertex {
 
         if (showID) {
             g.setColor(Canvas.contrastColor(color, Constrast.textbw));
-            g.setFont(new Font(Font.DIALOG, Font.PLAIN, (int) (13 * Math.sqrt(zoom))));
+            g.setFont(new Font(Font.DIALOG, Font.PLAIN, (int) (13 * Math.sqrt(1))));
             String caption = Canvas.shorten(g, ((Integer) ID).toString(), rR, Preference.begin);
             if (caption.endsWith(".."))
                 caption = "V";

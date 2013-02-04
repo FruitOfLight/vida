@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 class Message {
     int fromPort;
@@ -56,14 +57,14 @@ class Message {
         }
     }
 
-    public void edgeDraw(Graphics g, double offsetx, double offsety, double zoom) {
+    public void edgeDraw(Graphics2D g) {
         g.setColor(gColor);
         double x = edge.from.getX() * (1.0 - ePosition) + edge.to.getX() * ePosition;
         double y = edge.from.getY() * (1.0 - ePosition) + edge.to.getY() * ePosition;
-        int rX = (int) (offsetx + x * zoom);
-        int rY = (int) (offsety + y * zoom);
+        int rX = (int) (x);
+        int rY = (int) (y);
         // Tu sa da nastavovat velkost trojuholnika
-        int rR = (int) (12.0 * zoom);
+        int rR = (int) (12.0);
         int xPoints[] = new int[3], yPoints[] = new int[3];
         xPoints[0] = rX;
         yPoints[0] = rY;
