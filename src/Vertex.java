@@ -70,9 +70,7 @@ public class Vertex {
                         .trim()), Integer.parseInt(parts[2].trim())));
             }
             if (name.equals("_vertex_size")) {
-                setRadius(CONST.vertexSize
-                        + 2
-                        * Math.sqrt(getRadius() - CONST.vertexSize + Integer.parseInt(value.trim())));
+                setRadius(CONST.vertexSize * Math.sqrt(Integer.parseInt(value.trim()) * 0.01));
             }
         } else {
             watchVariables.remove(name);

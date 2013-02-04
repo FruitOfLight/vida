@@ -61,7 +61,7 @@ void recieveAccept(int port) {
     vector<char> A;
     if(p==0) A.push_back('0');
     char num[100];
-    sprintf(num,"%d",getIValue("level"));
+    sprintf(num,"%d",100+50*getIValue("level"));
     setSValue("_vertex_size",string(num));
     if(getIValue("level")==ports.size()) {
         sendInformation("I'm the leader");

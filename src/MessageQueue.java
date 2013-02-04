@@ -129,9 +129,11 @@ public class MessageQueue implements Drawable {
 
         //TODO
         double expectedSize = 50.0;
-        int messageCount = 10;
-        if (messageCount * expectedSize > width) {
-            expectedSize = width / messageCount;
+        double maxwidth = 0;
+        for (Cube cube : Cube.getAllCubes())
+            maxwidth = Math.max(maxwidth, cube.x + 2);
+        if (maxwidth * expectedSize > width) {
+            expectedSize = width / maxwidth;
         }
         zoom += (expectedSize - zoom) * (expectedSize < zoom ? 0.001 : 0.0004) * time;
     }

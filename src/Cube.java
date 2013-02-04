@@ -80,6 +80,7 @@ public class Cube {
     }
 
     public void moveByState(long time) {
+        xsp = 0.0;
         if (state == CubeState.alive) {
             y = 0.0;
             //y = Math.max(0.0, y - 0.5 * time * 0.001);
@@ -91,9 +92,9 @@ public class Cube {
             state = CubeState.alive;
         }
         if (width < 1.)
-            width += 0.5 * time * 0.001;
+            width = Math.min(1., width + 2 * time * 0.001);
         if (height < 1.)
-            height += 0.5 * time * 0.001;
+            height = Math.min(1., height + 2 * time * 0.001);
     }
 
     public void forceForward(long time) {
@@ -102,7 +103,6 @@ public class Cube {
         } else {
             xsp = 0.0;
         }
-        message.expectedSpeed = (1.0 - message.ePosition) * (-xsp / x);
     }
 
     public void calculateCollisions(long time) {
@@ -112,10 +112,12 @@ public class Cube {
             if (c > 0 && x >= cube.x)
                 xsp += (5 * c * c + c) * 2 * MessageQueue.getInstance().getSendSpeed();
         }
+        xsp = Math.min(xsp, width / 2 / (time * 0.001));
     }
 
     public void step(long time) {
         x += xsp * time * 0.001;
+        message.expectedSpeed = (1.0 - message.ePosition) * (-xsp / x);
         if (x <= 0.) {
             state = CubeState.dead;
         }
@@ -139,15 +141,13 @@ public class Cube {
         sortBy(CubeSorting.position);
         for (Cube cube : cubes) {
             cube.moveByState(time);
-            cube.forceForward(time);
+            if (MessageQueue.getInstance().model.running == RunState.running)
+                cube.forceForward(time);
         }
         for (Cube cube : cubes) {
             cube.calculateCollisions(time);
             cube.step(time);
         }
-        /*        for (Cube cube : cubes) {
-                    
-                }*/
         removeDead();
     }
 

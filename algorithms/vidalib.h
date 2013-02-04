@@ -29,7 +29,7 @@ namespace Property {
 namespace WatchVariables {
     // pocuve na mena
     // _vertex_color e.g. "255,47,42"
-    // _vertex_size e.g. "8"
+    // _vertex_size in %, e.g. "80"
 
     namespace details{
         map<string,string> stringVariables;
