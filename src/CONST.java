@@ -113,3 +113,7 @@ enum Synchroned {
 enum GraphType {
     none, cycle, clique
 }
+
+enum Constrast {
+    textbw, borderbw, invert
+}

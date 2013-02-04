@@ -90,10 +90,11 @@ public class Vertex {
 
         g.setColor(color);
         g.fillOval(rX, rY, rR, rR);
-        g.setColor(new Color(0, 0, 0));
+        g.setColor(Canvas.contrastColor(color, Constrast.borderbw));
         g.drawOval(rX, rY, rR, rR);
 
         if (showID) {
+            g.setColor(Canvas.contrastColor(color, Constrast.textbw));
             g.setFont(new Font(Font.DIALOG, Font.PLAIN, (int) (13 * Math.sqrt(zoom))));
             String caption = Canvas.shorten(g, ((Integer) ID).toString(), rR, Preference.begin);
             if (caption.endsWith(".."))

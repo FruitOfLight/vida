@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
@@ -25,6 +26,30 @@ public class Canvas extends JPanel {
 
     static void realFillRect(Graphics g, double x, double y, double w, double h) {
         g.fillRect((int) (x), (int) (y), (int) (x + w) - (int) (x), (int) (y + h) - (int) (y));
+    }
+
+    public static Color contrastColor(Color color, Constrast type) {
+        if (type == Constrast.invert) {
+            return new Color(255 - color.getRed(), 255 - color.getGreen(), 255 - color.getBlue());
+        }
+        if (type == Constrast.textbw) {
+            // nasledovne konstanty nie su nahodne, neodporucam menit :)
+            int value = color.getRed() * 299 + color.getGreen() * 587 + color.getBlue() * 114;
+            if (value >= 128000)
+                return Color.black;
+            else
+                return Color.white;
+        }
+        if (type == Constrast.borderbw) {
+            // tu sa da s konstantami trochu pohrat
+            int value = color.getRed() + color.getGreen() + color.getBlue() + 2;
+            if (value > 200)
+                return Color.black;
+            else
+                return Color.blue;
+        }
+
+        return Color.black;
     }
 
     public static String shorten(Graphics g, String text, int width, Preference preference) {
