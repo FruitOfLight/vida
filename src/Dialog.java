@@ -104,7 +104,7 @@ public class Dialog {
     static class DialogProgramSettings implements ActionListener {
         private JPanel panel = new JPanel();
 
-        String[] graphTypes = { "Empty", "Clique", "Cycle" };
+        String[] graphTypes = { "Any", "Clique", "Cycle" };
 
         private JComboBox<String> chooseGraphType = new JComboBox<String>(graphTypes);
         private JCheckBox anonym = new JCheckBox();

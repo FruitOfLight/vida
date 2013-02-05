@@ -101,6 +101,7 @@ public class Graph implements Drawable {
         }
         ArrayList<Edge> delete = getEdges(mouseGetX(mouse), mouseGetY(mouse));
         for (Edge edge : delete) {
+            type = GraphType.any;
             edge.removeFromVertex();
             edges.remove(edge);
         }
@@ -146,11 +147,13 @@ public class Graph implements Drawable {
     }
 
     public void createVertex(double x, double y, int ID) {
+        type = GraphType.any;
         Vertex vertex = new Vertex(x, y, ID);
         vertices.add(vertex);
     }
 
     public void removeVertex(Vertex vertex) {
+        type = GraphType.any;
         ArrayList<Edge> delete = new ArrayList<Edge>();
         for (Edge edge : edges) {
             if (edge.from.equals(vertex)) {
@@ -169,6 +172,7 @@ public class Graph implements Drawable {
     }
 
     public void createEdge(Vertex from, Vertex to) {
+        type = GraphType.any;
         if (from == null || to == null || from.equals(to)) {
             return;
         }
@@ -223,8 +227,7 @@ public class Graph implements Drawable {
     }
 
     public void read(Scanner input) {
-        vertices = new ArrayList<Vertex>();
-        edges = new ArrayList<Edge>();
+        emptyGraph();
         try {
             int n = Integer.parseInt(input.next()), m = Integer.parseInt(input.next());
             for (int i = 0; i < n; i++) {
@@ -239,6 +242,7 @@ public class Graph implements Drawable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        canvas.repaint();
     }
 
     public void print(PrintStream output) {
@@ -290,6 +294,7 @@ public class Graph implements Drawable {
     }
 
     public void emptyGraph() {
+        type = GraphType.any;
         canvas.offX = CONST.graphWidth / 2;
         canvas.offY = CONST.graphHeight / 2;
         canvas.zoom = 1.0;
@@ -298,6 +303,7 @@ public class Graph implements Drawable {
     }
 
     private void createClique(int n, boolean edges) {
+        type = GraphType.clique;
         double d = CONST.graphWidth / 3;
 
         for (int i = 0; i < n; ++i) {
@@ -314,6 +320,7 @@ public class Graph implements Drawable {
     }
 
     private void createCycle(int n, boolean edges) {
+        type = GraphType.cycle;
         int d = CONST.graphWidth / 3;
 
         for (int i = 0; i < n; ++i) {
@@ -328,6 +335,7 @@ public class Graph implements Drawable {
     }
 
     private void createWheel(int n, boolean edges) {
+        type = GraphType.wheel;
         int d = CONST.graphWidth / 3;
 
         createVertex(0.0, 0.0, getNewVertexID());
@@ -344,6 +352,7 @@ public class Graph implements Drawable {
     }
 
     private void createGrid(int m, int n, boolean edges) {
+        type = GraphType.grid;
         canvas.offX = 0;
         canvas.offY = 0;
         double dy = (CONST.graphHeight - 30) / (double) (m - 1);

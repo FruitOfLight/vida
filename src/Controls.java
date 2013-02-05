@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 public class Controls implements Drawable {
 
     JPanel panel;
+    Canvas canvas;
     JButton playButton;
     JButton stopButton;
     JButton pauseButton;
@@ -24,6 +25,7 @@ public class Controls implements Drawable {
 
     public Controls() {
         panel = new JPanel();
+        canvas = new Canvas(this);
         createButtons();
         speedLabel = new JLabel();
         programLabel = new JLabel();
@@ -35,11 +37,7 @@ public class Controls implements Drawable {
         panel.add(stopButton);
         panel.add(forwardButton);
         panel.add(speedLabel);
-        panel.repaint();
-    }
-
-    public void setCanvas(Canvas canvas) {
-        this.panel = canvas;
+        canvas.repaint();
     }
 
     public void createButtons() {
@@ -63,14 +61,14 @@ public class Controls implements Drawable {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     GUI.model.start();
-                    panel.repaint();
+                    canvas.repaint();
                 }
             });
             pauseButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     GUI.model.pause();
-                    panel.repaint();
+                    canvas.repaint();
                 }
             });
             stopButton.addActionListener(new ActionListener() {
@@ -79,7 +77,7 @@ public class Controls implements Drawable {
                     GUI.model.stop();
                     GUI.graph.defaultSettings();
                     GUI.graph.canvas.repaint();
-                    panel.repaint();
+                    canvas.repaint();
                 }
             });
             forwardButton.addActionListener(new ActionListener() {
@@ -87,7 +85,7 @@ public class Controls implements Drawable {
                 public void actionPerformed(ActionEvent e) {
                     MessageQueue.getInstance().setSendSpeed(
                             MessageQueue.getInstance().getSendSpeed() * CONST.speedFactor);
-                    panel.repaint();
+                    canvas.repaint();
                 }
             });
             backwardButton.addActionListener(new ActionListener() {
@@ -95,7 +93,7 @@ public class Controls implements Drawable {
                 public void actionPerformed(ActionEvent e) {
                     MessageQueue.getInstance().setSendSpeed(
                             MessageQueue.getInstance().getSendSpeed() / CONST.speedFactor);
-                    panel.repaint();
+                    canvas.repaint();
                 }
             });
         } catch (Exception e) {

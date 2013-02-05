@@ -28,6 +28,9 @@ public class MessageQueue implements Drawable {
     private MessageQueue() {
         setCanvas(new Canvas(this));
         setSendSpeed(1.2);
+        zoom = 50.0;
+        offset = 50;
+        canvas.repaint();
     }
 
     public void setCanvas(Canvas canvas) {
@@ -44,8 +47,8 @@ public class MessageQueue implements Drawable {
     }
 
     private double sendSpeed;
-    double zoom = 50.0;
-    double offset = 50;
+    double zoom;
+    double offset;
     static final double deadWidth = 1.0;
 
     public void setSendSpeed(double value) {

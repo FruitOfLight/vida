@@ -8,17 +8,17 @@ import javax.swing.JPanel;
 
 public class Canvas extends JPanel {
     private static final long serialVersionUID = 4907612881980276015L;
-    Drawable element;
+    private Drawable element;
+    // pozicia
+    double offX, offY;
+    double zoom;
 
     public Canvas(Drawable element) {
+        super();
         this.element = element;
         offX = offY = 0;
         zoom = 1.0;
     }
-
-    // pozicia
-    double offX, offY;
-    double zoom;
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -32,7 +32,12 @@ public class Canvas extends JPanel {
         g.setColor(new Color(0, 0, 0));
         g.drawRect(0, 0, getWidth() - 1, getWidth() - 1);
 
+        // TODO bug report, pri starte je canvas nejak divne posunuty netusim preco
+        // TODO bug report, ked sa odzmaze vrchol a spusti sa to, tak si to mysli, ze tam vrchol stale je
+
         g.setTransform(new AffineTransform(zoom, 0, 0, zoom, offX, offY));
+        /*System.out.println("off " + element.toString() + " " + offX + " " + offY + " "
+                + getLocation().y);*/
 
         if (element != null) {
             element.draw(g);
@@ -50,8 +55,8 @@ public class Canvas extends JPanel {
             y1 = y2;
             y2 = y;
         }
-        repaint((int) (offX + x1 * zoom), (int) (offY + y1 * zoom), (int) ((x2 - x1) * zoom),
-                (int) ((y2 - y1) * zoom));
+        repaint((int) (offX + x1 * zoom) - 1, (int) (offY + y1 * zoom) - 1,
+                (int) ((x2 - x1) * zoom) + 1, (int) ((y2 - y1) * zoom) + 1);
     }
 
     static void realDrawRect(Graphics g, double x, double y, double w, double h) {
