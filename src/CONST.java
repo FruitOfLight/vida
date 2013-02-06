@@ -114,11 +114,6 @@ enum Settings {
     anonym, synchroned, graphType
 }
 
-enum 
-
-
-
-
 enum Anonym {
     anonymOn, anonymOff
 }
@@ -130,5 +125,3 @@ enum Synchroned {
 enum GraphType {
     any, cycle, clique, grid, wheel
 }
-
-
