@@ -64,6 +64,7 @@ void recieveAccept(int port) {
     sprintf(num,"%d",100+50*getIValue("level"));
     setSValue("_vertex_size",string(num));
     if(getIValue("level")==ports.size()) {
+        setSValue("_vertex_color","0,0,255");
         sendInformation("I'm the leader");
         return ;
     }
