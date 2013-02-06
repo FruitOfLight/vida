@@ -30,7 +30,7 @@ public class CONST {
     public static final double messageSpeedLimit = 1.0;
 
     // nasledovne veci su pre enumeracie zbytocne
-    // @zaba : ked si pozries http://stackoverflow.com/questions/5021246/conveniently-map-between-enum-and-int-string/5021384#5021384
+    // to zaba : ked si pozries http://stackoverflow.com/questions/5021246/conveniently-map-between-enum-and-int-string/5021384#5021384
     // tak mozes nasledovny kod zmazat
     /*public static int AnonymToInt(Anonym a) {
         if (a == Anonym.anonymOff)
@@ -106,6 +106,19 @@ enum CubeState {
     alive, asleep, wakeup, dead
 }
 
+enum Constrast {
+    textbw, borderbw, invert
+}
+
+enum Settings {
+    anonym, synchroned, graphType
+}
+
+enum 
+
+
+
+
 enum Anonym {
     anonymOn, anonymOff
 }
@@ -118,6 +131,4 @@ enum GraphType {
     any, cycle, clique, grid, wheel
 }
 
-enum Constrast {
-    textbw, borderbw, invert
-}
+

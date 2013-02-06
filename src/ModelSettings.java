@@ -70,13 +70,11 @@ public class ModelSettings {
             return;
         if (anonym == Anonym.anonymOff && newProgramSettings.getAnonym()) {
             anonym = Anonym.anonymOn;
-            AnonymModifier visitor = new AnonymModifier();
-            GUI.graph.accept(visitor);
+            GUI.graph.acceptSettings(this);
         }
         if (anonym == Anonym.anonymOn && !newProgramSettings.getAnonym()) {
             anonym = Anonym.anonymOff;
-            UnanonymModifier visitor = new UnanonymModifier();
-            GUI.graph.accept(visitor);
+            GUI.graph.acceptSettings(this);
         }
         if (newProgramSettings.getSynchroned())
             synchroned = Synchroned.synchronedOn;

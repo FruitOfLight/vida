@@ -8,6 +8,8 @@ import java.util.Scanner;
 
 import javax.swing.JOptionPane;
 
+import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.ParseException;
+
 public class Graph implements Drawable {
     public ArrayList<Vertex> vertices;
     public ArrayList<Edge> edges;
@@ -221,14 +223,15 @@ public class Graph implements Drawable {
         return result;
     }
 
-    public void accept(GraphModifier visitor) {
-        visitor.visit(this);
-        canvas.repaint();
-    }
+    private static final String version = "Version 1.00";
 
     public void read(Scanner input) {
         emptyGraph();
         try {
+            String line = input.nextLine();
+            if (!line.equals(version)) {
+                throw new ParseException(line);
+            }
             int n = Integer.parseInt(input.next()), m = Integer.parseInt(input.next());
             for (int i = 0; i < n; i++) {
                 double x = Double.parseDouble(input.next()), y = Double.parseDouble(input.next());
@@ -246,6 +249,7 @@ public class Graph implements Drawable {
     }
 
     public void print(PrintStream output) {
+        output.println(version);
         output.println(vertices.size() + " " + edges.size());
         for (int i = 0; i < vertices.size(); i++) {
             output.println(vertices.get(i).getX() + " " + vertices.get(i).getY() + " "
@@ -377,9 +381,14 @@ public class Graph implements Drawable {
         }
     }
 
-    public void defaultSettings() {
+    public void setDefaultValues() {
         for (Vertex vertex : vertices)
             vertex.defaultSettings();
+    }
+
+    public void acceptSettings(ModelSettings settings) {
+        for (int i = 0; i < vertices.size(); i++)
+            vertices.get(i).setID(getNewVertexID(i));
     }
 
 }
