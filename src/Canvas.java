@@ -1,6 +1,8 @@
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
@@ -12,12 +14,17 @@ public class Canvas extends JPanel {
     // pozicia
     double offX, offY;
     double zoom;
+    //
+    static Stroke boldStroke;
+    static Stroke thinStroke;
 
     public Canvas(Drawable element) {
         super();
         this.element = element;
         offX = offY = 0;
         zoom = 1.0;
+        boldStroke = new BasicStroke((float) Math.max(4.0, 4.0 / zoom));
+        thinStroke = new BasicStroke((float) 1.0);
     }
 
     @Override
@@ -27,6 +34,9 @@ public class Canvas extends JPanel {
 
     protected void paintComponent(Graphics2D g) {
         super.paintComponent(g);
+        boldStroke = new BasicStroke((float) Math.max(4.0, 4.0 / zoom));
+        thinStroke = new BasicStroke((float) 1.0);
+
         g.setColor(new Color(255, 255, 255));
         g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(new Color(0, 0, 0));

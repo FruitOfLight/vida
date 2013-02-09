@@ -1,7 +1,5 @@
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Stroke;
 
 // orientovana hrana z from do to
 public class Edge {
@@ -29,11 +27,10 @@ public class Edge {
         int y1 = (int) from.getY();
         int x2 = (int) to.getX();
         int y2 = (int) to.getY();
-        Stroke stroke = g.getStroke();
         if (selected)
-            g.setStroke(new BasicStroke(3));
+            g.setStroke(Canvas.boldStroke);
         g.drawLine(x1, y1, x2, y2);
-        g.setStroke(stroke);
+        g.setStroke(Canvas.thinStroke);
     }
 
     public boolean isNear(double x, double y, double zoom) {
