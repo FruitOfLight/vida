@@ -99,7 +99,7 @@ enum RunState {
 }
 
 enum Preference {
-    begin, end, special, wrap
+    begin, end, special
 }
 
 enum CubeState {
@@ -109,7 +109,7 @@ enum CubeState {
 enum Constrast {
     textbw, borderbw, invert
 }
-
+/*
 enum Anonym {
     anonymOn, anonymOff
 }
@@ -117,3 +117,4 @@ enum Anonym {
 enum Synchroned {
     synchronedOn, synchronedOff
 }
+*/

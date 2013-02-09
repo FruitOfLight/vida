@@ -78,6 +78,16 @@ public class Graph implements Drawable {
                 return;
             }
         }
+        ArrayList<Edge> clickedEdges = getEdges(mouseGetX(mouse), mouseGetY(mouse));
+        if (clickedEdges.size() > 0) {
+            for (Edge edge : edges) {
+                edge.selected = false;
+            }
+            for (Edge edge : clickedEdges) {
+                edge.selected = true;
+            }
+            return;
+        }
         for (Vertex vertex : vertices) {
             if (vertex.isNearPoint(x, y, newRadius)) {
                 return;
@@ -103,9 +113,8 @@ public class Graph implements Drawable {
         }
         ArrayList<Edge> delete = getEdges(mouseGetX(mouse), mouseGetY(mouse));
         for (Edge edge : delete) {
-            type = GraphType.any;
-            edge.removeFromVertex();
-            edges.remove(edge);
+
+            removeEdge(edge);
         }
     }
 
@@ -221,6 +230,12 @@ public class Graph implements Drawable {
             }
         }
         return result;
+    }
+
+    void removeEdge(Edge edge) {
+        type = GraphType.any;
+        edges.remove(edge);
+        edge.removeFromVertex();
     }
 
     private static final String version = "Version 1.00";

@@ -1,11 +1,14 @@
+import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Stroke;
 
 // orientovana hrana z from do to
 public class Edge {
 
     Vertex from, to;
     Edge oppositeEdge; // hrana z to do from
+    boolean selected, removed;
 
     static void connectOpposite(Edge e1, Edge e2) {
         e1.oppositeEdge = e2;
@@ -15,21 +18,27 @@ public class Edge {
     public Edge(Vertex from, Vertex to) {
         this.from = from;
         this.to = to;
+        removed = false;
+        selected = false;
         from.edges.add(this);
     }
 
-    public void draw(Graphics g) {
+    public void draw(Graphics2D g) {
         g.setColor(new Color(0, 0, 0));
         int x1 = (int) from.getX();
         int y1 = (int) from.getY();
         int x2 = (int) to.getX();
         int y2 = (int) to.getY();
+        Stroke stroke = g.getStroke();
+        if (selected)
+            g.setStroke(new BasicStroke(3));
         g.drawLine(x1, y1, x2, y2);
+        g.setStroke(stroke);
     }
 
     public boolean isNear(double x, double y, double zoom) {
         double distance = dist(x, y);
-        if (distance > 10.0 / zoom / zoom)
+        if (distance > 10.0 / zoom)
             return false;
         double d = (from.getX() - to.getX()) * (from.getX() - to.getX())
                 + (from.getY() - to.getY()) * (from.getY() - to.getY());
@@ -58,11 +67,23 @@ public class Edge {
     }
 
     public void removeFromVertex() {
-        if (from == null)
+        if (removed)
             return;
+        removed = true;
         from.removeEdge(this);
-        from = null;
         oppositeEdge.removeFromVertex();
+    }
+
+    @Override
+    public int hashCode() {
+        return from.hashCode() + to.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Edge))
+            return false;
+        return from.equals(((Edge) obj).from) && to.equals(((Edge) obj).to);
     }
 
 }
