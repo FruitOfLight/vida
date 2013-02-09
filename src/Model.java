@@ -1,5 +1,8 @@
+import java.io.File;
 import java.io.PrintStream;
 import java.util.Scanner;
+
+import javax.swing.JFileChooser;
 
 public class Model {
     /*
@@ -11,9 +14,31 @@ public class Model {
     String path = "";
     Graph graph;
     RunState running;
+    ModelSettings settings;
 
     Model() {
         running = RunState.stopped;
+        settings = new ModelSettings();
+    }
+
+    public void openProgram() {
+        try {
+            JFileChooser programLoader = new JFileChooser("./");
+            String path = "";
+            int value = programLoader.showOpenDialog(null);
+            if (value == JFileChooser.APPROVE_OPTION) {
+                GUI.graph.emptyGraph();
+                GUI.graph.canvas.repaint();
+                File file = programLoader.getSelectedFile();
+                settings.readHeader(file);
+                path = file.getPath();
+            }
+            Program.compile(path);
+            this.path = path + ".bin";
+            GUI.controls.panel.repaint();
+        } catch (Exception e) {
+            Dialog.showError("Something went horribly wrong");
+        }
     }
 
     private void load() {

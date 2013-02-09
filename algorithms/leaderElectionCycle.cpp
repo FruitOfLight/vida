@@ -1,6 +1,8 @@
 /*
  anonym no
- graph cycle
+ graphType cycle
+ blablabloblo mehehe
+ mehehe blablabloblo
 */
 
 //Fruit of Light
@@ -19,16 +21,15 @@ void recieve(int port, string message) {
     for(int i=0; i<message.length(); i++) {
         if(message[i]>='0' && message[i]<='9') {ID*=10; ID+=message[i]-'0';}
     }
-    if(getValue("maximalID")<ID) {
-        setValue("maximalID",ID);
-        if(getValue("boss")==-1) {
+    if(getIValue("maximalID")<ID) {
+        setIValue("maximalID",ID);
+        if(getIValue("boss")==-1) {
             char inf[100];
             sprintf(inf,"I wouldn't be boss.");
             sendInformation(string(inf));
-            setValue("boss",0);
+            setIValue("boss",0);
             char color[100];
-            sprintf(color,"255,0,0");
-            sendVertexColorChange(string(color));
+            setSValue("_vertex_color","255,0,0");
         }
         int to;
         for(int i=0; i<ports.size(); i++)
@@ -41,15 +42,16 @@ void recieve(int port, string message) {
         char inf[100];
         sprintf(inf,"I am boss.");
         sendInformation(string(inf));
-        setValue("boss",1);
+        setIValue("boss",1);
+        setSValue("_vertex_color","0,0,255");
     }
 }
 
 void init(){
     freePorts = ports.size();
     myID = id;
-    setValue("boss",-1);
-    setValue("maximalID",myID);
+    setIValue("boss",-1);
+    setIValue("maximalID",myID);
     char buffer[100];
     sprintf(buffer,"I have ID: {%d}",myID);
     sendMessage(ports[0],string(buffer));

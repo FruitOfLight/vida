@@ -19,7 +19,7 @@ public class Graph implements Drawable {
     GraphListener listener;
     int width, height;
 
-    // 
+    //
     private GraphType type;
 
     // boolean moving = false, deleting = false;
@@ -122,7 +122,7 @@ public class Graph implements Drawable {
     }
 
     public int getNewVertexID(int size) {
-        if (ModelSettings.getInstance().getAnonym() == Anonym.anonymOn) {
+        if (GUI.model.settings.isProperty(Property.anonym)) {
             return 0;
         }
         int bound = size * 2;
@@ -263,8 +263,8 @@ public class Graph implements Drawable {
     }
 
     public void createNew() {
-        Dialog.DialogNewGraph newGraphDialog = new Dialog.DialogNewGraph(ModelSettings
-                .getInstance().getGraphType());
+        Dialog.DialogNewGraph newGraphDialog = new Dialog.DialogNewGraph(
+                GUI.model.settings.getGraphType());
         int ok = JOptionPane.showConfirmDialog(null, newGraphDialog.getPanel(), "New graph",
                 JOptionPane.OK_CANCEL_OPTION);
         if (ok == JOptionPane.OK_OPTION) {

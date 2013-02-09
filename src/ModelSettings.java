@@ -1,190 +1,154 @@
 import java.io.File;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Scanner;
 
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-public class ModelSettings {
+/**
+ * Model Settings zdruzuje vsetky nastavitelne veci v modeli. Veci, ktore sa daju nastavit su
+ * vymenovane v enum Property.
+ * 
+ */
 
-    private static ModelSettings instance = new ModelSettings();
-    private Anonym anonym;
-    private Synchroned synchroned;
-    private GraphType graphType;
+enum Property {
+    anonym, synchroned, graphType
+}
+
+enum GraphType {
+    any, clique, cycle, grid, wheel
+}
+
+public class ModelSettings {
+    private int[] properties;
     private boolean[] locked;
 
-    public static ModelSettings getInstance() {
-        return instance;
+    public ModelSettings() {
+        properties = new int[Property.values().length];
+        locked = new boolean[Property.values().length];
+        resetValues();
     }
 
-    private ModelSettings() {
-        setValues();
+    public void resetValues() {
+        for (int i = 0; i < properties.length; ++i)
+            properties[i] = 0;
+        for (int i = 0; i < locked.length; ++i)
+            locked[i] = false;
     }
 
-    private void setValues() {
-        this.anonym = Anonym.anonymOff;
-        this.synchroned = Synchroned.synchronedOff;
-        this.graphType = GraphType.any;
-        locked = new boolean[3];
-        locked[0] = locked[1] = locked[2] = false;
+    //// Zakladne pracovne funkcie
+    void setProperty(Property property, int value) {
+        properties[property.ordinal()] = value;
     }
 
-    public void setAnonym(Anonym anonym) {
-        this.anonym = anonym;
+    int getProperty(Property property) {
+        return properties[property.ordinal()];
     }
 
-    public void setSynchroned(Synchroned synchroned) {
-        this.synchroned = synchroned;
+    void setLocked(Property property, boolean lock) {
+        locked[property.ordinal()] = lock;
     }
 
-    public Anonym getAnonym() {
-        return anonym;
+    boolean getLocked(Property property) {
+        return locked[property.ordinal()];
     }
 
-    public Synchroned getSynchroned() {
-        return synchroned;
+    //// Odvodene pracovne funkcie
+    public void setProperty(Property property, boolean on) {
+        setProperty(property, on ? 1 : 0);
     }
 
-    public void setGraphType(GraphType graphType) {
-        this.graphType = graphType;
+    public boolean isProperty(Property property) {
+        return getProperty(property) != 0;
+    }
+
+    public void setGraphType(GraphType type) {
+        setProperty(Property.graphType, type.ordinal());
     }
 
     public GraphType getGraphType() {
-        return graphType;
+        return GraphType.values()[getProperty(Property.graphType)];
     }
 
-    public void setLocked(int i, boolean t) {
-        locked[i] = t;
-    }
-
-    public boolean getLocked(int i) {
-        return locked[i];
-    }
-
-    public void setSettings() {
-        Dialog.DialogProgramSettings newProgramSettings = new Dialog.DialogProgramSettings();
+    //// Zvysok
+    public void showDialog() {
+        Dialog.DialogProgramSettings newProgramSettings = new Dialog.DialogProgramSettings(this);
         int ok = JOptionPane.showConfirmDialog(null, newProgramSettings.getPanel(),
                 "Program settings", JOptionPane.OK_CANCEL_OPTION);
-        if (ok != JOptionPane.OK_OPTION)
-            return;
-        if (anonym == Anonym.anonymOff && newProgramSettings.getAnonym()) {
-            anonym = Anonym.anonymOn;
+        if (ok == JOptionPane.OK_OPTION) {
+            newProgramSettings.apply(this);
             GUI.graph.acceptSettings(this);
-        }
-        if (anonym == Anonym.anonymOn && !newProgramSettings.getAnonym()) {
-            anonym = Anonym.anonymOff;
-            GUI.graph.acceptSettings(this);
-        }
-        if (newProgramSettings.getSynchroned())
-            synchroned = Synchroned.synchronedOn;
-        else
-            synchroned = Synchroned.synchronedOff;
-        graphType = newProgramSettings.getType();
-    }
-
-    public void loadProgram() {
-        try {
-            JFileChooser programLoader = new JFileChooser("./");
-            String path = "";
-            int value = programLoader.showOpenDialog(null);
-            if (value == JFileChooser.APPROVE_OPTION) {
-                GUI.graph.emptyGraph();
-                GUI.graph.canvas.repaint();
-                File file = programLoader.getSelectedFile();
-                readHeader(file);
-                path = file.getPath();
-            }
-            compile(path);
-            GUI.model.path = path + ".bin";
-            GUI.controls.panel.repaint();
-        } catch (Exception e) {
-            Dialog.showError("Something went horribly wrong");
-        }
-    }
-
-    public void compile(String path) {
-        if (path.equals(""))
-            return;
-        try {
-            Runtime.getRuntime().exec("bash algorithms/compile.sh " + path);
-        } catch (Exception e) {
-            Dialog.showError("Something went horribly wrong");
         }
     }
 
     public void readHeader(File f) {
-        setValues();
+        resetValues();
         try {
+            // TODO dovolit vacsiu volnost, spravit podporu pre jazyky s inymi komentarmi...
             Scanner in = new Scanner(f);
-            String header = in.nextLine();
-            if (!header.contains("/*")) {
+            String header = "";
+            String line = in.nextLine();
+            if (!line.contains("/*")) {
                 in.close();
                 return;
             }
-            while (true) {
-                String line = in.nextLine();
+            header += line;
+            while ((line = in.nextLine()) != null) {
                 header += line;
                 if (line.contains("*/"))
                     break;
             }
             in.close();
-            int pos = 0;
-            while (header.charAt(pos) != '*')
-                pos++;
-            pos++;
-            ArrayList<String> words = new ArrayList<String>();
-            String word = "";
-            while (header.charAt(pos) != '*') {
-                if (header.charAt(pos) <= 32) {
-                    if (!word.equals(""))
-                        words.add(word);
-                    word = "";
-                } else
-                    word += header.charAt(pos);
-                pos++;
+
+            // sparsovanie stringu
+
+            String[] tokens = header.replaceAll("[^a-zA-Z0-9_]+", " ").trim().split("[ \t\n\r\f]+");
+
+            for (int i = 0; i + 1 < tokens.length; i += 2) {
+                Property p = Property.valueOf(tokens[i]);
+                int v = nameToInt(tokens[i + 1]);
+                if (p == null || v < 0)
+                    continue;
+                setProperty(p, v);
+                setLocked(p, true);
+
             }
-            if (!word.equals(""))
-                words.add(word);
-            for (int i = 0; i < words.size() / 2; i++) {
-                if (words.get(2 * i).equals("anonym")) {
-                    setAnonym(Anonym.valueOf(words.get(2 * i + 1)));
-                    locked[0] = true;
-                }
-                if (words.get(2 * i).equals("synchroned")) {
-                    setSynchroned(Synchroned.valueOf(words.get(2 * i + 1)));
-                    locked[1] = true;
-                }
-                if (words.get(2 * i).equals("graph")) {
-                    setGraphType(GraphType.valueOf(words.get(2 * i + 1)));
-                    locked[2] = true;
-                }
-            }
+
         } catch (Exception e) {
             System.out.println();
         }
     }
 
+    private int nameToInt(String str) {
+        // TODO automatizovat
+        if (str.equals("no"))
+            return 0;
+        if (str.equals("yes"))
+            return 1;
+        if (str.equals("any"))
+            return 0;
+        if (str.equals("clique"))
+            return 1;
+        if (str.equals("cycle"))
+            return 2;
+        if (str.equals("grid"))
+            return 3;
+        if (str.equals("wheel"))
+            return 4;
+        return -1;
+    }
+
     public void print(PrintStream out) {
-        out.println(anonym.ordinal());
-        out.println(synchroned.ordinal());
-        out.println(graphType.ordinal());
-        for (int i = 0; i < 3; i++)
-            if (locked[i])
-                out.println("1");
-            else
-                out.println("0");
+        for (int i = 0; i < properties.length; ++i)
+            out.println(properties[i]);
+        for (int i = 0; i < locked.length; ++i)
+            out.println(locked[i] ? 1 : 0);
     }
 
     public void read(Scanner in) {
-        anonym = Anonym.values()[in.nextInt()];
-        synchroned = Synchroned.values()[in.nextInt()];
-        graphType = GraphType.values()[in.nextInt()];
-        for (int i = 0; i < 3; i++)
-            if (in.nextInt() == 0)
-                locked[i] = false;
-            else
-                locked[i] = true;
+        for (int i = 0; i < properties.length; ++i)
+            properties[i] = in.nextInt();
+        for (int i = 0; i < locked.length; ++i)
+            locked[i] = (in.nextInt() != 0);
     }
 
 }

@@ -134,4 +134,14 @@ public class Program extends Thread {
         in.println("@ " + ports.get(message.toPort) + " : " + message.rawContent);
         in.flush();
     }
+
+    public static void compile(String path) {
+        if (path.equals(""))
+            return;
+        try {
+            Runtime.getRuntime().exec("bash algorithms/compile.sh " + path);
+        } catch (Exception e) {
+            Dialog.showError("Something went horribly wrong");
+        }
+    }
 }

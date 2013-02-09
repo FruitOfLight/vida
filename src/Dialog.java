@@ -32,7 +32,7 @@ public class Dialog {
         }
 
         public int getID() {
-            if (ModelSettings.getInstance().getAnonym() == Anonym.anonymOn)
+            if (GUI.model.settings.isProperty(Property.anonym))
                 return 0;
             return IDField.getInt(0, 0, 1000000);
         }
@@ -104,28 +104,24 @@ public class Dialog {
     static class DialogProgramSettings implements ActionListener {
         private JPanel panel = new JPanel();
 
-        String[] graphTypes = { "Any", "Clique", "Cycle" };
+        String[] graphTypes = { "Any", "Clique", "Cycle", "Grid", "Wheel" };
 
-        private JComboBox<String> chooseGraphType = new JComboBox<String>(graphTypes);
-        private JCheckBox anonym = new JCheckBox();
-        private JCheckBox synchroned = new JCheckBox();
+        private JComboBox<String> chooseGraphType;
+        private JComponent[] setters = new JComponent[Property.values().length];
+        private String[] captions = { "Anonym", "Synchroned", "Graph type" };
 
-        public DialogProgramSettings() {
+        public DialogProgramSettings(ModelSettings settings) {
             panel.setLayout(new GridLayout(3, 2, 5, 5));
-            panel.add(new JLabel("Anonym "));
-            panel.add(anonym);
-            anonym.setSelected(ModelSettings.getInstance().getAnonym() == Anonym.anonymOn);
-            panel.add(new JLabel("Synchroned "));
-            panel.add(synchroned);
-            panel.add(new JLabel("Graph type "));
-            chooseGraphType.setSelectedIndex(ModelSettings.getInstance().getGraphType().ordinal());
-            chooseGraphType.addActionListener(this);
-            panel.add(chooseGraphType);
-            synchroned
-                    .setSelected(ModelSettings.getInstance().getSynchroned() == Synchroned.synchronedOn);
-            anonym.setEnabled(!ModelSettings.getInstance().getLocked(0));
-            synchroned.setEnabled(!ModelSettings.getInstance().getLocked(1));
-            chooseGraphType.setEnabled(!ModelSettings.getInstance().getLocked(2));
+            // TODO zautomatizovat
+            setters[0] = new JCheckBox("", settings.isProperty(Property.anonym));
+            setters[1] = new JCheckBox("", settings.isProperty(Property.synchroned));
+            setters[2] = chooseGraphType = new JComboBox<String>(graphTypes);
+
+            for (int i = 0; i < setters.length; ++i) {
+                panel.add(new JLabel(captions[i]));
+                panel.add(setters[i]);
+                setters[i].setEnabled(!settings.getLocked(Property.values()[i]));
+            }
         }
 
         @Override
@@ -137,16 +133,11 @@ public class Dialog {
             GUI.graph.createNew(newGraphDialog);
         }
 
-        public GraphType getType() {
-            return GraphType.values()[chooseGraphType.getSelectedIndex()];
-        }
-
-        public boolean getAnonym() {
-            return anonym.isSelected();
-        }
-
-        public boolean getSynchroned() {
-            return synchroned.isSelected();
+        public void apply(ModelSettings settings) {
+            // TODO automatizovat
+            settings.setProperty(Property.anonym, ((JCheckBox) setters[0]).isSelected());
+            settings.setProperty(Property.synchroned, ((JCheckBox) setters[1]).isSelected());
+            settings.setProperty(Property.graphType, chooseGraphType.getSelectedIndex());
         }
 
         public JComponent getPanel() {

@@ -27,7 +27,7 @@ public class CONST {
     // Queue
     // o kolko sa zrychli beh, pri stlaceni forward
     public static final double speedFactor = 1.2;
-    public static final double messageSpeedLimit = 1.0;
+    public static final double messageSpeedLimit = 2.0;
 
     // nasledovne veci su pre enumeracie zbytocne
     // to zaba : ked si pozries http://stackoverflow.com/questions/5021246/conveniently-map-between-enum-and-int-string/5021384#5021384
@@ -110,18 +110,10 @@ enum Constrast {
     textbw, borderbw, invert
 }
 
-enum Settings {
-    anonym, synchroned, graphType
-}
-
 enum Anonym {
     anonymOn, anonymOff
 }
 
 enum Synchroned {
     synchronedOn, synchronedOff
-}
-
-enum GraphType {
-    any, cycle, clique, grid, wheel
 }

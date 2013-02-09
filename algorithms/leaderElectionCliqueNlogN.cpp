@@ -1,6 +1,6 @@
 /*
  anonym no
- graph clique
+ graphType clique
 */
 
 //Fruit of Light

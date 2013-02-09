@@ -121,7 +121,7 @@ public class GUI {
             out.close();
             file = new File("backup/settings.in");
             out = new PrintStream(file);
-            ModelSettings.getInstance().print(out);
+            model.settings.print(out);
             out.close();
         } catch (Exception e) {
             System.out.println(e.toString());
@@ -138,12 +138,11 @@ public class GUI {
             in = new Scanner(file);
             model.read(in);
             if (!model.path.equals(""))
-                ModelSettings.getInstance().compile(
-                        model.path.substring(0, model.path.length() - 4));
+                Program.compile(model.path.substring(0, model.path.length() - 4));
             in.close();
             file = new File("backup/settings.in");
             in = new Scanner(file);
-            ModelSettings.getInstance().read(in);
+            model.settings.read(in);
             in.close();
         } catch (Exception e) {
             System.out.println(e.toString());

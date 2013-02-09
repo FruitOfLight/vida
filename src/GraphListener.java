@@ -36,7 +36,7 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
                 return;
             }
             // TODO dovolit, ale opravit graf
-            if (ModelSettings.getInstance().getGraphType() != GraphType.any) {
+            if (GUI.model.settings.getGraphType() != GraphType.any) {
                 return;
             }
             graph.deleteWithMouse(mouse);
