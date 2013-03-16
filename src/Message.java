@@ -3,11 +3,15 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 class Message {
+    static double getRandomMessageSpeed() {
+        return GUI.random.nextDouble() * 0.45 + 0.05;
+    }
+
     int fromPort;
     int toPort;
     Edge edge;
     String rawContent;
-    double ePosition, eSpeed;
+    double ePosition, eSpeed, defSpeed;
     DeliverState state;
     Color gColor;
 
@@ -16,6 +20,7 @@ class Message {
         this.fromPort = port;
         this.rawContent = content;
         gColor = Color.red;
+        defSpeed = getRandomMessageSpeed();
         processContent();
     }
 
@@ -86,11 +91,7 @@ class Message {
     public void edgeStep(long time) {
         if (state == DeliverState.dead)
             return;
-        //double expectedSpeed = 1;
-        //Math.min(CONST.messageSpeedLimit, expectedSpeed);
-        // speed += (expectedSpeed-speed)*(0.01);
-        double eSpeed = 0.2 * GUI.model.getSendSpeed();
-        ePosition += eSpeed * time * 0.001;
+        ePosition += GUI.model.getSendSpeed() * eSpeed * time * 0.001;
         if (ePosition >= 1.0) {
             ePosition = 1.0;
             recieve();

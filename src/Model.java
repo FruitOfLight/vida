@@ -64,10 +64,13 @@ public class Model {
         if (running == RunState.stopped)
             return;
         running = RunState.stopped;
-        for (Vertex v : graph.vertices) {
+        for (Vertex v : graph.vertices)
             v.program.kill();
-        }
+        for (Edge e : graph.edges)
+            e.restart();
+        MessageQueue.messageCount = 0;
         GUI.informationPanel.erase();
+        GUI.frame.setTitle("ViDA");
     }
 
     void pause() {
@@ -83,6 +86,7 @@ public class Model {
     }
 
     private double sendSpeed = 1.2;
+    static int fps;
 
     void setSendSpeed(double speed) {
         sendSpeed = speed;
@@ -109,8 +113,10 @@ public class Model {
             time = System.currentTimeMillis();
             long delay = time - prevTime;
             if (delay > 0)
+                fps = (int) (1000 / delay);
+            /*if (delay > 0)
                 GUI.frame.setTitle("ViDA    fps: " + 1000 / delay + " mc: "
-                        + MessageQueue.messageCount);
+                        + MessageQueue.messageCount);*/
 
             // Spravy
             if (model.running == RunState.running) {
@@ -119,7 +125,7 @@ public class Model {
             }
 
             model.graph.canvas.repaint();
-            model.timer.schedule(new StepEvent(model), 30);
+            model.timer.schedule(new StepEvent(model), 10);
         }
     }
 

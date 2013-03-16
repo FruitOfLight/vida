@@ -33,6 +33,7 @@ public class Canvas extends JPanel {
 
     protected void paintComponent(Graphics2D g) {
         super.paintComponent(g);
+
         boldStroke = new BasicStroke((float) Math.max(3.0 / Math.sqrt(zoom), 3.0 / zoom));
         thinStroke = new BasicStroke((float) (1.0 / Math.sqrt(zoom)));
 
@@ -42,6 +43,7 @@ public class Canvas extends JPanel {
         g.setColor(new Color(0, 0, 0));
         g.drawRect(0, 0, getWidth() - 1, getWidth() - 1);
         g.setStroke(thinStroke);
+        g.drawString("fps: " + Model.fps + " mc:" + MessageQueue.messageCount, 10, 10);
 
         // TODO bug report, pri starte je canvas nejak divne posunuty netusim preco
         // TODO bug report, ked sa odzmaze vrchol a spusti sa to, tak si to mysli, ze tam vrchol stale je

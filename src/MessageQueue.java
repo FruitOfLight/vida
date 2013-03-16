@@ -15,14 +15,23 @@ public class MessageQueue implements Drawable {
         bornlist = new LinkedList<Message>();
     }
 
-    synchronized public void step(long time) {
-        bornMessages();
-        while (list.size() > 0 && list.peek().state == DeliverState.dead) {
-            list.pop();
-            messageCount--;
+    public void step(long time) {
+        updateMessages();
+        if (list.size() > 0) {
+            Message prevMessage = null;
+            double defdist = 0.3 / list.size();
+            for (Message message : list) {
+                double p = Math.pow(0.999, time);
+                message.eSpeed = message.eSpeed * (1.0 - p) + message.defSpeed * p;
+                if (prevMessage != null) {
+                    double q = defdist - message.ePosition + prevMessage.ePosition;
+                    if (q > 0)
+                        message.eSpeed /= 1 + q;
+                }
+                message.edgeStep(time);
+                prevMessage = message;
+            }
         }
-        for (Message message : list)
-            message.edgeStep(time);
     }
 
     @Override
@@ -34,18 +43,21 @@ public class MessageQueue implements Drawable {
     public void clear() {
         list.clear();
         bornlist.clear();
-        messageCount = 0;
     }
 
-    synchronized public void pushMessage(Message message) {
+    public void pushMessage(Message message) {
         bornlist.add(message);
         message.state = DeliverState.alive;
         messageCount++;
     }
 
-    public void bornMessages() {
+    synchronized public void updateMessages() {
         while (bornlist.size() > 0)
             list.add(bornlist.pop());
+        while (list.size() > 0 && list.peek().state == DeliverState.dead) {
+            list.pop();
+            messageCount--;
+        }
     }
 
 }
