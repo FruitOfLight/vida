@@ -109,7 +109,8 @@ public class Model {
             time = System.currentTimeMillis();
             long delay = time - prevTime;
             if (delay > 0)
-                GUI.frame.setTitle("ViDA    fps: " + 1000 / delay);
+                GUI.frame.setTitle("ViDA    fps: " + 1000 / delay + " mc: "
+                        + MessageQueue.messageCount);
 
             // Spravy
             if (model.running == RunState.running) {

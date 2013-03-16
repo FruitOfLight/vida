@@ -5,19 +5,22 @@ import java.util.LinkedList;
  * Fronta pre správy
  * 
  */
-public class EdgeQueue implements Drawable {
+public class MessageQueue implements Drawable {
     private LinkedList<Message> list;
     private LinkedList<Message> bornlist;
+    public static int messageCount = 0;
 
-    EdgeQueue() {
+    MessageQueue() {
         list = new LinkedList<Message>();
         bornlist = new LinkedList<Message>();
     }
 
     synchronized public void step(long time) {
         bornMessages();
-        while (list.size() > 0 && list.peek().state == DeliverState.dead)
+        while (list.size() > 0 && list.peek().state == DeliverState.dead) {
             list.pop();
+            messageCount--;
+        }
         for (Message message : list)
             message.edgeStep(time);
     }
@@ -30,11 +33,14 @@ public class EdgeQueue implements Drawable {
 
     public void clear() {
         list.clear();
+        bornlist.clear();
+        messageCount = 0;
     }
 
     synchronized public void pushMessage(Message message) {
         bornlist.add(message);
         message.state = DeliverState.alive;
+        messageCount++;
     }
 
     public void bornMessages() {

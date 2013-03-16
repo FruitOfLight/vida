@@ -28,7 +28,7 @@ public class GUI {
     static Graph graph;
     static Model model;
     static Controls controls;
-    static EdgeQueue messageQueue;
+    static MessageQueue messageQueue;
     static GlobalKeyListener gkl;
     static ZoomWindow zoomWindow;
     static InformationPanel informationPanel;

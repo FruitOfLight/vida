@@ -7,7 +7,7 @@ public class Edge {
     Vertex from, to;
     Edge oppositeEdge; // hrana z to do from
     boolean selected, removed;
-    EdgeQueue queue;
+    MessageQueue queue;
 
     static void connectOpposite(Edge e1, Edge e2) {
         e1.oppositeEdge = e2;
@@ -15,7 +15,7 @@ public class Edge {
     }
 
     public Edge(Vertex from, Vertex to) {
-        queue = new EdgeQueue();
+        queue = new MessageQueue();
         this.from = from;
         this.to = to;
         removed = false;
