@@ -7,6 +7,7 @@ public class Edge {
     Vertex from, to;
     Edge oppositeEdge; // hrana z to do from
     boolean selected, removed;
+    EdgeQueue queue;
 
     static void connectOpposite(Edge e1, Edge e2) {
         e1.oppositeEdge = e2;
@@ -14,11 +15,22 @@ public class Edge {
     }
 
     public Edge(Vertex from, Vertex to) {
+        queue = new EdgeQueue();
         this.from = from;
         this.to = to;
         removed = false;
         selected = false;
         from.edges.add(this);
+    }
+
+    public void restart() {
+        queue.clear();
+    }
+
+    public void send(Message message) {
+        message.setEdge(this);
+        message.toPort = this.to.edges.indexOf(this.oppositeEdge);
+        queue.pushMessage(message);
     }
 
     public void draw(Graphics2D g) {

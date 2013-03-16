@@ -1,3 +1,4 @@
+/*XXXX
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -86,7 +87,7 @@ public class Cube {
             //y = Math.max(0.0, y - 0.5 * time * 0.001);
         }
         if (state == CubeState.asleep) {
-            y = CONST.queueHeight / MessageQueue.getInstance().zoom - height;
+            y = CONST.queueHeight / EdgeQueue.getInstance().zoom - height;
         }
         if (state == CubeState.wakeup) {
             state = CubeState.alive;
@@ -99,7 +100,7 @@ public class Cube {
 
     public void forceForward(long time) {
         if (y < 1e-2) {
-            xsp = -20 * MessageQueue.getInstance().getRealSendSpeed();
+            xsp = -20 * EdgeQueue.getInstance().getRealSendSpeed();
         } else {
             xsp = 0.0;
         }
@@ -110,7 +111,7 @@ public class Cube {
             double c = collision(this, cube);
             //double sign = () ? -1. : 1.;
             if (c > 0 && x >= cube.x)
-                xsp += (5 * c * c + c) * 2 * MessageQueue.getInstance().getSendSpeed();
+                xsp += (5 * c * c + c) * 2 * EdgeQueue.getInstance().getSendSpeed();
         }
         xsp = Math.min(xsp, width / 2 / (time * 0.001));
     }
@@ -141,7 +142,7 @@ public class Cube {
         sortBy(CubeSorting.position);
         for (Cube cube : cubes) {
             cube.moveByState(time);
-            if (MessageQueue.getInstance().model.running == RunState.running)
+            if (EdgeQueue.getInstance().model.running == RunState.running)
                 cube.forceForward(time);
         }
         for (Cube cube : cubes) {
@@ -247,93 +248,93 @@ public class Cube {
         }
     }*/
 
-    /*public ArrayList<Message> getBucket(double qx) {
-        return buckets.get((int) qx + 1);
-    }*/
+/*public ArrayList<Message> getBucket(double qx) {
+    return buckets.get((int) qx + 1);
+}*/
 
-    /*
-     
+/*
+ 
 
-    public void born(int index) {
-        state = MessageState.born;
-        ePosition = eSpeed = 0.0;
-        qSpeed = 0.0;
-        qY = 0.0;
-        
-
-        qSize = 0.1;
-    }
-
-    public void queueStep(long time, int index) {
-        Message prev = index > 0 ? MessageQueue.getInstance().mainList.get(index - 1) : null;
-        if (prev == null) {
-            blockingQx = -faraway;
-        } else {
-            blockingQx = Math.max(prev.qX, prev.blockingQx);
-        }
-        if (state == MessageState.born) {
-            qSize += vspeed * time * 0.001 * MessageQueue.getInstance().getRealSendSpeed();
-            if (qSize > 1.0) {
-                qSize = 1.0;
-                state = MessageState.main;
-            }
-        }
-        if (state == MessageState.main) {
-            moveForward(time, index);
-            if (qX < 0.0) {
-                MessageQueue.getInstance().mainList.remove(index);
-                MessageQueue.getInstance().deadList.add(this);
-                state = MessageState.dead;
-            }
-        }
-        if (state == MessageState.sleep) {
-            qY = CONST.queueHeight / MessageQueue.getInstance().zoom - qSize;
-        } else {
-            qY = 0.0;
-        }
-        if (state == MessageState.dead) {
-
-        }
-    }
-
-    void queueMove(long time, int index) {
-        
-             Message prev = index > 0 ? MessageQueue.getInstance().mainList.get(index - 1) : null;
-             double shift = hspeed * time * 0.001 * MessageQueue.getInstance().getRealSendSpeed();
-
-             if (prev != null && prev.state == MessageState.sleep && (qX < prev.qX + qSize + shift)) {
-                 boolean success = MessageQueue.getInstance().swapMessages(index - 1, index);
-                 if (!success && (blockingQx + qSize < qX)) {
-                     state = MessageState.sleep;
-                 }
-             }
-             if (blockingQx + qSize < qX) {
-                 if (MessageQueue.getInstance().model.running == RunState.running) {
-                     qX -= shift;
-                     qY = 0.0;
-                 }
-             } else {
-                 if (blockingQx + qSize - qX < shift) {
-                     qX = blockingQx + qSize;
-                 } else {
-                     qX += shift;
-                     qY = 0.1;
-                 }
-             }
-             
-    }
+public void born(int index) {
+    state = MessageState.born;
+    ePosition = eSpeed = 0.0;
+    qSpeed = 0.0;
+    qY = 0.0;
     
-    public ArrayList<Message> getCollidedMessages() {
-        ArrayList<Message> list = new ArrayList<Message>();
-        for (int i = -1; i <= 1; ++i) {
-            for (Message message : MessageQueue.getInstance().getBucket(qX + i))
-                if (collide(message, this))
-                    list.add(message);
-        }
-        return list;
-    }
-    */
 
+    qSize = 0.1;
+}
+
+public void queueStep(long time, int index) {
+    Message prev = index > 0 ? MessageQueue.getInstance().mainList.get(index - 1) : null;
+    if (prev == null) {
+        blockingQx = -faraway;
+    } else {
+        blockingQx = Math.max(prev.qX, prev.blockingQx);
+    }
+    if (state == MessageState.born) {
+        qSize += vspeed * time * 0.001 * MessageQueue.getInstance().getRealSendSpeed();
+        if (qSize > 1.0) {
+            qSize = 1.0;
+            state = MessageState.main;
+        }
+    }
+    if (state == MessageState.main) {
+        moveForward(time, index);
+        if (qX < 0.0) {
+            MessageQueue.getInstance().mainList.remove(index);
+            MessageQueue.getInstance().deadList.add(this);
+            state = MessageState.dead;
+        }
+    }
+    if (state == MessageState.sleep) {
+        qY = CONST.queueHeight / MessageQueue.getInstance().zoom - qSize;
+    } else {
+        qY = 0.0;
+    }
+    if (state == MessageState.dead) {
+
+    }
+}
+
+void queueMove(long time, int index) {
+    
+         Message prev = index > 0 ? MessageQueue.getInstance().mainList.get(index - 1) : null;
+         double shift = hspeed * time * 0.001 * MessageQueue.getInstance().getRealSendSpeed();
+
+         if (prev != null && prev.state == MessageState.sleep && (qX < prev.qX + qSize + shift)) {
+             boolean success = MessageQueue.getInstance().swapMessages(index - 1, index);
+             if (!success && (blockingQx + qSize < qX)) {
+                 state = MessageState.sleep;
+             }
+         }
+         if (blockingQx + qSize < qX) {
+             if (MessageQueue.getInstance().model.running == RunState.running) {
+                 qX -= shift;
+                 qY = 0.0;
+             }
+         } else {
+             if (blockingQx + qSize - qX < shift) {
+                 qX = blockingQx + qSize;
+             } else {
+                 qX += shift;
+                 qY = 0.1;
+             }
+         }
+         
+}
+
+public ArrayList<Message> getCollidedMessages() {
+    ArrayList<Message> list = new ArrayList<Message>();
+    for (int i = -1; i <= 1; ++i) {
+        for (Message message : MessageQueue.getInstance().getBucket(qX + i))
+            if (collide(message, this))
+                list.add(message);
+    }
+    return list;
+}
+*/
+/*XXXX
 }
 
 class ComparePosition implements Comparator<Cube> {
@@ -362,3 +363,4 @@ enum CubeSorting {
         return null;
     }
 }
+XXXX*/

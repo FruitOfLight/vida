@@ -7,8 +7,7 @@ public class CONST {
     public static final int windowHeight = 700;
     public static final int graphWidth = 700;
     public static final int menuHeight = 25;
-    public static final int queueHeight = 75;
-    public static final int graphHeight = 500;
+    public static final int graphHeight = 600;
     public static final int controlsButtonsHeight = 50;
     public static final int controlsHeight = 1;
     public static final int controlsWidth = 700;
@@ -102,8 +101,8 @@ enum Preference {
     begin, end, special
 }
 
-enum CubeState {
-    alive, asleep, wakeup, dead
+enum DeliverState {
+    born, alive, asleep, dead
 }
 
 enum Constrast {

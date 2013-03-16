@@ -28,10 +28,11 @@ public class GUI {
     static Graph graph;
     static Model model;
     static Controls controls;
-    static MessageQueue messageQueue;
+    static EdgeQueue messageQueue;
     static GlobalKeyListener gkl;
     static ZoomWindow zoomWindow;
     static InformationPanel informationPanel;
+    static JFrame frame;
 
     static void addElement(Container to, Component what, int x, int y, int w, int h) {
         what.setLocation(x, y);
@@ -45,6 +46,7 @@ public class GUI {
             // TODO spravit krajsie
 
             final JFrame frame = new JFrame("ViDA");
+            GUI.frame = frame;
             frame.setLayout(null);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -75,20 +77,16 @@ public class GUI {
             }
 
             addElement(frame, menu, 0, 0, CONST.windowWidth, CONST.menuHeight);
-            addElement(frame, graph.canvas, 0, CONST.queueHeight + CONST.menuHeight,
-                    CONST.graphWidth, CONST.graphHeight);
-            addElement(frame, MessageQueue.getInstance().canvas, 0, CONST.menuHeight,
-                    CONST.windowWidth, CONST.queueHeight);
-            addElement(frame, controls.panel, 0, CONST.queueHeight + CONST.menuHeight
-                    + CONST.graphHeight, CONST.controlsWidth, CONST.controlsButtonsHeight);
-            addElement(frame, controls.canvas, 0, CONST.queueHeight + CONST.menuHeight
-                    + CONST.graphHeight + CONST.controlsButtonsHeight, CONST.controlsWidth,
-                    CONST.controlsHeight);
+            addElement(frame, graph.canvas, 0, CONST.menuHeight, CONST.graphWidth,
+                    CONST.graphHeight);
+            addElement(frame, controls.panel, 0, CONST.menuHeight + CONST.graphHeight,
+                    CONST.controlsWidth, CONST.controlsButtonsHeight);
+            addElement(frame, controls.canvas, 0, CONST.menuHeight + CONST.graphHeight
+                    + CONST.controlsButtonsHeight, CONST.controlsWidth, CONST.controlsHeight);
             addElement(frame, zoomWindow.canvas, CONST.graphWidth, CONST.menuHeight
-                    + CONST.queueHeight + CONST.graphHeight / 2, CONST.zoomWindowWidth,
-                    CONST.zoomWindowHeight);
-            addElement(frame, informationPanel.scrollPanel, CONST.graphWidth, CONST.menuHeight
-                    + CONST.queueHeight, CONST.informationWidth, CONST.informationHeight);
+                    + CONST.graphHeight / 2, CONST.zoomWindowWidth, CONST.zoomWindowHeight);
+            addElement(frame, informationPanel.scrollPanel, CONST.graphWidth, CONST.menuHeight,
+                    CONST.informationWidth, CONST.informationHeight);
 
             frame.setSize(CONST.windowWidth, CONST.windowHeight);
             frame.setResizable(false);
@@ -154,8 +152,6 @@ public class GUI {
         graph = new Graph();
         model = new Model();
         controls = new Controls();
-        messageQueue = MessageQueue.getInstance();
-        graph.messages = MessageQueue.getInstance();
         gkl = new GlobalKeyListener();
         zoomWindow = new ZoomWindow();
         informationPanel = new InformationPanel();

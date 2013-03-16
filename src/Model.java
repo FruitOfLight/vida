@@ -1,16 +1,12 @@
 import java.io.File;
 import java.io.PrintStream;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JFileChooser;
 
 public class Model {
-    /*
-     * TODO parametre ako synchronny? anonymny? synchronne zobudenie.... maju
-     * nejake vstupne hodnoty? maju s.o.d.? caka sa od nich nejaky vystup (napr.
-     * kazdy povie, ci je sef)?
-     */
-
     String path = "";
     Graph graph;
     RunState running;
@@ -44,33 +40,34 @@ public class Model {
     private void load() {
         if (running != RunState.stopped)
             stop();
-        MessageQueue.getInstance().model = this;
         graph = GUI.graph;
-
         for (Vertex v : graph.vertices) {
             v.program = new Program(v, this);
             v.program.load(path);
         }
     }
 
-    void stop() {
-        if (running == RunState.stopped)
-            return;
-        running = RunState.stopped;
-        MessageQueue.getInstance().model = null;
-
-        for (Vertex v : graph.vertices) {
-            v.program.kill();
-        }
-        MessageQueue.getInstance().clear();
-        GUI.informationPanel.erase();
-    }
+    Timer timer;
 
     void start() {
         if (running == RunState.stopped)
             load();
         running = RunState.running;
-        MessageQueue.getInstance().start();
+        if (timer != null)
+            timer.cancel();
+        timer = new Timer();
+        StepEvent.time = System.currentTimeMillis();
+        timer.schedule(new StepEvent(this), 0);
+    }
+
+    void stop() {
+        if (running == RunState.stopped)
+            return;
+        running = RunState.stopped;
+        for (Vertex v : graph.vertices) {
+            v.program.kill();
+        }
+        GUI.informationPanel.erase();
     }
 
     void pause() {
@@ -83,6 +80,46 @@ public class Model {
 
     public void read(Scanner in) {
         path = in.nextLine();
+    }
+
+    private double sendSpeed = 1.2;
+
+    void setSendSpeed(double speed) {
+        sendSpeed = speed;
+    }
+
+    double getSendSpeed() {
+        return sendSpeed;
+    }
+
+    static class StepEvent extends TimerTask {
+        static long time = 0;
+        Model model;
+
+        public StepEvent(Model model) {
+            this.model = model;
+        }
+
+        @Override
+        public void run() {
+            if (model.running == RunState.stopped) {
+                return;
+            }
+            long prevTime = time;
+            time = System.currentTimeMillis();
+            long delay = time - prevTime;
+            if (delay > 0)
+                GUI.frame.setTitle("ViDA    fps: " + 1000 / delay);
+
+            // Spravy
+            if (model.running == RunState.running) {
+                for (Edge edge : model.graph.edges)
+                    edge.queue.step(delay);
+            }
+
+            model.graph.canvas.repaint();
+            model.timer.schedule(new StepEvent(model), 30);
+        }
     }
 
 }

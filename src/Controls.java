@@ -83,16 +83,14 @@ public class Controls implements Drawable {
             forwardButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    MessageQueue.getInstance().setSendSpeed(
-                            MessageQueue.getInstance().getSendSpeed() * CONST.speedFactor);
+                    GUI.model.setSendSpeed(GUI.model.getSendSpeed() * CONST.speedFactor);
                     canvas.repaint();
                 }
             });
             backwardButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    MessageQueue.getInstance().setSendSpeed(
-                            MessageQueue.getInstance().getSendSpeed() / CONST.speedFactor);
+                    GUI.model.setSendSpeed(GUI.model.getSendSpeed() / CONST.speedFactor);
                     canvas.repaint();
                 }
             });
@@ -119,7 +117,7 @@ public class Controls implements Drawable {
                     Math.max(GUI.model.path.length() - 4, last + 1));
         }
         programLabel.setText("Current program: " + programString);
-        String speedString = ((Double) MessageQueue.getInstance().getSendSpeed()).toString();
+        String speedString = ((Double) GUI.model.getSendSpeed()).toString();
         if (speedString.length() > 5)
             speedString = speedString.substring(0, 5);
         if (GUI.model.running == RunState.running) {

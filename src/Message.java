@@ -8,11 +8,11 @@ class Message {
     Edge edge;
     String rawContent;
     double ePosition, eSpeed;
-    double expectedSpeed;
+    DeliverState state;
     Color gColor;
-    Cube cube;
 
     public Message(int port, String content) {
+        state = DeliverState.born;
         this.fromPort = port;
         this.rawContent = content;
         gColor = Color.red;
@@ -58,6 +58,8 @@ class Message {
     }
 
     public void edgeDraw(Graphics2D g) {
+        if (state == DeliverState.dead)
+            return;
         g.setColor(gColor);
         double x = edge.from.getX() * (1.0 - ePosition) + edge.to.getX() * ePosition;
         double y = edge.from.getY() * (1.0 - ePosition) + edge.to.getY() * ePosition;
@@ -82,11 +84,16 @@ class Message {
     }
 
     public void edgeStep(long time) {
-        double eSpeed = Math.min(CONST.messageSpeedLimit, expectedSpeed);
+        if (state == DeliverState.dead)
+            return;
+        //double expectedSpeed = 1;
+        //Math.min(CONST.messageSpeedLimit, expectedSpeed);
         // speed += (expectedSpeed-speed)*(0.01);
+        double eSpeed = 0.2 * GUI.model.getSendSpeed();
         ePosition += eSpeed * time * 0.001;
         if (ePosition >= 1.0) {
             ePosition = 1.0;
+            recieve();
         }
         if (ePosition <= 0.0) {
             ePosition = 0.0;
@@ -94,6 +101,9 @@ class Message {
     }
 
     public void recieve() {
+        if (state == DeliverState.dead)
+            return;
+        state = DeliverState.dead;
         edge.to.receive(this);
     }
 

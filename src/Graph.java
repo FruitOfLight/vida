@@ -3,7 +3,6 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.Scanner;
 
 import javax.swing.JOptionPane;
@@ -13,7 +12,6 @@ import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.ParseExceptio
 public class Graph implements Drawable {
     public ArrayList<Vertex> vertices;
     public ArrayList<Edge> edges;
-    public MessageQueue messages;
     // premenne pre vykreslovanie
     public Canvas canvas;
     GraphListener listener;
@@ -52,14 +50,8 @@ public class Graph implements Drawable {
         for (Vertex vertex : vertices) {
             vertex.draw(g);
         }
-        // vykresli spravy
-        try {
-            for (Cube cube : Cube.getAllCubes()) {
-                cube.message.edgeDraw(g);
-            }
-        } catch (ConcurrentModificationException e) {
-            e.printStackTrace();
-            draw(g);
+        for (Edge edge : edges) {
+            edge.queue.draw(g);
         }
     }
 

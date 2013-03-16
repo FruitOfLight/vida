@@ -51,9 +51,7 @@ public class Vertex {
     }
 
     void send(Message message) {
-        message.setEdge(edges.get(message.fromPort));
-        message.toPort = message.edge.to.edges.indexOf(message.edge.oppositeEdge);
-        MessageQueue.getInstance().pushMessage(message);
+        edges.get(message.fromPort).send(message);
     }
 
     void receive(Message message) {
