@@ -64,18 +64,26 @@ public class VertexInformationPanel implements Drawable {
             return;
         g.setColor(Canvas.contrastColor(new Color(255, 255, 255), Constrast.textbw));
         g.setFont(new Font(Font.DIALOG, Font.PLAIN, 10));
-        String caption = informations.get(informations.size() - 1).getInfo();
+        //String caption = informations.get(informations.size() - 1).getInfo();
         double x = vertex.getX(), y = vertex.getY() - vertex.getRadius();
-        double w = g.getFontMetrics().stringWidth(caption);
+        double w = 0;
+        for (Information i : informations) {
+            w = Math.max(w, g.getFontMetrics().stringWidth(i.getInfo()));
+        }
         double h = g.getFontMetrics().getAscent();
+        int n = informations.size();
         g.setColor(new Color(150, 214, 250));
-        g.fillRoundRect((int) (x - padding), (int) (y - h - 2 * padding), (int) w + 2 * padding,
-                (int) h + 2 * padding, 10, 10);
+        g.fillRoundRect((int) (x - padding), (int) (y - n * h - 2 * padding),
+                (int) w + 2 * padding, (int) (n * h) + 2 * padding, 10, 10);
         g.setColor(new Color(0, 0, 250));
-        g.drawRoundRect((int) (x - padding), (int) (y - h - 2 * padding), (int) w + 2 * padding,
-                (int) h + 2 * padding, 10, 10);
+        g.drawRoundRect((int) (x - padding), (int) (y - n * h - 2 * padding),
+                (int) w + 2 * padding, (int) (n * h) + 2 * padding, 10, 10);
         g.setColor(Canvas.contrastColor(new Color(255, 255, 255), Constrast.textbw));
-        g.drawString(caption, (float) x, (float) (y - padding));
+        int j = 0;
+        for (Information i : informations) {
+            j++;
+            g.drawString(i.getInfo(), (float) x, (float) (y - (n - j) * h - padding));
+        }
     }
 
     public void setInformation(String s) {
