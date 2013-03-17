@@ -31,6 +31,7 @@ public class Vertex {
 
     ArrayList<Edge> edges;
     Program program;
+    VertexInformationPanel informationPanel;
 
     public Vertex(double x, double y) {
         this(x, y, 0);
@@ -44,11 +45,13 @@ public class Vertex {
         radius = CONST.vertexSize;
         watchVariables = new HashMap<String, Integer>();
         color = new Color(0, 255, 0);
+        informationPanel = new VertexInformationPanel(this);
     }
 
     public void defaultSettings() {
         color = new Color(0, 255, 0);
         radius = CONST.vertexSize;
+        informationPanel.defaultSettings();
     }
 
     void send(Message message) {
@@ -100,6 +103,8 @@ public class Vertex {
             g.drawString(caption, (float) (x - g.getFontMetrics().stringWidth(caption) / 2),
                     (float) (y + g.getFontMetrics().getAscent() / 2));
         }
+
+        informationPanel.draw(g);
 
     }
 
