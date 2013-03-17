@@ -12,9 +12,9 @@ public class CONST {
     public static final int controlsHeight = 1;
     public static final int controlsWidth = 700;
     public static final int zoomWindowWidth = 300;
-    public static final int zoomWindowHeight = 250;
+    public static final int zoomWindowHeight = 300;
     public static final int informationWidth = 300;
-    public static final int informationHeight = 250;
+    public static final int informationHeight = 300;
 
     // Graph
     public static final int vertexSize = 10;
@@ -102,7 +102,7 @@ enum Preference {
 }
 
 enum DeliverState {
-    born, alive, asleep, dead
+    born, alive, asleep, inbox, delivered
 }
 
 enum Constrast {

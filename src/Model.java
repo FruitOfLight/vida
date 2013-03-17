@@ -53,6 +53,7 @@ public class Model {
     }
 
     Timer timer;
+    int timerid = 0;
 
     void start() {
         startingTime = System.currentTimeMillis();
@@ -61,9 +62,10 @@ public class Model {
         running = RunState.running;
         if (timer != null)
             timer.cancel();
+        timerid++;
         timer = new Timer();
         StepEvent.time = System.currentTimeMillis();
-        timer.schedule(new StepEvent(this), 0);
+        timer.schedule(new StepEvent(this, timerid), 0);
     }
 
     void stop() {
@@ -76,7 +78,6 @@ public class Model {
             e.restart();
         MessageQueue.messageCount = 0;
         GUI.informationPanel.erase();
-        GUI.frame.setTitle("ViDA");
     }
 
     void pause() {
@@ -92,7 +93,8 @@ public class Model {
     }
 
     private double sendSpeed = 1.2;
-    static int fps;
+    static int fps, afps, sfps;
+    static int ticks, totaltime, longest;
 
     void setSendSpeed(double speed) {
         sendSpeed = speed;
@@ -105,14 +107,16 @@ public class Model {
     static class StepEvent extends TimerTask {
         static long time = 0;
         Model model;
+        int id;
 
-        public StepEvent(Model model) {
+        public StepEvent(Model model, int id) {
             this.model = model;
+            this.id = id;
         }
 
         @Override
         public void run() {
-            if (model.running == RunState.stopped) {
+            if (model.running == RunState.stopped || id != model.timerid) {
                 return;
             }
             long prevTime = time;
@@ -120,9 +124,16 @@ public class Model {
             long delay = time - prevTime;
             if (delay > 0)
                 fps = (int) (1000 / delay);
-            /*if (delay > 0)
-                GUI.frame.setTitle("ViDA    fps: " + 1000 / delay + " mc: "
-                        + MessageQueue.messageCount);*/
+            ticks++;
+            totaltime += delay;
+            longest = Math.max(longest, (int) delay);
+            if (totaltime >= 2000) {
+                afps = 1000 * ticks / totaltime;
+                sfps = 1000 / longest;
+                ticks = 0;
+                longest = 0;
+                totaltime = 0;
+            }
 
             // Spravy
             if (model.running == RunState.running) {
@@ -131,7 +142,7 @@ public class Model {
             }
 
             model.graph.canvas.repaint();
-            model.timer.schedule(new StepEvent(model), 15);
+            model.timer.schedule(new StepEvent(model, id), 15);
         }
     }
 
