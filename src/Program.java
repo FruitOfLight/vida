@@ -53,6 +53,7 @@ public class Program extends Thread {
                 }
                 if (line.charAt(0) == '#') {
                     GUI.informationPanel.printInformation(vertex, line.substring(1).trim());
+                    vertex.informationPanel.setInformation(line.substring(1).trim());
                 }
                 if (line.charAt(0) == '$') {
                     String parts[] = line.substring(1).split(":", 2);
