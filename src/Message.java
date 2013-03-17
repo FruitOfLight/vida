@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.Path2D;
 
 class Message {
     static double getRandomMessageSpeed() {
@@ -68,23 +69,19 @@ class Message {
         g.setColor(gColor);
         double x = edge.from.getX() * (1.0 - ePosition) + edge.to.getX() * ePosition;
         double y = edge.from.getY() * (1.0 - ePosition) + edge.to.getY() * ePosition;
-        int rX = (int) (x);
-        int rY = (int) (y);
         // Tu sa da nastavovat velkost trojuholnika
-        int rR = (int) (12.0);
-        int xPoints[] = new int[3], yPoints[] = new int[3];
-        xPoints[0] = rX;
-        yPoints[0] = rY;
+        double rR = 12.0;
         double ux = edge.from.getY() - edge.to.getY(), uy = edge.to.getX() - edge.from.getX();
 
         double k = rR / Math.sqrt(ux * ux + uy * uy);
         double vx = ux * k;
         double vy = uy * k;
-        xPoints[1] = (int) Math.round(rX + vx + vy / 2.0);
-        yPoints[1] = (int) Math.round(rY + vy - vx / 2.0);
-        xPoints[2] = (int) Math.round(rX + vx - vy / 2.0);
-        yPoints[2] = (int) Math.round(rY + vy + vx / 2.0);
-        g.fillPolygon(xPoints, yPoints, 3);
+        Path2D polygon = new Path2D.Double();
+        polygon.moveTo(x, y);
+        polygon.lineTo(x + vx + vy * 0.5, y + vy - vx * 0.5);
+        polygon.lineTo(x + vx - vy * 0.5, y + vy + vx * 0.5);
+        polygon.lineTo(x, y);
+        g.fill(polygon);
         // g.drawString(((Integer) edge.to.getID()).toString(), x, y);
     }
 

@@ -125,7 +125,7 @@ public class Model {
             }
 
             model.graph.canvas.repaint();
-            model.timer.schedule(new StepEvent(model), 10);
+            model.timer.schedule(new StepEvent(model), 15);
         }
     }
 

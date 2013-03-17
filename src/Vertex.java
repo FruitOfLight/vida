@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -83,23 +84,21 @@ public class Vertex {
     }
 
     public void draw(Graphics2D g, boolean showID) {
-        int rX = (int) (x - radius);
-        int rY = (int) (y - radius);
-        int rR = (int) (radius * 2);
-
+        Ellipse2D ellipse = new Ellipse2D.Double(x - radius, y - radius, 2 * radius, 2 * radius);
         g.setColor(color);
-        g.fillOval(rX, rY, rR, rR);
+        g.fill(ellipse);
         g.setColor(Canvas.contrastColor(color, Constrast.borderbw));
-        g.drawOval(rX, rY, rR, rR);
+        g.draw(ellipse);
 
         if (showID) {
             g.setColor(Canvas.contrastColor(color, Constrast.textbw));
             g.setFont(new Font(Font.DIALOG, Font.PLAIN, (int) (13 * Math.sqrt(1))));
-            String caption = Canvas.shorten(g, ((Integer) ID).toString(), rR, Preference.begin);
+            String caption = Canvas.shorten(g, ((Integer) ID).toString(), (int) (radius * 2),
+                    Preference.begin);
             if (caption.endsWith(".."))
                 caption = "V";
-            g.drawString(caption, rX + (rR - g.getFontMetrics().stringWidth(caption)) / 2, rY
-                    + (rR + g.getFontMetrics().getAscent()) / 2);
+            g.drawString(caption, (float) (x - g.getFontMetrics().stringWidth(caption) / 2),
+                    (float) (y + g.getFontMetrics().getAscent() / 2));
         }
 
     }

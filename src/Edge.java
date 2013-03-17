@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Line2D;
 
 // orientovana hrana z from do to
 public class Edge {
@@ -35,13 +36,10 @@ public class Edge {
 
     public void draw(Graphics2D g) {
         g.setColor(new Color(0, 0, 0));
-        int x1 = (int) from.getX();
-        int y1 = (int) from.getY();
-        int x2 = (int) to.getX();
-        int y2 = (int) to.getY();
+        Line2D line = new Line2D.Double(from.getX(), from.getY(), to.getX(), to.getY());
         if (selected)
             g.setStroke(Canvas.boldStroke);
-        g.drawLine(x1, y1, x2, y2);
+        g.draw(line);
         g.setStroke(Canvas.thinStroke);
     }
 
