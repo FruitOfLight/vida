@@ -11,10 +11,15 @@ public class Model {
     Graph graph;
     RunState running;
     ModelSettings settings;
+    long startingTime;
 
     Model() {
         running = RunState.stopped;
         settings = new ModelSettings();
+    }
+
+    public RunState getRunState() {
+        return running;
     }
 
     public void openProgram() {
@@ -50,6 +55,7 @@ public class Model {
     Timer timer;
 
     void start() {
+        startingTime = System.currentTimeMillis();
         if (running == RunState.stopped)
             load();
         running = RunState.running;
