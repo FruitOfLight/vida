@@ -64,7 +64,7 @@ class Message {
     }
 
     public void edgeDraw(Graphics2D g) {
-        if (state == DeliverState.dead)
+        if (state == DeliverState.inbox)
             return;
         g.setColor(gColor);
         double x = edge.from.getX() * (1.0 - ePosition) + edge.to.getX() * ePosition;
@@ -86,23 +86,15 @@ class Message {
     }
 
     public void edgeStep(long time) {
-        if (state == DeliverState.dead)
+        if (state == DeliverState.inbox)
             return;
         ePosition += GUI.model.getSendSpeed() * eSpeed * time * 0.001;
         if (ePosition >= 1.0) {
             ePosition = 1.0;
-            recieve();
+            state = DeliverState.inbox;
         }
         if (ePosition <= 0.0) {
             ePosition = 0.0;
         }
     }
-
-    public void recieve() {
-        if (state == DeliverState.dead)
-            return;
-        state = DeliverState.dead;
-        edge.to.receive(this);
-    }
-
 }

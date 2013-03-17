@@ -102,7 +102,7 @@ enum Preference {
 }
 
 enum DeliverState {
-    born, alive, asleep, dead
+    born, alive, asleep, inbox, delivered
 }
 
 enum Constrast {

@@ -21,15 +21,28 @@ public class MessageQueue implements Drawable {
             Message prevMessage = null;
             double defdist = 0.3 / list.size();
             for (Message message : list) {
-                double p = Math.pow(0.999, time);
+                double p = Math.pow(0.5, time * 0.001);
                 message.eSpeed = message.eSpeed * (1.0 - p) + message.defSpeed * p;
                 if (prevMessage != null) {
-                    double q = defdist - message.ePosition + prevMessage.ePosition;
-                    if (q > 0)
-                        message.eSpeed /= 1 + q;
+                    double q = prevMessage.ePosition - message.ePosition;
+                    if (q < 0) {
+                        message.eSpeed = 0.0;
+                    } else if (q < defdist) {
+                        message.eSpeed /= 1 + (defdist - q);
+                    }
                 }
                 message.edgeStep(time);
                 prevMessage = message;
+            }
+
+            for (Message message : list) {
+                if (message.state == DeliverState.delivered)
+                    continue;
+                if (message.state == DeliverState.inbox) {
+                    message.edge.to.receive(message);
+                } else {
+                    break;
+                }
             }
         }
     }
@@ -40,7 +53,7 @@ public class MessageQueue implements Drawable {
             message.edgeDraw(g);
     }
 
-    public void clear() {
+    synchronized public void clear() {
         list.clear();
         bornlist.clear();
     }
@@ -54,7 +67,7 @@ public class MessageQueue implements Drawable {
     synchronized public void updateMessages() {
         while (bornlist.size() > 0)
             list.add(bornlist.pop());
-        while (list.size() > 0 && list.peek().state == DeliverState.dead) {
+        while (list.size() > 0 && list.peek().state == DeliverState.delivered) {
             list.pop();
             messageCount--;
         }

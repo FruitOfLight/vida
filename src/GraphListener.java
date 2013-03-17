@@ -5,6 +5,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.geom.Line2D;
 
 class GraphListener implements MouseListener, MouseMotionListener, MouseWheelListener {
     private Graph graph;
@@ -25,7 +26,7 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
         if (begin != null && !GUI.gkl.isPressed(CONST.deleteKey)
                 && !GUI.gkl.isPressed(CONST.moveKey)) {
             g.setColor(new Color(0, 0, 0));
-            g.drawLine((int) (begin.getX()), (int) (begin.getY()), (int) xlast, (int) ylast);
+            g.draw(new Line2D.Double(begin.getX(), begin.getY(), xlast, ylast));
         }
     }
 
@@ -93,10 +94,9 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
             if (GUI.model.running != RunState.stopped) {
                 return;
             }
-            graph.canvas.repaintBetween(begin.getX(), begin.getY(), xlast, ylast);
             xlast = mouseGetX(mouse);
             ylast = mouseGetY(mouse);
-            graph.canvas.repaintBetween(begin.getX(), begin.getY(), xlast, ylast);
+            graph.canvas.repaint();
         }
     }
 

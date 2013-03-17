@@ -57,6 +57,7 @@ public class Vertex {
 
     void receive(Message message) {
         program.receive(message);
+        message.state = DeliverState.delivered;
     }
 
     public Map<String, Integer> watchVariables;

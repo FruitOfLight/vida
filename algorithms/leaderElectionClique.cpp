@@ -21,6 +21,7 @@ void recieve(int port, string message) {
         char inf[100];
         sprintf(inf,"I've recieved bigger ID, leader will be: %d",ID);
         sendInformation(string(inf));
+        setSValue("_vertex_color","200,125,0");
     }
     freePorts--;
     if(freePorts==0)
@@ -29,12 +30,10 @@ void recieve(int port, string message) {
         sprintf(inf,"Leader has ID: %d, God bless king",getIValue("maximalID"));
         sendInformation(string(inf));
         char color[100];
-        if(myID == getIValue("maximalID")) {
+        if(myID == getIValue("maximalID"))
             setSValue("_vertex_color","50,50,255");
-        }
-        else {
+        else
             setSValue("_vertex_color","255,0,0");
-        }
     }
 }
 
