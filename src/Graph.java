@@ -53,6 +53,9 @@ public class Graph implements Drawable {
         for (Edge edge : edges) {
             edge.queue.draw(g);
         }
+        for (Vertex vertex : vertices) {
+            vertex.informationPanel.draw(g);
+        }
     }
 
     public void clickWithMouse(MouseEvent mouse) {

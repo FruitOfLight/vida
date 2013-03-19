@@ -1,4 +1,6 @@
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -37,6 +39,15 @@ public class VertexInformationPanel implements Drawable {
     public Vertex vertex;
     private int padding = 3;
     long expiration = 2000;
+    boolean transparency = false;
+
+    public boolean getTransparency() {
+        return transparency;
+    }
+
+    public void setTransparency(boolean transparency) {
+        this.transparency = transparency;
+    }
 
     public VertexInformationPanel(Vertex vertex) {
         this.vertex = vertex;
@@ -58,13 +69,20 @@ public class VertexInformationPanel implements Drawable {
         informations = help;
     }
 
+    private AlphaComposite makeComposite(float alpha) {
+        int type = AlphaComposite.SRC_OVER;
+        return (AlphaComposite.getInstance(type, alpha));
+    }
+
     public void draw(Graphics2D g) {
         updateTimeExpiration();
+        Composite originalComposite = g.getComposite();
+        if (transparency)
+            g.setComposite(makeComposite(0.5f));
         if (informations.size() == 0)
             return;
         g.setColor(Canvas.contrastColor(new Color(255, 255, 255), Constrast.textbw));
         g.setFont(new Font(Font.DIALOG, Font.PLAIN, 10));
-        //String caption = informations.get(informations.size() - 1).getInfo();
         double x = vertex.getX(), y = vertex.getY() - vertex.getRadius();
         double w = 0;
         for (Information i : informations) {
@@ -84,6 +102,7 @@ public class VertexInformationPanel implements Drawable {
             j++;
             g.drawString(i.getInfo(), (float) x, (float) (y - (n - j) * h - padding));
         }
+        g.setComposite(originalComposite);
     }
 
     public void setInformation(String s) {

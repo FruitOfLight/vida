@@ -110,6 +110,19 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
 
     @Override
     public void mouseMoved(MouseEvent mouse) {
+        for (Vertex vertex : graph.vertices) {
+            if (vertex.isNearPoint(mouseGetX(mouse), mouseGetY(mouse), graph.canvas.zoom)) {
+                if (vertex.informationPanel.getTransparency())
+                    continue;
+                vertex.informationPanel.setTransparency(true);
+                graph.canvas.repaint();
+            } else {
+                if (!vertex.informationPanel.getTransparency())
+                    continue;
+                vertex.informationPanel.setTransparency(false);
+                graph.canvas.repaint();
+            }
+        }
     }
 
     @Override

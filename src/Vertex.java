@@ -105,8 +105,6 @@ public class Vertex {
                     (float) (y + g.getFontMetrics().getAscent() / 2));
         }
 
-        informationPanel.draw(g);
-
     }
 
     public void zoomDraw(Graphics g) {
