@@ -11,6 +11,7 @@ import java.util.Scanner;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -24,7 +25,7 @@ public class GUI {
     /*
      * static Canvas graphCanvas; static Canvas queueCanvas;
      */
-    // uz pristupujeme cez graf
+    // uz pristupujeme cez graf 
     static Graph graph;
     static Model model;
     static Controls controls;
@@ -33,6 +34,9 @@ public class GUI {
     static ZoomWindow zoomWindow;
     static InformationPanel informationPanel;
     static JFrame frame;
+    static PopupPanel popupInformation;
+    static PopupPanel popupZoomWindow;
+    static JLayeredPane layeredPane;
 
     static void addElement(Container to, Component what, int x, int y, int w, int h) {
         what.setLocation(x, y);
@@ -76,17 +80,40 @@ public class GUI {
                 }
             }
 
-            addElement(frame, menu, 0, 0, CONST.windowWidth, CONST.menuHeight);
-            addElement(frame, graph.canvas, 0, CONST.menuHeight, CONST.graphWidth,
-                    CONST.graphHeight);
-            addElement(frame, controls.panel, 0, CONST.menuHeight + CONST.graphHeight,
-                    CONST.controlsWidth, CONST.controlsButtonsHeight);
-            addElement(frame, controls.canvas, 0, CONST.menuHeight + CONST.graphHeight
-                    + CONST.controlsButtonsHeight, CONST.controlsWidth, CONST.controlsHeight);
-            addElement(frame, zoomWindow.canvas, CONST.graphWidth, CONST.menuHeight
-                    + CONST.graphHeight / 2, CONST.zoomWindowWidth, CONST.zoomWindowHeight);
-            addElement(frame, informationPanel.scrollPanel, CONST.graphWidth, CONST.menuHeight,
+            layeredPane = new JLayeredPane();
+            addElement(frame, layeredPane, 0, 0, CONST.windowWidth, CONST.windowHeight);
+
+            popupInformation = new PopupPanel(informationPanel.scrollPanel);
+            popupZoomWindow = new PopupPanel(zoomWindow.canvas);
+
+            addElement(layeredPane, menu, 0, 0, CONST.windowWidth, CONST.menuHeight);
+            addElement(layeredPane, informationPanel.scrollPanel, CONST.windowWidth
+                    - CONST.informationWidth - CONST.popupwidth, CONST.menuHeight,
                     CONST.informationWidth, CONST.informationHeight);
+            addElement(layeredPane, graph.canvas, 0, CONST.menuHeight, CONST.graphWidth,
+                    CONST.graphHeight);
+            addElement(layeredPane, controls.panel, 0, CONST.menuHeight + CONST.graphHeight,
+                    CONST.controlsWidth, CONST.controlsButtonsHeight);
+            addElement(layeredPane, controls.canvas, 0, CONST.menuHeight + CONST.graphHeight
+                    + CONST.controlsButtonsHeight, CONST.controlsWidth, CONST.controlsHeight);
+            addElement(layeredPane, zoomWindow.canvas, CONST.windowWidth - CONST.zoomWindowWidth
+                    - CONST.popupwidth, CONST.menuHeight + CONST.graphHeight / 2,
+                    CONST.zoomWindowWidth, CONST.zoomWindowHeight);
+            addElement(layeredPane, popupInformation, CONST.windowWidth - CONST.popupwidth,
+                    CONST.menuHeight, CONST.popupwidth, CONST.informationHeight);
+            addElement(layeredPane, popupZoomWindow, CONST.windowWidth - CONST.popupwidth,
+                    CONST.menuHeight + CONST.graphHeight / 2, CONST.popupwidth,
+                    CONST.zoomWindowHeight);
+            layeredPane.setComponentZOrder(menu, 0);
+            layeredPane.setComponentZOrder(informationPanel.scrollPanel, 0);
+            layeredPane.setComponentZOrder(graph.canvas, 1);
+            layeredPane.setComponentZOrder(controls.panel, 0);
+            layeredPane.setComponentZOrder(zoomWindow.canvas, 0);
+            layeredPane.setComponentZOrder(popupInformation, 0);
+            layeredPane.setComponentZOrder(popupZoomWindow, 0);
+
+            informationPanel.scrollPanel.setVisible(false);
+            zoomWindow.canvas.setVisible(false);
 
             frame.setSize(CONST.windowWidth, CONST.windowHeight);
             frame.setResizable(false);

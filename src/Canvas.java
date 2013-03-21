@@ -56,6 +56,7 @@ public class Canvas extends JPanel {
         if (element != null) {
             element.draw(g);
         }
+        GUI.layeredPane.repaint();
     }
 
     void repaintBetween(double x1, double y1, double x2, double y2) {
