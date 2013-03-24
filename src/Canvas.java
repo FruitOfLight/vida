@@ -31,7 +31,8 @@ public class Canvas extends JPanel {
     }
 
     protected void paintComponent(Graphics2D g) {
-        super.paintComponent(g);
+        //super.paintComponent(g);
+        super.repaint();
 
         boldStroke = new BasicStroke((float) Math.max(3.0 / Math.sqrt(zoom), 3.0 / zoom));
         thinStroke = new BasicStroke((float) (1.0 / Math.sqrt(zoom)));
@@ -40,19 +41,23 @@ public class Canvas extends JPanel {
         g.setColor(new Color(255, 255, 255));
         g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(new Color(0, 0, 0));
-        g.drawRect(0, 0, getWidth() - 1, getWidth() - 1);
+        g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
         g.setStroke(thinStroke);
 
         // TODO bug report, pri starte je canvas nejak divne posunuty netusim preco
         // TODO bug report, ked sa odzmaze vrchol a spusti sa to, tak si to mysli, ze tam vrchol stale je
 
-        g.setTransform(new AffineTransform(zoom, 0, 0, zoom, offX, offY));
         /*System.out.println("off " + element.toString() + " " + offX + " " + offY + " "
                 + getLocation().y);*/
 
         if (element != null) {
+            AffineTransform oldTransform = g.getTransform();
+            g.scale(zoom, zoom);
+            g.translate(offX, offY);
             element.draw(g);
+            g.setTransform(oldTransform);
         }
+
     }
 
     static void realDrawRect(Graphics g, double x, double y, double w, double h) {

@@ -22,9 +22,7 @@ public class GUI {
 
     static JFileChooser graphLoader;
     static JFileChooser graphSaver;
-    /*
-     * static Canvas graphCanvas; static Canvas queueCanvas;
-     */
+
     // uz pristupujeme cez graf 
     static Graph graph;
     static Model model;
@@ -36,6 +34,7 @@ public class GUI {
     static JFrame frame;
     static PopupPanel popupInformation;
     static PopupPanel popupZoomWindow;
+
     static JLayeredPane layeredPane;
 
     static void addElement(Container to, Component what, int x, int y, int w, int h) {
@@ -82,11 +81,13 @@ public class GUI {
 
             addElement(frame, controls.panel, 0, CONST.menuHeight + CONST.graphHeight,
                     CONST.controlsWidth, CONST.controlsButtonsHeight);
+            addElement(frame, controls.canvas, CONST.controlsWidth - 300, CONST.menuHeight
+                    + CONST.graphHeight, 300, CONST.controlsButtonsHeight);
 
             layeredPane = new JLayeredPane();
             addElement(frame, layeredPane, 0, 0, CONST.windowWidth, CONST.graphHeight
                     + CONST.menuHeight);
-            //JFrame layeredPane = frame;
+            //final JFrame layeredPane = frame;
 
             popupInformation = new PopupPanel(informationPanel.scrollPanel);
             popupZoomWindow = new PopupPanel(zoomWindow.canvas);
@@ -138,12 +139,13 @@ public class GUI {
     }
 
     public static void gRepaint() {
-        GUI.controls.canvas.repaint();
-        GUI.graph.canvas.repaint();
+        if (controls != null)
+            GUI.controls.canvas.repaint();
+        if (graph != null)
+            GUI.graph.canvas.repaint();
         //GUI.informationPanel.scrollPanel.repaint();
         if (layeredPane != null)
             GUI.layeredPane.repaint();
-
     }
 
     public static void saveApp() {

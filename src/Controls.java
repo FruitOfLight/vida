@@ -18,7 +18,6 @@ public class Controls implements Drawable {
     JPanel panel;
     Canvas canvas;
     Model model;
-    JButton playButton;
     Map<String, Component> map = new TreeMap<String, Component>();
 
     static final int gridWidth = 24;
@@ -27,25 +26,31 @@ public class Controls implements Drawable {
     public Controls() {
         model = GUI.model;
         panel = new JPanel();
+        canvas = new Canvas(this);
         //panel.setBackground(new Color(200, 200, 100, 20));
         panel.setLayout(null);
-        canvas = new Canvas(this);
-        canvas.setLocation(CONST.controlsWidth - 200, 0);
-        canvas.setSize(200, 50);
-        panel.add(canvas);
 
         try {
-            panel.add(new ControlButton(this, "run", 0, 1));
+            /*panel.add(new ControlButton(this, "run", 0, 1));
             panel.add(new ControlButton(this, "stop", 0, 1));
             panel.add(new ControlButton(this, "start", 1, 1));
             panel.add(new ControlButton(this, "pause", 1, 1));
             panel.add(new ControlButton(this, "slow", 2, 1));
-            panel.add(new ControlButton(this, "fast", 3, 1));
+            panel.add(new ControlButton(this, "fast", 3, 1));*/
+            panel.add(new ControlButton(this, "run", 0, 1));
+            panel.add(new ControlButton(this, "stop", 1, 1));
+            panel.add(new ControlButton(this, "start", 2, 1));
+            panel.add(new ControlButton(this, "pause", 3, 1));
+            panel.add(new ControlButton(this, "slow", 4, 1));
+            panel.add(new ControlButton(this, "fast", 5, 1));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        refresh();
 
+        /*canvas.setLocation(CONST.controlsWidth - 300, 0);
+        canvas.setSize(300, 50);
+        panel.add(canvas);*/
+        refresh();
     }
 
     public void refresh() {
@@ -57,6 +62,8 @@ public class Controls implements Drawable {
             map.get("pause").setVisible(true);
             map.get("slow").setVisible(true);
             map.get("fast").setVisible(true);
+            map.get("run").setVisible(false);
+            map.get("start").setVisible(false);
         }
         if (model.running == RunState.paused) {
             map.get("stop").setVisible(true);
@@ -66,6 +73,10 @@ public class Controls implements Drawable {
         }
         if (model.running == RunState.stopped) {
             map.get("run").setVisible(true);
+            map.get("stop").setVisible(false);
+            map.get("pause").setVisible(false);
+            map.get("slow").setVisible(false);
+            map.get("fast").setVisible(false);
         }
         canvas.repaint();
     }

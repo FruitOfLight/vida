@@ -76,8 +76,10 @@ public class Model {
             v.program.kill();
         for (Edge e : graph.edges)
             e.restart();
+        graph.setDefaultValues();
         MessageQueue.messageCount = 0;
         GUI.informationPanel.erase();
+
     }
 
     void pause() {
