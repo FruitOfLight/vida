@@ -80,22 +80,24 @@ public class GUI {
                 }
             }
 
+            addElement(frame, controls.panel, 0, CONST.menuHeight + CONST.graphHeight,
+                    CONST.controlsWidth, CONST.controlsButtonsHeight);
+
             layeredPane = new JLayeredPane();
-            addElement(frame, layeredPane, 0, 0, CONST.windowWidth, CONST.windowHeight);
+            addElement(frame, layeredPane, 0, 0, CONST.windowWidth, CONST.graphHeight
+                    + CONST.menuHeight);
+            //JFrame layeredPane = frame;
 
             popupInformation = new PopupPanel(informationPanel.scrollPanel);
             popupZoomWindow = new PopupPanel(zoomWindow.canvas);
 
             addElement(layeredPane, menu, 0, 0, CONST.windowWidth, CONST.menuHeight);
+            addElement(layeredPane, graph.canvas, 0, CONST.menuHeight, CONST.graphWidth,
+                    CONST.graphHeight);
+
             addElement(layeredPane, informationPanel.scrollPanel, CONST.windowWidth
                     - CONST.informationWidth - CONST.popupwidth, CONST.menuHeight,
                     CONST.informationWidth, CONST.informationHeight);
-            addElement(layeredPane, graph.canvas, 0, CONST.menuHeight, CONST.graphWidth,
-                    CONST.graphHeight);
-            addElement(layeredPane, controls.panel, 0, CONST.menuHeight + CONST.graphHeight,
-                    CONST.controlsWidth, CONST.controlsButtonsHeight);
-            addElement(layeredPane, controls.canvas, 0, CONST.menuHeight + CONST.graphHeight
-                    + CONST.controlsButtonsHeight, CONST.controlsWidth, CONST.controlsHeight);
             addElement(layeredPane, zoomWindow.canvas, CONST.windowWidth - CONST.zoomWindowWidth
                     - CONST.popupwidth, CONST.menuHeight + CONST.graphHeight / 2,
                     CONST.zoomWindowWidth, CONST.zoomWindowHeight);
@@ -104,10 +106,10 @@ public class GUI {
             addElement(layeredPane, popupZoomWindow, CONST.windowWidth - CONST.popupwidth,
                     CONST.menuHeight + CONST.graphHeight / 2, CONST.popupwidth,
                     CONST.zoomWindowHeight);
+
             layeredPane.setComponentZOrder(menu, 0);
-            layeredPane.setComponentZOrder(informationPanel.scrollPanel, 0);
             layeredPane.setComponentZOrder(graph.canvas, 1);
-            layeredPane.setComponentZOrder(controls.panel, 0);
+            layeredPane.setComponentZOrder(informationPanel.scrollPanel, 0);
             layeredPane.setComponentZOrder(zoomWindow.canvas, 0);
             layeredPane.setComponentZOrder(popupInformation, 0);
             layeredPane.setComponentZOrder(popupZoomWindow, 0);
@@ -130,8 +132,18 @@ public class GUI {
                 }
 
             });
+            gRepaint();
 
         }
+    }
+
+    public static void gRepaint() {
+        GUI.controls.canvas.repaint();
+        GUI.graph.canvas.repaint();
+        //GUI.informationPanel.scrollPanel.repaint();
+        if (layeredPane != null)
+            GUI.layeredPane.repaint();
+
     }
 
     public static void saveApp() {

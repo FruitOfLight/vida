@@ -23,7 +23,6 @@ public class Canvas extends JPanel {
         this.element = element;
         offX = offY = 0;
         zoom = 1.0;
-
     }
 
     @Override
@@ -43,8 +42,6 @@ public class Canvas extends JPanel {
         g.setColor(new Color(0, 0, 0));
         g.drawRect(0, 0, getWidth() - 1, getWidth() - 1);
         g.setStroke(thinStroke);
-        g.drawString("fps: " + Model.afps + ":" + Model.sfps + ":" + (int) Model.fps + " mc:"
-                + MessageQueue.messageCount, 10, 10);
 
         // TODO bug report, pri starte je canvas nejak divne posunuty netusim preco
         // TODO bug report, ked sa odzmaze vrchol a spusti sa to, tak si to mysli, ze tam vrchol stale je
@@ -56,22 +53,6 @@ public class Canvas extends JPanel {
         if (element != null) {
             element.draw(g);
         }
-        GUI.layeredPane.repaint();
-    }
-
-    void repaintBetween(double x1, double y1, double x2, double y2) {
-        if (x2 < x1) {
-            double x = x1;
-            x1 = x2;
-            x2 = x;
-        }
-        if (y2 < y1) {
-            double y = y1;
-            y1 = y2;
-            y2 = y;
-        }
-        repaint((int) (offX + x1 * zoom) - 1, (int) (offY + y1 * zoom) - 1,
-                (int) ((x2 - x1) * zoom) + 1, (int) ((y2 - y1) * zoom) + 1);
     }
 
     static void realDrawRect(Graphics g, double x, double y, double w, double h) {

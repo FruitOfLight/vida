@@ -42,7 +42,7 @@ public class Menu {
                     } catch (Exception e) {
                         System.out.println("Exception during opening\n");
                     }
-                    GUI.graph.canvas.repaint();
+                    GUI.gRepaint();
                 }
                 break;
             case 2:

@@ -14,6 +14,8 @@ public class InformationPanel {
     public InformationPanel() {
         panel = new JTextPane();
         scrollPanel = new JScrollPane(panel);
+        panel.setBackground(new Color(0, 0, 0, 0));
+        scrollPanel.setBackground(new Color(200, 255, 255, 200));
         settings();
     }
 

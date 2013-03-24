@@ -41,7 +41,7 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
                 return;
             }
             graph.deleteWithMouse(mouse);
-            graph.canvas.repaint();
+            GUI.gRepaint();
             return;
         }
         if (!GUI.gkl.isPressed(CONST.deleteKey) && !GUI.gkl.isPressed(CONST.moveKey)) {
@@ -65,7 +65,7 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
         if (GUI.model.running == RunState.stopped) {
             graph.createEdge(begin, graph.getVertex(mouseGetX(mouse), mouseGetY(mouse)));
         }
-        graph.canvas.repaint();
+        GUI.gRepaint();
         begin = null;
         xlast = 0;
         ylast = 0;
@@ -76,7 +76,7 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
         if (begin == null) {
             graph.canvas.offX = oldOffX + (mouse.getX() - preClickX);
             graph.canvas.offY = oldOffY + (mouse.getY() - preClickY);
-            graph.canvas.repaint();
+            GUI.gRepaint();
             return;
         }
         if (GUI.gkl.isPressed(CONST.moveKey)) {
@@ -88,7 +88,7 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
                 }
             }
             begin.move(mouseGetX(mouse), mouseGetY(mouse));
-            graph.canvas.repaint();
+            GUI.gRepaint();
 
         } else {
             if (GUI.model.running != RunState.stopped) {
@@ -96,7 +96,7 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
             }
             xlast = mouseGetX(mouse);
             ylast = mouseGetY(mouse);
-            graph.canvas.repaint();
+            GUI.gRepaint();
         }
     }
 
@@ -115,12 +115,12 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
                 if (vertex.informationPanel.getTransparency())
                     continue;
                 vertex.informationPanel.setTransparency(true);
-                graph.canvas.repaint();
+                GUI.gRepaint();
             } else {
                 if (!vertex.informationPanel.getTransparency())
                     continue;
                 vertex.informationPanel.setTransparency(false);
-                graph.canvas.repaint();
+                GUI.gRepaint();
             }
         }
     }
@@ -138,7 +138,7 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
         oldOffX = graph.canvas.offX;
         oldOffY = graph.canvas.offY;
 
-        graph.canvas.repaint();
+        GUI.gRepaint();
 
     }
 

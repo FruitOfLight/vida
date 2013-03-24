@@ -29,14 +29,14 @@ public class Model {
             int value = programLoader.showOpenDialog(null);
             if (value == JFileChooser.APPROVE_OPTION) {
                 GUI.graph.emptyGraph();
-                GUI.graph.canvas.repaint();
+                GUI.gRepaint();
                 File file = programLoader.getSelectedFile();
                 settings.readHeader(file);
                 path = file.getPath();
             }
             Program.compile(path);
             this.path = path + ".bin";
-            GUI.controls.panel.repaint();
+            GUI.controls.refresh();
         } catch (Exception e) {
             Dialog.showError("Something went horribly wrong");
         }
@@ -81,6 +81,8 @@ public class Model {
     }
 
     void pause() {
+        if (running == RunState.stopped)
+            return;
         running = RunState.paused;
     }
 
@@ -141,7 +143,7 @@ public class Model {
                     edge.queue.step(delay);
             }
 
-            model.graph.canvas.repaint();
+            GUI.gRepaint();
             model.timer.schedule(new StepEvent(model, id), 15);
         }
     }

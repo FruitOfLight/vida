@@ -9,8 +9,8 @@ public class CONST {
     public static final int menuHeight = 25;
     public static final int graphHeight = 600;
     public static final int controlsButtonsHeight = 50;
-    public static final int controlsHeight = 1;
-    public static final int controlsWidth = 700;
+    public static final int controlsHeight = 50;
+    public static final int controlsWidth = 980;
     public static final int zoomWindowWidth = 300;
     public static final int zoomWindowHeight = 300;
     public static final int informationWidth = 300;

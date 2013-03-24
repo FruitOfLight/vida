@@ -19,7 +19,7 @@ public class MessageQueue implements Drawable {
         updateMessages();
         if (list.size() > 0) {
             Message prevMessage = null;
-            double defdist = 1.0 / list.size();
+            double defdist = 2.0 / list.size();
             for (Message message : list) {
                 //double p = Math.pow(0.5, time * 0.001);
                 //message.eSpeed = message.eSpeed * (1.0 - p) + message.defSpeed * p;

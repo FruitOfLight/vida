@@ -66,7 +66,7 @@ public class Graph implements Drawable {
             if (vertex.isNearPoint(x, y, 0) && mouse.getClickCount() == 2
                     && GUI.model.running == RunState.stopped) {
                 vertex.onClicked();
-                vertex.repaint(canvas);
+                GUI.gRepaint();
                 return;
             } else if (vertex.isNearPoint(x, y, 0)) {
                 GUI.zoomWindow.drawVertex(vertex);
@@ -89,15 +89,14 @@ public class Graph implements Drawable {
             }
         }
         if (GUI.model.running == RunState.running) {
-            GUI.model.pause();
-            GUI.controls.panel.repaint();
+            GUI.controls.onClick("pause");
         } else if (GUI.model.running == RunState.paused) {
             GUI.model.start();
-            GUI.controls.panel.repaint();
+            GUI.controls.onClick("start");
         } else {
             createVertex(x, y, getNewVertexID());
         }
-        canvas.repaint();
+        GUI.gRepaint();
     }
 
     public void deleteWithMouse(MouseEvent mouse) {
@@ -203,9 +202,7 @@ public class Graph implements Drawable {
         Edge.connectOpposite(edgeFrom, edgeTo);
         // vrcholom hrany nepridavame, hrana sa im prida sama
 
-        // TODO co ak su vrcholy inak velke, pridat parameter max(radius1,
-        // radius2)
-        canvas.repaintBetween(from.getX(), from.getY(), to.getX(), to.getY());
+        GUI.gRepaint();
     }
 
     Vertex getVertex(double x, double y) {
@@ -255,7 +252,7 @@ public class Graph implements Drawable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        canvas.repaint();
+        GUI.gRepaint();
     }
 
     public void print(PrintStream output) {
@@ -304,7 +301,7 @@ public class Graph implements Drawable {
         case 5:
             break;
         }
-        canvas.repaint();
+        GUI.gRepaint();
     }
 
     public void emptyGraph() {

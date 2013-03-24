@@ -80,7 +80,7 @@ public class Vertex {
             watchVariables.remove(name);
             watchVariables.put(name, Integer.parseInt(value));
         }
-        GUI.zoomWindow.canvas.repaint();
+        GUI.gRepaint();//zoomWindow.repaint();
     }
 
     public void draw(Graphics2D g) {
@@ -204,10 +204,6 @@ public class Vertex {
         if (ok == JOptionPane.OK_OPTION) {
             setID(newVertexDialog.getID());
         }
-    }
-
-    public void repaint(Canvas canvas) {
-        canvas.repaintBetween(x - radius, y - radius, x + radius, y + radius);
     }
 
     public void removeEdge(Edge edge) {
