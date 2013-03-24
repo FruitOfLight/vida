@@ -69,6 +69,7 @@ public class Graph implements Drawable {
                 GUI.gRepaint();
                 return;
             } else if (vertex.isNearPoint(x, y, 0)) {
+                System.out.println("@!$" + vertex.getID());
                 GUI.zoomWindow.drawVertex(vertex);
                 return;
             }
@@ -315,7 +316,7 @@ public class Graph implements Drawable {
 
     private void createClique(int n, boolean edges) {
         type = GraphType.clique;
-        double d = CONST.graphWidth / 3;
+        double d = CONST.graphHeight / 3;
 
         for (int i = 0; i < n; ++i) {
             createVertex(d * Math.sin(i * 2 * Math.PI / n), -d * Math.cos(i * 2 * Math.PI / n),
@@ -332,7 +333,7 @@ public class Graph implements Drawable {
 
     private void createCycle(int n, boolean edges) {
         type = GraphType.cycle;
-        int d = CONST.graphWidth / 3;
+        int d = CONST.graphHeight / 3;
 
         for (int i = 0; i < n; ++i) {
             createVertex(d * Math.sin(i * 2 * Math.PI / n), -d * Math.cos(i * 2 * Math.PI / n),
@@ -347,7 +348,7 @@ public class Graph implements Drawable {
 
     private void createWheel(int n, boolean edges) {
         type = GraphType.wheel;
-        int d = CONST.graphWidth / 3;
+        int d = CONST.graphHeight / 3;
 
         createVertex(0.0, 0.0, getNewVertexID());
         for (int i = 0; i < n; ++i) {

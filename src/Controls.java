@@ -86,6 +86,7 @@ public class Controls implements Drawable {
         }
         if (name == "stop") {
             GUI.model.stop();
+            GUI.graph.setDefaultValues();
         }
         if (name == "fast") {
             GUI.model.setSendSpeed(GUI.model.getSendSpeed() * CONST.speedFactor);

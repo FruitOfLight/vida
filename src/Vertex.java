@@ -5,9 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.swing.JOptionPane;
 
@@ -107,13 +105,15 @@ public class Vertex {
 
     }
 
-    public void zoomDraw(Graphics g) {
+    public void zoomDraw(Graphics2D g) {
         int edgeHeight = 20;
         int indent = 25;
         int width = CONST.zoomWindowWidth - 2 * indent, height = CONST.zoomWindowHeight - 2
                 * indent;
         g.setColor(new Color(0, 255, 0));
         g.fillRect(indent, indent, width, height);
+        System.out.println("coze" + this.getID());
+        /*
         g.setColor(new Color(0, 0, 0));
         g.drawRect(indent, indent, width, height);
         g.drawLine(indent, indent + edgeHeight, width + indent, indent + edgeHeight);
@@ -173,6 +173,7 @@ public class Vertex {
                     indent + edgeHeight + 15 * count);
             count++;
         }
+        */
     }
 
     public int findFontSize(Graphics g, int boxWidth, int maxSize, String caption) {

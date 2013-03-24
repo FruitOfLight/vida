@@ -16,11 +16,15 @@ public class ZoomWindow implements Drawable {
 
     public void setCanvas(Canvas canvas) {
         this.canvas = canvas;
+        this.canvas.offX = 0;
+        this.canvas.offY = 0;
+        this.canvas.zoom = 1.0;
     }
 
     public void drawVertex(Vertex v) {
         vertex = v;
-        canvas.repaint();
+        //canvas.repaint();
+        GUI.gRepaint();
     }
 
     public void draw(Graphics2D g) {

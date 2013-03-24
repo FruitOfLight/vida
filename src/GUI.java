@@ -140,6 +140,7 @@ public class GUI {
     public static void gRepaint() {
         GUI.controls.canvas.repaint();
         GUI.graph.canvas.repaint();
+        GUI.zoomWindow.canvas.repaint();
         //GUI.informationPanel.scrollPanel.repaint();
         if (layeredPane != null)
             GUI.layeredPane.repaint();
