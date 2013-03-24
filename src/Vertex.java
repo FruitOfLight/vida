@@ -11,6 +11,8 @@ import java.util.Map.Entry;
 
 import javax.swing.JOptionPane;
 
+//TODO: pre upozornenie v konstruktore aj vo funkcii isNear sa k y pridava CONST.menuHeight
+
 public class Vertex {
 
     private double x, y, radius;
@@ -40,7 +42,7 @@ public class Vertex {
     public Vertex(double x, double y, int ID) {
         edges = new ArrayList<Edge>();
         this.x = x;
-        this.y = y;
+        this.y = y + CONST.menuHeight;
         this.ID = ID;
         radius = CONST.vertexSize;
         watchVariables = new HashMap<String, Integer>();
@@ -208,6 +210,7 @@ public class Vertex {
     }
 
     public boolean isNearPoint(double x1, double y1, double distance) {
+        y1 += CONST.menuHeight;
         return (x1 - x) * (x1 - x) + (y1 - y) * (y1 - y) < (radius + distance)
                 * (radius + distance);
     }
