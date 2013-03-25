@@ -9,6 +9,8 @@ public class ZoomWindow implements Drawable {
 
     public ZoomWindow() {
         setCanvas(new Canvas(this));
+        canvas.setBackground(new Color(0, 0, 0, 0));
+        canvas.repaintColor = new Color(200, 255, 255, 200);
         height = CONST.zoomWindowHeight;
         width = CONST.zoomWindowWidth;
         vertex = null;
@@ -28,8 +30,8 @@ public class ZoomWindow implements Drawable {
     }
 
     public void draw(Graphics2D g) {
-        g.setColor(new Color(255, 255, 255));
-        g.fillRect(0, 0, width, height);
+        //g.setColor(new Color(255, 255, 255, 200));
+        //g.fillRect(0, 0, width, height);
         g.setColor(new Color(0, 0, 0));
         g.drawRect(0, 0, width - 1, height - 1);
         if (vertex == null)

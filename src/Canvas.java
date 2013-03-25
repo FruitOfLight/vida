@@ -14,12 +14,14 @@ public class Canvas extends JPanel {
     // pozicia
     double offX, offY;
     double zoom;
+    Color repaintColor;
     //
     static Stroke boldStroke;
     static Stroke thinStroke;
 
     public Canvas(Drawable element) {
         super();
+        repaintColor = new Color(255, 255, 255);
         this.element = element;
         offX = offY = 0;
         zoom = 1.0;
@@ -37,7 +39,7 @@ public class Canvas extends JPanel {
         thinStroke = new BasicStroke((float) (1.0 / Math.sqrt(zoom)));
 
         g.setStroke(new BasicStroke((float) 1.0));
-        g.setColor(new Color(255, 255, 255));
+        g.setColor(repaintColor);
         g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(new Color(0, 0, 0));
         g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);

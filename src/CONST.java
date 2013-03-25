@@ -12,8 +12,6 @@ public class CONST {
     public static final int informationWidth = 300;
     public static final int informationHeight = 300;
     public static final int popupwidth = 20;
-    public static final int zoomWindowMarginWidth = 680;
-    public static final int zoomWindowMarginHeight = 325;
 
     // Graph
     public static final int vertexSize = 10;

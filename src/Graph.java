@@ -326,7 +326,7 @@ public class Graph implements Drawable {
 
     private void createClique(int n, boolean edges) {
         type = GraphType.clique;
-        double d = canvas.getWidth() / 3;
+        double d = canvas.getHeight() / 3;
 
         for (int i = 0; i < n; ++i) {
             createVertex(d * Math.sin(i * 2 * Math.PI / n), -d * Math.cos(i * 2 * Math.PI / n),
@@ -343,7 +343,7 @@ public class Graph implements Drawable {
 
     private void createCycle(int n, boolean edges) {
         type = GraphType.cycle;
-        int d = canvas.getWidth() / 3;
+        int d = canvas.getHeight() / 3;
 
         for (int i = 0; i < n; ++i) {
             createVertex(d * Math.sin(i * 2 * Math.PI / n), -d * Math.cos(i * 2 * Math.PI / n),
@@ -358,7 +358,7 @@ public class Graph implements Drawable {
 
     private void createWheel(int n, boolean edges) {
         type = GraphType.wheel;
-        int d = canvas.getWidth() / 3;
+        int d = canvas.getHeight() / 3;
 
         createVertex(0.0, 0.0, getNewVertexID());
         for (int i = 0; i < n; ++i) {
