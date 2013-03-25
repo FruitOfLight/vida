@@ -23,6 +23,8 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
 
     public void draw(Graphics2D g) {
         // vykresli polhranu
+        if (GUI.model.running != RunState.stopped)
+            return;
         if (begin != null && !GUI.gkl.isPressed(CONST.deleteKey)
                 && !GUI.gkl.isPressed(CONST.moveKey)) {
             g.setColor(new Color(0, 0, 0));

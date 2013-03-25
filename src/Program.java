@@ -46,7 +46,6 @@ public class Program extends Thread {
             String line;
             running = true;
             while ((line = out.readLine()) != null) {
-                //System.out.println(line);
                 if (line.charAt(0) == '@') {
                     String[] parts = line.substring(1).split(":", 2);
                     send(Integer.parseInt(parts[0].trim()), parts[1].trim());
@@ -58,6 +57,9 @@ public class Program extends Thread {
                 if (line.charAt(0) == '$') {
                     String parts[] = line.substring(1).split(":", 2);
                     vertex.setVariable(parts[0].trim(), parts[1].trim());
+                }
+                if (line.charAt(0) == '%') {
+                    GUI.model.pauseFromProcess(Integer.parseInt(line.substring(1).trim()));
                 }
             }
             out.close();

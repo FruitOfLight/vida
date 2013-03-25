@@ -121,6 +121,12 @@ namespace Messager {
         fflush(stdout);
     }
 
+    void pauseProgram(int wait) {
+        char c='%';
+        printf("%c %d\n",c,wait);
+        fflush(stdout);
+    }
+
     /*
     void sendVertexColorChange(const string &str) {
         printf("+ %s\n",str.c_str());
