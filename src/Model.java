@@ -88,6 +88,13 @@ public class Model {
         running = RunState.paused;
     }
 
+    void pauseFromProcess(int wait) {
+        GUI.graph.pauseTime = System.currentTimeMillis();
+        GUI.graph.waitTime = wait;
+        GUI.model.running = RunState.paused;
+        GUI.model.pause();
+    }
+
     public void print(PrintStream out) {
         out.println(path);
     }

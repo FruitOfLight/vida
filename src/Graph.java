@@ -21,6 +21,9 @@ public class Graph implements Drawable {
     private GraphType type;
 
     // boolean moving = false, deleting = false;
+    //pausnuty graf
+    long pauseTime = -1;
+    long waitTime = 0;
 
     public Graph() {
         vertices = new ArrayList<Vertex>();
@@ -40,7 +43,14 @@ public class Graph implements Drawable {
 
     @Override
     public void draw(Graphics2D g) {
-
+        if (pauseTime > 0) {
+            if (System.currentTimeMillis() - pauseTime > waitTime) {
+                pauseTime = -1;
+                waitTime = 0;
+                GUI.model.running = RunState.running;
+                GUI.model.start();
+            }
+        }
         // vykresli vrcholy a hrany
         g.setFont(new Font(Font.MONOSPACED, Font.ITALIC, 14));
         for (Edge edge : edges) {
@@ -70,6 +80,7 @@ public class Graph implements Drawable {
                 return;
             } else if (vertex.isNearPoint(x, y, 0)) {
                 GUI.zoomWindow.drawVertex(vertex);
+                GUI.zoomWindow.canvas.setVisible(true);
                 return;
             }
         }

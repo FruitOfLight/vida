@@ -11,6 +11,8 @@ import java.util.Map.Entry;
 
 import javax.swing.JOptionPane;
 
+//TODO: pre upozornenie v konstruktore aj vo funkcii isNear sa k y pridava CONST.menuHeight
+
 public class Vertex {
 
     private double x, y, radius;
@@ -40,7 +42,7 @@ public class Vertex {
     public Vertex(double x, double y, int ID) {
         edges = new ArrayList<Edge>();
         this.x = x;
-        this.y = y;
+        this.y = y + CONST.menuHeight;
         this.ID = ID;
         radius = CONST.vertexSize;
         watchVariables = new HashMap<String, Integer>();
@@ -107,18 +109,23 @@ public class Vertex {
 
     }
 
-    public void zoomDraw(Graphics g) {
+    public void zoomDraw(Graphics2D g) {
         int edgeHeight = 20;
         int indent = 25;
         int width = CONST.zoomWindowWidth - 2 * indent, height = CONST.zoomWindowHeight - 2
                 * indent;
         g.setColor(new Color(0, 255, 0));
-        g.fillRect(indent, indent, width, height);
+        g.fillRect(indent + CONST.zoomWindowMarginWidth, indent + CONST.zoomWindowMarginHeight,
+                width, height);
         g.setColor(new Color(0, 0, 0));
-        g.drawRect(indent, indent, width, height);
-        g.drawLine(indent, indent + edgeHeight, width + indent, indent + edgeHeight);
-        g.drawLine(indent, height + indent - edgeHeight, width + indent, height + indent
-                - edgeHeight);
+        g.drawRect(indent + CONST.zoomWindowMarginWidth, indent + CONST.zoomWindowMarginHeight,
+                width, height);
+        g.drawLine(indent + CONST.zoomWindowMarginWidth, indent + edgeHeight
+                + CONST.zoomWindowMarginHeight, width + indent + CONST.zoomWindowMarginWidth,
+                indent + edgeHeight + CONST.zoomWindowMarginHeight);
+        g.drawLine(indent + CONST.zoomWindowMarginWidth, height + indent - edgeHeight
+                + CONST.zoomWindowMarginHeight, width + indent + CONST.zoomWindowMarginWidth,
+                height + indent - edgeHeight + CONST.zoomWindowMarginHeight);
         ArrayList<Vertex> neigh = new ArrayList<Vertex>();
         for (Edge edge : edges) {
             if (!neigh.contains(edge.to))
@@ -127,13 +134,16 @@ public class Vertex {
         int n = neigh.size();
         int up = n / 2, down = n / 2 + n % 2;
         for (int i = 0; i < up - 1; i++) {
-            g.drawLine(indent + (i + 1) * (width / up), indent, indent + (i + 1) * (width / up),
-                    indent + edgeHeight);
+            g.drawLine(indent + (i + 1) * (width / up) + CONST.zoomWindowMarginWidth, indent
+                    + CONST.zoomWindowMarginHeight, indent + (i + 1) * (width / up)
+                    + CONST.zoomWindowMarginWidth, indent + edgeHeight
+                    + CONST.zoomWindowMarginHeight);
         }
         for (int i = 0; i < down - 1; i++) {
-            g.drawLine(indent + (i + 1) * (width / down), CONST.zoomWindowHeight - indent
-                    - edgeHeight, indent + (i + 1) * (width / down), CONST.zoomWindowHeight
-                    - indent);
+            g.drawLine(indent + (i + 1) * (width / down) + CONST.zoomWindowMarginWidth,
+                    CONST.zoomWindowHeight - indent - edgeHeight + CONST.zoomWindowMarginHeight,
+                    indent + (i + 1) * (width / down) + CONST.zoomWindowMarginWidth,
+                    CONST.zoomWindowHeight - indent + CONST.zoomWindowMarginHeight);
         }
         int fontSize = 1000;
         for (Vertex vertex : neigh) {
@@ -148,9 +158,11 @@ public class Vertex {
             g.setFont(new Font(null, Font.PLAIN, fontSize));
             int textWidth = g.getFontMetrics().stringWidth(caption);
             g.drawString(((Integer) neigh.get(i).getID()).toString(), indent + i * boxWidth
-                    + (boxWidth - textWidth) / 2, indent + edgeHeight - 1);
-            g.drawLine(indent + i * boxWidth + boxWidth / 2, indent, indent + i * boxWidth
-                    + boxWidth / 2, 0);
+                    + (boxWidth - textWidth) / 2 + CONST.zoomWindowMarginWidth, indent + edgeHeight
+                    - 1 + CONST.zoomWindowMarginHeight);
+            g.drawLine(indent + i * boxWidth + boxWidth / 2 + CONST.zoomWindowMarginWidth, indent
+                    + CONST.zoomWindowMarginHeight, indent + i * boxWidth + boxWidth / 2
+                    + CONST.zoomWindowMarginWidth, 0 + CONST.zoomWindowMarginHeight);
         }
         for (int i = 0; i < down; i++) {
             int boxWidth = width / down;
@@ -158,19 +170,24 @@ public class Vertex {
             g.setFont(new Font(null, Font.PLAIN, fontSize));
             int textWidth = g.getFontMetrics().stringWidth(caption);
             g.drawString(((Integer) neigh.get(up + i).getID()).toString(), indent + i * boxWidth
-                    + (boxWidth - textWidth) / 2, CONST.zoomWindowHeight - indent - 1);
-            g.drawLine(indent + i * boxWidth + boxWidth / 2, CONST.zoomWindowHeight - indent,
-                    indent + i * boxWidth + boxWidth / 2, CONST.zoomWindowHeight);
+                    + (boxWidth - textWidth) / 2 + CONST.zoomWindowMarginWidth,
+                    CONST.zoomWindowHeight - indent - 1 + CONST.zoomWindowMarginHeight);
+            g.drawLine(indent + i * boxWidth + boxWidth / 2 + CONST.zoomWindowMarginWidth,
+                    CONST.zoomWindowHeight - indent + CONST.zoomWindowMarginHeight, indent + i
+                            * boxWidth + boxWidth / 2 + CONST.zoomWindowMarginWidth,
+                    CONST.zoomWindowHeight + CONST.zoomWindowMarginHeight);
         }
         g.setFont(new Font(null, Font.PLAIN, 15));
-        g.drawString("ID: " + ((Integer) this.getID()).toString(), indent + 5, indent + edgeHeight
-                + 15);
+        g.drawString("ID: " + ((Integer) this.getID()).toString(), indent + 5
+                + CONST.zoomWindowMarginWidth, indent + edgeHeight + 15
+                + CONST.zoomWindowMarginHeight);
         Iterator<Entry<String, Integer>> it = watchVariables.entrySet().iterator();
         int count = 2;
         while (it.hasNext()) {
             Map.Entry<String, Integer> me = it.next();
-            g.drawString(me.getKey() + ": " + ((Integer) me.getValue()).toString(), indent + 5,
-                    indent + edgeHeight + 15 * count);
+            g.drawString(me.getKey() + ": " + ((Integer) me.getValue()).toString(), indent + 5
+                    + CONST.zoomWindowMarginWidth, indent + edgeHeight + 15 * count
+                    + CONST.zoomWindowMarginHeight);
             count++;
         }
     }
@@ -193,6 +210,7 @@ public class Vertex {
     }
 
     public boolean isNearPoint(double x1, double y1, double distance) {
+        y1 += CONST.menuHeight;
         return (x1 - x) * (x1 - x) + (y1 - y) * (y1 - y) < (radius + distance)
                 * (radius + distance);
     }
