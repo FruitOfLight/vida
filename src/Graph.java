@@ -315,6 +315,12 @@ public class Graph implements Drawable {
         GUI.gRepaint();
     }
 
+    public void resizeCanvas(int w, int h) {
+        canvas.offX += (w - canvas.getWidth()) * 0.5;
+        canvas.offY += (h - canvas.getHeight()) * 0.5;
+        canvas.setSize(w, h);
+    }
+
     public void emptyGraph() {
         type = GraphType.any;
         canvas.offX = canvas.getWidth() / 2;

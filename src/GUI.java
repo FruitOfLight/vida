@@ -1,3 +1,4 @@
+import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -81,21 +82,12 @@ public class GUI {
                 }
             }
 
-            //addElement(frame, controls.panel, 0, CONST.menuHeight + CONST.graphHeight,
-            //        CONST.controlsWidth, CONST.controlsButtonsHeight);
-            //addElement(frame, controls.canvas, CONST.controlsWidth - 300, CONST.menuHeight
-            //        + CONST.graphHeight, 300, CONST.controlsButtonsHeight);
-
-            //addElement(frame, layeredPane, 0, 0, CONST.windowWidth, CONST.graphHeight
-            //        + CONST.menuHeight);
-            //layeredPane.setLayout(null);
-            //final JFrame layeredPane = frame;
-
             popupInformation = new PopupPanel(informationPanel.scrollPanel);
             popupZoomWindow = new PopupPanel(zoomWindow.canvas);
 
             layeredPane = new JLayeredPane();
             frame.add(layeredPane);
+            //layeredPane.setLayout(null);
             layeredPane.add(menu);
             layeredPane.add(graph.canvas);
             layeredPane.add(informationPanel.scrollPanel);
@@ -103,22 +95,6 @@ public class GUI {
             layeredPane.add(popupInformation);
             layeredPane.add(popupZoomWindow);
             frame.add(controls.panel);
-            /*
-            addElement(layeredPane, menu, 0, 0, CONST.windowWidth, CONST.menuHeight);
-            addElement(layeredPane, graph.canvas, 0, CONST.menuHeight, CONST.graphWidth,
-                    CONST.graphHeight);
-
-            addElement(layeredPane, informationPanel.scrollPanel, CONST.windowWidth
-                    - CONST.informationWidth - CONST.popupwidth, CONST.menuHeight,
-                    CONST.informationWidth, CONST.informationHeight);
-            addElement(layeredPane, zoomWindow.canvas, CONST.windowWidth - CONST.zoomWindowWidth
-                    - CONST.popupwidth, CONST.menuHeight + CONST.graphHeight / 2,
-                    CONST.zoomWindowWidth, CONST.zoomWindowHeight);
-            addElement(layeredPane, popupInformation, CONST.windowWidth - CONST.popupwidth,
-                    CONST.menuHeight, CONST.popupwidth, CONST.informationHeight);
-            addElement(layeredPane, popupZoomWindow, CONST.windowWidth - CONST.popupwidth,
-                    CONST.menuHeight + CONST.graphHeight / 2, CONST.popupwidth,
-                    CONST.zoomWindowHeight);*/
 
             layeredPane.setComponentZOrder(menu, 0);
             layeredPane.setComponentZOrder(graph.canvas, 1);
@@ -142,23 +118,34 @@ public class GUI {
             frame.addComponentListener(new ComponentAdapter() {
                 public void componentResized(ComponentEvent e) {
                     refreshLayout();
-                    System.out.println("componentResized");
                 }
             });
+
             frame.setSize(CONST.windowWidth, CONST.windowHeight);
             frame.setVisible(true);
+            int dw = frame.getWidth() - frame.getContentPane().getWidth();
+            int dh = frame.getHeight() - frame.getContentPane().getHeight();
+            System.out.println("frame " + dw + " " + dh);
+            frame.setMinimumSize(new Dimension(CONST.minWindowWidth + dw, CONST.minWindowHeight
+                    + dh));
             gRepaint();
 
         }
     }
 
     public static void refreshLayout() {
+        /*int dw = frame.getWidth() - frame.getContentPane().getWidth();
+        int dh = frame.getHeight() - frame.getContentPane().getHeight();
+        System.out.println("frame " + dw + " " + dh);
+        //frame.setMinimumSize(new Dimension(CONST.minWindowWidth + dw, CONST.minWindowHeight + dh));
+         */
         int gw = frame.getContentPane().getWidth() - CONST.popupwidth;
         int gh = frame.getContentPane().getHeight() - CONST.menuHeight - CONST.controlsHeight;
-        System.out.println("refreshLayout" + gw + " " + gh);
+        System.out.println("refreshLayout " + gw + " " + gh);
         layeredPane.setBounds(0, 0, frame.getContentPane().getWidth(), gh + CONST.menuHeight);
         menu.setBounds(0, 0, frame.getContentPane().getWidth(), CONST.menuHeight);
-        graph.canvas.setBounds(0, CONST.menuHeight, gw, gh);
+        graph.canvas.setLocation(0, CONST.menuHeight);
+        graph.resizeCanvas(gw, gh);
         controls.panel.setBounds(0, gh + CONST.menuHeight, frame.getContentPane().getWidth(),
                 CONST.controlsHeight);
         informationPanel.scrollPanel.setBounds(gw - CONST.informationWidth, CONST.menuHeight,
@@ -169,19 +156,8 @@ public class GUI {
                 - CONST.zoomWindowHeight);
         popupZoomWindow.setBounds(gw, CONST.menuHeight + gh - CONST.zoomWindowHeight,
                 CONST.popupwidth, CONST.zoomWindowHeight);
+        controls.refresh();
         gRepaint();
-        //popupInformation.repaint();
-        //popupZoomWindow.repaint();
-
-        /*
-
-              layeredPane.setComponentZOrder(menu, 0);
-              layeredPane.setComponentZOrder(graph.canvas, 1);
-              layeredPane.setComponentZOrder(informationPanel.scrollPanel, 0);
-              layeredPane.setComponentZOrder(zoomWindow.canvas, 0);
-              layeredPane.setComponentZOrder(popupInformation, 0);
-              layeredPane.setComponentZOrder(popupZoomWindow, 0);*/
-
     }
 
     public static void gRepaint() {
