@@ -46,7 +46,7 @@ public class Controls implements Drawable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        canvas.setLocation(CONST.controlsWidth - 300, 0);
+        canvas.setLocation(800 - 300, 0);
         canvas.setSize(300, 50);
         panel.add(canvas);
         refresh();

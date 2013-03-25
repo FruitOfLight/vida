@@ -50,9 +50,10 @@ public class Canvas extends JPanel {
                 + getLocation().y);*/
 
         if (element != null) {
+            //g.setTransform(new AffineTransform(zoom, 0, 0, zoom, offX, offY));
             AffineTransform oldTransform = g.getTransform();
-            g.scale(zoom, zoom);
             g.translate(offX, offY);
+            g.scale(zoom, zoom);
             element.draw(g);
             g.setTransform(oldTransform);
         }

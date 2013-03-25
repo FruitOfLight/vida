@@ -115,14 +115,13 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
                 if (vertex.informationPanel.getTransparency())
                     continue;
                 vertex.informationPanel.setTransparency(true);
-                GUI.gRepaint();
             } else {
                 if (!vertex.informationPanel.getTransparency())
                     continue;
                 vertex.informationPanel.setTransparency(false);
-                GUI.gRepaint();
             }
         }
+        GUI.gRepaint();
     }
 
     @Override
@@ -139,7 +138,6 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
         oldOffY = graph.canvas.offY;
 
         GUI.gRepaint();
-
     }
 
     double mouseGetX(MouseEvent mouse) {

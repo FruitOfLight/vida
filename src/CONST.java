@@ -5,12 +5,8 @@ public class CONST {
     // GUI
     public static final int windowWidth = 1000;
     public static final int windowHeight = 700;
-    public static final int graphWidth = 980;
     public static final int menuHeight = 25;
-    public static final int graphHeight = 600;
-    public static final int controlsButtonsHeight = 50;
     public static final int controlsHeight = 50;
-    public static final int controlsWidth = 980;
     public static final int zoomWindowWidth = 300;
     public static final int zoomWindowHeight = 300;
     public static final int informationWidth = 300;

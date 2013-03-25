@@ -15,7 +15,7 @@ public class Graph implements Drawable {
     // premenne pre vykreslovanie
     public Canvas canvas;
     GraphListener listener;
-    int width, height;
+    //int width, height;
 
     //
     private GraphType type;
@@ -306,8 +306,8 @@ public class Graph implements Drawable {
 
     public void emptyGraph() {
         type = GraphType.any;
-        canvas.offX = CONST.graphWidth / 2;
-        canvas.offY = CONST.graphHeight / 2;
+        canvas.offX = canvas.getWidth() / 2;
+        canvas.offY = canvas.getHeight() / 2;
         canvas.zoom = 1.0;
         vertices.clear();
         edges.clear();
@@ -315,7 +315,7 @@ public class Graph implements Drawable {
 
     private void createClique(int n, boolean edges) {
         type = GraphType.clique;
-        double d = CONST.graphWidth / 3;
+        double d = canvas.getWidth() / 3;
 
         for (int i = 0; i < n; ++i) {
             createVertex(d * Math.sin(i * 2 * Math.PI / n), -d * Math.cos(i * 2 * Math.PI / n),
@@ -332,7 +332,7 @@ public class Graph implements Drawable {
 
     private void createCycle(int n, boolean edges) {
         type = GraphType.cycle;
-        int d = CONST.graphWidth / 3;
+        int d = canvas.getWidth() / 3;
 
         for (int i = 0; i < n; ++i) {
             createVertex(d * Math.sin(i * 2 * Math.PI / n), -d * Math.cos(i * 2 * Math.PI / n),
@@ -347,7 +347,7 @@ public class Graph implements Drawable {
 
     private void createWheel(int n, boolean edges) {
         type = GraphType.wheel;
-        int d = CONST.graphWidth / 3;
+        int d = canvas.getWidth() / 3;
 
         createVertex(0.0, 0.0, getNewVertexID());
         for (int i = 0; i < n; ++i) {
@@ -366,8 +366,8 @@ public class Graph implements Drawable {
         type = GraphType.grid;
         canvas.offX = 0;
         canvas.offY = 0;
-        double dy = (CONST.graphHeight - 30) / (double) (m - 1);
-        double dx = (CONST.graphWidth - 30) / (double) (n - 1);
+        double dy = (canvas.getHeight() - 30) / (double) (m - 1);
+        double dx = (canvas.getWidth() - 30) / (double) (n - 1);
         System.out.println(dx + " " + dy);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
