@@ -20,7 +20,8 @@ public class ZoomWindow implements Drawable {
 
     public void drawVertex(Vertex v) {
         vertex = v;
-        canvas.repaint();
+        GUI.gRepaint();
+        //canvas.repaint();
     }
 
     public void draw(Graphics2D g) {

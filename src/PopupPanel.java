@@ -57,7 +57,7 @@ public class PopupPanel extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.repaint();
+        super.paintComponent(g);
         g.setColor(new Color(0, 255, 255));
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
         g.setColor(new Color(0, 0, 0));

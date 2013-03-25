@@ -31,25 +31,24 @@ public class Controls implements Drawable {
         panel.setLayout(null);
 
         try {
-            /*panel.add(new ControlButton(this, "run", 0, 1));
+            panel.add(new ControlButton(this, "run", 0, 1));
             panel.add(new ControlButton(this, "stop", 0, 1));
             panel.add(new ControlButton(this, "start", 1, 1));
             panel.add(new ControlButton(this, "pause", 1, 1));
             panel.add(new ControlButton(this, "slow", 2, 1));
-            panel.add(new ControlButton(this, "fast", 3, 1));*/
-            panel.add(new ControlButton(this, "run", 0, 1));
+            panel.add(new ControlButton(this, "fast", 3, 1));
+            /*panel.add(new ControlButton(this, "run", 0, 1));
             panel.add(new ControlButton(this, "stop", 1, 1));
             panel.add(new ControlButton(this, "start", 2, 1));
             panel.add(new ControlButton(this, "pause", 3, 1));
             panel.add(new ControlButton(this, "slow", 4, 1));
-            panel.add(new ControlButton(this, "fast", 5, 1));
+            panel.add(new ControlButton(this, "fast", 5, 1));*/
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        /*canvas.setLocation(CONST.controlsWidth - 300, 0);
+        canvas.setLocation(CONST.controlsWidth - 300, 0);
         canvas.setSize(300, 50);
-        panel.add(canvas);*/
+        panel.add(canvas);
         refresh();
     }
 

@@ -81,12 +81,13 @@ public class GUI {
 
             addElement(frame, controls.panel, 0, CONST.menuHeight + CONST.graphHeight,
                     CONST.controlsWidth, CONST.controlsButtonsHeight);
-            addElement(frame, controls.canvas, CONST.controlsWidth - 300, CONST.menuHeight
-                    + CONST.graphHeight, 300, CONST.controlsButtonsHeight);
+            //addElement(frame, controls.canvas, CONST.controlsWidth - 300, CONST.menuHeight
+            //        + CONST.graphHeight, 300, CONST.controlsButtonsHeight);
 
             layeredPane = new JLayeredPane();
             addElement(frame, layeredPane, 0, 0, CONST.windowWidth, CONST.graphHeight
                     + CONST.menuHeight);
+            //layeredPane.setLayout(null);
             //final JFrame layeredPane = frame;
 
             popupInformation = new PopupPanel(informationPanel.scrollPanel);
@@ -146,6 +147,7 @@ public class GUI {
         //GUI.informationPanel.scrollPanel.repaint();
         if (layeredPane != null)
             GUI.layeredPane.repaint();
+
     }
 
     public static void saveApp() {
