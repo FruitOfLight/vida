@@ -27,7 +27,7 @@ void recieveCapture(int port, pair<int,int> strength) {
         parentPort = port;
         setIValue("leader",0);
         setSValue("_vertex_color", "255,0,0");
-        //pauseProgram(2000);
+        pauseProgram();
         sendMessage(port,"accept");
     }
     else if(getIValue("state")==1) {
@@ -142,7 +142,7 @@ void init(){
     setIValue("state",2);
     parentPort = -1;
     char buffer[100];
-    sprintf(buffer,"capture {%d,%d}",getIValue("level"),id);
+    sprintf(buffer,"capture {%d,%d} aa sadfd sdf erg dd sa xcv dtrtyy safvxz sswe asdf asdfwert sfdssadfv zxdfads saw",getIValue("level"),id);
     wait = 0;
     sendMessage(ports[0],string(buffer));
 }

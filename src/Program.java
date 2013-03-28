@@ -59,7 +59,7 @@ public class Program extends Thread {
                     vertex.setVariable(parts[0].trim(), parts[1].trim());
                 }
                 if (line.charAt(0) == '%') {
-                    GUI.model.pauseFromProcess(Integer.parseInt(line.substring(1).trim()));
+                    GUI.model.pauseFromProcess(vertex);
                 }
             }
             out.close();
