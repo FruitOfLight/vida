@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.PrintStream;
 import java.util.Scanner;
-import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JFileChooser;
@@ -52,7 +51,7 @@ public class Model {
         }
     }
 
-    Timer timer;
+    //Timer timer;
     int timerid = 0;
 
     void start() {
@@ -60,12 +59,9 @@ public class Model {
         if (running == RunState.stopped)
             load();
         running = RunState.running;
-        if (timer != null)
-            timer.cancel();
         timerid++;
-        timer = new Timer();
         StepEvent.time = System.currentTimeMillis();
-        timer.schedule(new StepEvent(this, timerid), 0);
+        GUI.globalTimer.schedule(new StepEvent(this, timerid), 0);
     }
 
     void stop() {
@@ -153,7 +149,7 @@ public class Model {
             }
 
             GUI.gRepaint();
-            model.timer.schedule(new StepEvent(model, id), 15);
+            GUI.globalTimer.schedule(new StepEvent(model, id), 15);
         }
     }
 

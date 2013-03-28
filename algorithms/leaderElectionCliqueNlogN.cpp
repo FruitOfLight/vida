@@ -25,7 +25,7 @@ void recieveCapture(int port, pair<int,int> strength) {
         setIValue("parent",port);
         setIValue("leader",0);
         setSValue("_vertex_color", "255,0,0");
-        pauseProgram(2000);
+        //pauseProgram(2000);
         sendMessage(port,"accept");
     }
     else if(getIValue("state")==1) {

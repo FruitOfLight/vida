@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Timer;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -37,6 +38,7 @@ public class GUI {
     static PopupPanel popupZoomWindow;
     static JMenuBar menu;
     static JLayeredPane layeredPane;
+    static Timer globalTimer;
 
     /*static void addElement(Container to, Component what, int x, int y, int w, int h) {
         what.setLocation(x, y);
@@ -243,6 +245,7 @@ public class GUI {
         gkl = new GlobalKeyListener();
         zoomWindow = new ZoomWindow();
         informationPanel = new InformationPanel();
+        globalTimer = new Timer();
         final Window window = new Window();
         SwingUtilities.invokeLater(window);
         loadApp();
