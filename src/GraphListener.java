@@ -15,6 +15,9 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
     double oldOffX, oldOffY;
     int preClickX, preClickY;
 
+    Message selectedMessage;
+    boolean noClick;
+
     public GraphListener(Graph graph) {
         this.graph = graph;
         xlast = 0;
@@ -34,6 +37,10 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
 
     @Override
     public void mouseClicked(MouseEvent mouse) {
+        if (noClick) {
+            noClick = false;
+            return;
+        }
         if (GUI.gkl.isPressed(CONST.deleteKey)) {
             if (GUI.model.running != RunState.stopped) {
                 return;
@@ -53,6 +60,7 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
 
     @Override
     public void mousePressed(MouseEvent mouse) {
+        noClick = false;
         begin = graph.getVertex(mouseGetX(mouse), mouseGetY(mouse));
         xlast = mouseGetX(mouse);
         ylast = mouseGetY(mouse);
@@ -60,10 +68,21 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
         preClickY = mouse.getY();
         oldOffX = graph.canvas.offX;
         oldOffY = graph.canvas.offY;
+        if (selectedMessage != null) {
+            selectedMessage.selected = 0;
+        }
+        selectedMessage = graph.getMessage(mouseGetX(mouse), mouseGetY(mouse));
+        if (selectedMessage != null) {
+            selectedMessage.selected = 1;
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent mouse) {
+        if (selectedMessage != null) {
+            selectedMessage.selected = 0;
+            noClick = true;
+        }
         if (GUI.model.running == RunState.stopped) {
             graph.createEdge(begin, graph.getVertex(mouseGetX(mouse), mouseGetY(mouse)));
         }
@@ -75,7 +94,7 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
 
     @Override
     public void mouseDragged(MouseEvent mouse) {
-        if (begin == null) {
+        if (begin == null && selectedMessage == null) {
             graph.canvas.offX = oldOffX + (mouse.getX() - preClickX);
             graph.canvas.offY = oldOffY + (mouse.getY() - preClickY);
             GUI.gRepaint();
@@ -93,9 +112,6 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
             GUI.gRepaint();
 
         } else {
-            if (GUI.model.running != RunState.stopped) {
-                return;
-            }
             xlast = mouseGetX(mouse);
             ylast = mouseGetY(mouse);
             GUI.gRepaint();

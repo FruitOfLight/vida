@@ -14,11 +14,13 @@ class Message {
     String rawContent;
     double position, mass, force, defDist;
     Message prevM, nextM;
+    int selected;
 
     DeliverState state;
     Color gColor;
 
     public Message(int port, String content) {
+        selected = 0;
         state = DeliverState.born;
         this.fromPort = port;
         this.rawContent = content;
@@ -66,13 +68,13 @@ class Message {
     }
 
     public void edgeDraw(Graphics2D g) {
-        if (state == DeliverState.inbox)
+        if (state == DeliverState.delivered)
             return;
         g.setColor(gColor);
         double x = edge.from.getX() * (1.0 - position) + edge.to.getX() * position;
         double y = edge.from.getY() * (1.0 - position) + edge.to.getY() * position;
         // Tu sa da nastavovat velkost trojuholnika
-        double rR = 12.0;
+        double rR = 12.0 + selected * 5.0;
         double ux = edge.from.getY() - edge.to.getY(), uy = edge.to.getX() - edge.from.getX();
 
         double k = rR / Math.sqrt(ux * ux + uy * uy);
@@ -87,11 +89,51 @@ class Message {
         // g.drawString(((Integer) edge.to.getID()).toString(), x, y);
     }
 
+    double side(double x, double y, double x1, double y1, double x2, double y2) {
+        x1 -= x;
+        y1 -= y;
+        x2 -= x;
+        y2 -= y;
+        return Math.signum(x1 * y2 - x2 * y1);
+    }
+
+    public boolean isOnPoint(double mx, double my) {
+        if (state == DeliverState.delivered)
+            return false;
+        double x = edge.from.getX() * (1.0 - position) + edge.to.getX() * position;
+        double y = edge.from.getY() * (1.0 - position) + edge.to.getY() * position;
+        // Tu sa da nastavovat velkost trojuholnika
+        double rR = 12.0;
+        double ux = edge.from.getY() - edge.to.getY(), uy = edge.to.getX() - edge.from.getX();
+
+        double k = rR / Math.sqrt(ux * ux + uy * uy);
+        double vx = ux * k;
+        double vy = uy * k;
+        double side1 = side(x, y, x + vx + vy * 0.5, y + vy - vx * 0.5, mx, my);
+        double side2 = side(x + vx + vy * 0.5, y + vy - vx * 0.5, x + vx - vy * 0.5, y + vy + vx
+                * 0.5, mx, my);
+        double side3 = side(x + vx - vy * 0.5, y + vy + vx * 0.5, x, y, mx, my);
+        if (side1 * side2 > 0 && side2 * side3 > 0 && side2 * side1 > 0)
+            return true;
+        return false;
+    }
+
     public void measure(long time) {
         if (GUI.model.running == RunState.running)
             force = 1;
         else
             force = 0;
+        if (selected > 0) {
+            double x = edge.from.getX() * (1.0 - position) + edge.to.getX() * position;
+            double y = edge.from.getY() * (1.0 - position) + edge.to.getY() * position;
+            double x1 = GUI.graph.listener.xlast - x;
+            double y1 = GUI.graph.listener.ylast - y;
+            double x2 = (edge.to.getX() - edge.from.getX());
+            double y2 = (edge.to.getY() - edge.from.getY());
+            double prod = (x1 * x2 + y1 * y2) / Math.sqrt(x2 * x2 + y2 * y2);
+            force = Math.min(100.0, Math.max(prod / 10, -100.0)) * mass;
+            //System.out.println("force " + force + " " + position);
+        }
 
         if ((prevM != null) && (prevM.position - position < defDist)) {
             if (prevM.position - position < defDist * 0.1) {
@@ -102,21 +144,22 @@ class Message {
         }
         if ((nextM != null) && (position - nextM.position < defDist)) {
             if (position - nextM.position < defDist * 0.1) {
-                force += Math.pow(0.5 * 0.9, 2);
+                force += Math.pow(1.0 * 0.9, 2);
             } else {
-                force += Math.pow(0.5 * (defDist - position + nextM.position) / defDist, 2);
+                force += Math.pow(1.0 * (defDist - position + nextM.position) / defDist, 2);
             }
         }
     }
 
     public void move(long time) {
-        if (state == DeliverState.inbox)
+        if (state == DeliverState.delivered)
             return;
         double speed = GUI.model.getSendSpeed() * time * 0.001 * force / mass;
         position += speed;
         if (position >= 1.0) {
             position = 1.0;
-            if (GUI.model.running == RunState.running)
+            if (GUI.model.running == RunState.running
+                    && (prevM == null || prevM.state == DeliverState.inbox))
                 state = DeliverState.inbox;
         }
         if (position <= 0.0) {

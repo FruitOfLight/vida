@@ -74,4 +74,7 @@ public class MessageQueue implements Drawable {
         }
     }
 
+    public LinkedList<Message> getMessages() {
+        return list;
+    }
 }

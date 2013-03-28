@@ -63,6 +63,9 @@ public class Vertex {
     void receive(Message message) {
         program.receive(message);
         message.state = DeliverState.delivered;
+        if (message.selected != 0) {
+            message.selected = 0;
+        }
     }
 
     public Map<String, Integer> watchVariables;

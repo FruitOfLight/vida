@@ -15,7 +15,6 @@ public class Graph implements Drawable {
     // premenne pre vykreslovanie
     public Canvas canvas;
     GraphListener listener;
-    //int width, height;
 
     //
     private GraphType type;
@@ -94,6 +93,7 @@ public class Graph implements Drawable {
             }
             return;
         }
+
         for (Vertex vertex : vertices) {
             if (vertex.isNearPoint(x, y, newRadius)) {
                 return;
@@ -232,6 +232,17 @@ public class Graph implements Drawable {
                 result.add(edge);
             }
         }
+        return result;
+    }
+
+    Message getMessage(double x, double y) {
+        Message result = null;
+        for (Edge edge : edges)
+            for (Message message : edge.queue.getMessages()) {
+                if (message.isOnPoint(x, y)
+                        && (result == null || message.position < result.position))
+                    result = message;
+            }
         return result;
     }
 
