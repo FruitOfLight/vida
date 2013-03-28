@@ -280,6 +280,43 @@ public class Graph implements Drawable {
         }
     }
 
+    public void pushAway(Vertex v) {
+        for (Vertex neig : vertices) {
+            if (neig == v)
+                continue;
+            if (!v.isNearPoint(neig.getX(), neig.getY(), neig.getRadius() + 5))
+                continue;
+            for (int i = 0; i < 50; i++) {
+                double dx = i;
+                if (Math.random() < 0.5)
+                    dx += 3 * Math.random();
+                else {
+                    dx *= -1;
+                    dx -= 3 * Math.random();
+                }
+                double dy = i;
+                if (Math.random() < 0.5)
+                    dy += 3 * Math.random();
+                else {
+                    dy *= -1;
+                    dy -= 3 * Math.random();
+                }
+                boolean t = true;
+                for (Vertex v1 : vertices) {
+                    if (v1 == neig)
+                        continue;
+                    if (v1.isNearPoint(neig.getX() + dx, neig.getY() + dy, 5 + neig.getRadius()))
+                        t = false;
+                }
+                if (!t)
+                    continue;
+                neig.setX(neig.getX() + dx);
+                neig.setY(neig.getY() + dy);
+                break;
+            }
+        }
+    }
+
     public void createNew() {
         Dialog.DialogNewGraph newGraphDialog = new Dialog.DialogNewGraph(
                 GUI.model.settings.getGraphType());

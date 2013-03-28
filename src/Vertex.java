@@ -21,12 +21,14 @@ public class Vertex {
     public int getID() { return ID; }
     public void setID(int ID) { this.ID = ID; }
     public double getX() { return x; }
+    public void setX(double x) {this.x = x;}
     public double getY() { return y; }
+    public void setY(double y) {this.y = y;}
     public double getRadius() { return radius; }
     public void move(double x, double y) { this.x = x; this.y = y; }
     public Color getColor() { return color; }
     public void setColor(Color color) { this.color = color; }
-    public void setRadius(double radius) { this.radius = radius; }
+    public void setRadius(double radius) { this.radius = radius; GUI.graph.pushAway(this);}
     // @formatter:on
 
     ArrayList<Edge> edges;
