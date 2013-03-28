@@ -143,9 +143,10 @@ public class Model {
             }
 
             // Spravy
-            if (model.running == RunState.running) {
+            if (model.running != RunState.stopped) {
                 for (Edge edge : model.graph.edges)
                     edge.queue.step(delay);
+
             }
 
             GUI.gRepaint();

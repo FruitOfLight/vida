@@ -4,15 +4,17 @@ import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 
 class Message {
-    static double getRandomMessageSpeed() {
-        return GUI.random.nextDouble() * 0.45 + 0.05;
+    static double getRandomMessageMass() {
+        return GUI.random.nextDouble() * 9 + 1;
     }
 
     int fromPort;
     int toPort;
     Edge edge;
     String rawContent;
-    double ePosition, eSpeed, defSpeed;
+    double position, mass, force, defDist;
+    Message prevM, nextM;
+
     DeliverState state;
     Color gColor;
 
@@ -21,7 +23,7 @@ class Message {
         this.fromPort = port;
         this.rawContent = content;
         gColor = Color.red;
-        defSpeed = getRandomMessageSpeed();
+        mass = getRandomMessageMass();
         processContent();
     }
 
@@ -67,8 +69,8 @@ class Message {
         if (state == DeliverState.inbox)
             return;
         g.setColor(gColor);
-        double x = edge.from.getX() * (1.0 - ePosition) + edge.to.getX() * ePosition;
-        double y = edge.from.getY() * (1.0 - ePosition) + edge.to.getY() * ePosition;
+        double x = edge.from.getX() * (1.0 - position) + edge.to.getX() * position;
+        double y = edge.from.getY() * (1.0 - position) + edge.to.getY() * position;
         // Tu sa da nastavovat velkost trojuholnika
         double rR = 12.0;
         double ux = edge.from.getY() - edge.to.getY(), uy = edge.to.getX() - edge.from.getX();
@@ -85,16 +87,52 @@ class Message {
         // g.drawString(((Integer) edge.to.getID()).toString(), x, y);
     }
 
-    public void edgeStep(long time) {
-        if (state == DeliverState.inbox)
-            return;
-        ePosition += GUI.model.getSendSpeed() * eSpeed * time * 0.001;
-        if (ePosition >= 1.0) {
-            ePosition = 1.0;
-            state = DeliverState.inbox;
+    public void measure(long time) {
+        if (GUI.model.running == RunState.running)
+            force = 1;
+        else
+            force = 0;
+
+        if ((prevM != null) && (prevM.position - position < defDist)) {
+            if (prevM.position - position < defDist * 0.1) {
+                force -= Math.pow(2 * 0.9, 2);
+            } else {
+                force -= Math.pow(2 * (defDist - prevM.position + position) / defDist, 2);
+            }
         }
-        if (ePosition <= 0.0) {
-            ePosition = 0.0;
+        if ((nextM != null) && (position - nextM.position < defDist)) {
+            if (position - nextM.position < defDist * 0.1) {
+                force += Math.pow(0.5 * 0.9, 2);
+            } else {
+                force += Math.pow(0.5 * (defDist - position + nextM.position) / defDist, 2);
+            }
         }
     }
+
+    public void move(long time) {
+        if (state == DeliverState.inbox)
+            return;
+        double speed = GUI.model.getSendSpeed() * time * 0.001 * force / mass;
+        position += speed;
+        if (position >= 1.0) {
+            position = 1.0;
+            if (GUI.model.running == RunState.running)
+                state = DeliverState.inbox;
+        }
+        if (position <= 0.0) {
+            position = 0.0;
+        }
+    }
+    /*public void edgeStep(long time) {
+        if (state == DeliverState.inbox)
+            return;
+        position += GUI.model.getSendSpeed() * eSpeed * time * 0.001;
+        if (position >= 1.0) {
+            position = 1.0;
+            state = DeliverState.inbox;
+        }
+        if (position <= 0.0) {
+            position = 0.0;
+        }
+    }*/
 }

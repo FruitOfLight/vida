@@ -18,22 +18,22 @@ public class MessageQueue implements Drawable {
     public void step(long time) {
         updateMessages();
         if (list.size() > 0) {
+            double defdist = 1.0 / list.size();
             Message prevMessage = null;
-            double defdist = 2.0 / list.size();
             for (Message message : list) {
-                //double p = Math.pow(0.5, time * 0.001);
-                //message.eSpeed = message.eSpeed * (1.0 - p) + message.defSpeed * p;
-                message.eSpeed = message.defSpeed;
-                if (prevMessage != null) {
-                    double q = prevMessage.ePosition - message.ePosition;
-                    if (q <= 0) {
-                        message.eSpeed = 0.0;
-                    } else if (q < defdist) {
-                        message.eSpeed /= Math.pow(defdist / q, 2);
-                    }
-                }
-                message.edgeStep(time);
+                message.defDist = defdist;
+                message.prevM = prevMessage;
+                if (prevMessage != null)
+                    prevMessage.nextM = message;
                 prevMessage = message;
+            }
+            prevMessage.nextM = null;
+
+            for (Message message : list) {
+                message.measure(time);
+            }
+            for (Message message : list) {
+                message.move(time);
             }
 
             for (Message message : list) {
