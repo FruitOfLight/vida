@@ -52,14 +52,14 @@ public class Program extends Thread {
                 }
                 if (line.charAt(0) == '#') {
                     GUI.informationPanel.printInformation(vertex, line.substring(1).trim());
-                    vertex.informationPanel.setInformation(line.substring(1).trim());
+                    vertex.informationBubble.addInformation(line.substring(1).trim(), 10);
                 }
                 if (line.charAt(0) == '$') {
                     String parts[] = line.substring(1).split(":", 2);
                     vertex.setVariable(parts[0].trim(), parts[1].trim());
                 }
                 if (line.charAt(0) == '%') {
-                    GUI.model.pauseFromProcess(Integer.parseInt(line.substring(1).trim()));
+                    GUI.model.pauseFromProcess(vertex);
                 }
             }
             out.close();

@@ -8,6 +8,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Timer;
@@ -40,6 +41,7 @@ public class GUI {
     static JMenuBar menu;
     static JLayeredPane layeredPane;
     static Timer globalTimer;
+    static ArrayList<InformationBubble> informationBubbleList;
 
     /*static void addElement(Container to, Component what, int x, int y, int w, int h) {
         what.setLocation(x, y);
@@ -222,9 +224,10 @@ public class GUI {
         zoomWindow = new ZoomWindow();
         informationPanel = new InformationPanel();
         globalTimer = new Timer();
+        informationBubbleList = new ArrayList<InformationBubble>();
+        globalTimer.schedule(new InformationBubble.ExpirationEvent(), 0);
         final Window window = new Window();
         SwingUtilities.invokeLater(window);
         loadApp();
     }
-
 }

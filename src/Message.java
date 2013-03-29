@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
@@ -67,6 +68,44 @@ class Message {
         }
     }
 
+    public void zoomDraw(Graphics2D g) {
+        double indent = 25;
+        Path2D polygon = new Path2D.Double();
+        polygon.moveTo(indent, indent);
+        polygon.lineTo(CONST.zoomWindowWidth - indent, indent);
+        polygon.lineTo(CONST.zoomWindowWidth / 2.0, CONST.zoomWindowHeight - indent);
+        polygon.lineTo(indent, indent);
+        g.setColor(gColor);
+        g.fill(polygon);
+        g.setColor(new Color(255, 255, 255));
+        int fontSize = 14;
+        g.setFont(new Font(null, Font.PLAIN, fontSize));
+        double height = indent + fontSize;
+        int position = 0;
+        String[] parts = rawContent.split(" ");
+        while (true) {
+            if (height > CONST.zoomWindowHeight - indent - 2 * fontSize)
+                break;
+            if (position >= parts.length)
+                break;
+            double begin = indent
+                    + (height - indent)
+                    * ((CONST.zoomWindowWidth / 2 - indent) / (double) (CONST.zoomWindowHeight - 2 * indent));
+            double end = CONST.zoomWindowHeight
+                    - indent
+                    - (height - indent)
+                    * ((CONST.zoomWindowWidth / 2 - indent) / (double) (CONST.zoomWindowHeight - 2 * indent));
+            String caption = "";
+            while (position != parts.length
+                    && g.getFontMetrics().stringWidth(caption + " " + parts[position]) + begin < end) {
+                caption += " " + parts[position];
+                position++;
+            }
+            g.drawString(caption, (float) begin, (float) height);
+            height += fontSize;
+        }
+    }
+
     public void edgeDraw(Graphics2D g) {
         if (state == DeliverState.delivered)
             return;
@@ -74,7 +113,11 @@ class Message {
         double x = edge.from.getX() * (1.0 - position) + edge.to.getX() * position;
         double y = edge.from.getY() * (1.0 - position) + edge.to.getY() * position;
         // Tu sa da nastavovat velkost trojuholnika
-        double rR = 12.0 + selected * 5.0;
+        double rR;
+        if (selected != 5)
+            rR = 12.0 + selected * 5.0;
+        else
+            rR = 17.0;
         double ux = edge.from.getY() - edge.to.getY(), uy = edge.to.getX() - edge.from.getX();
 
         double k = rR / Math.sqrt(ux * ux + uy * uy);
@@ -123,7 +166,7 @@ class Message {
             force = 1;
         else
             force = 0;
-        if (selected > 0) {
+        if (selected > 0 && selected != 5) {
             double x = edge.from.getX() * (1.0 - position) + edge.to.getX() * position;
             double y = edge.from.getY() * (1.0 - position) + edge.to.getY() * position;
             double x1 = GUI.graph.listener.xlast - x;

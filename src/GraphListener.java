@@ -73,6 +73,10 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
         }
         selectedMessage = graph.getMessage(mouseGetX(mouse), mouseGetY(mouse));
         if (selectedMessage != null) {
+            GUI.zoomWindow.drawMessage(selectedMessage);
+            GUI.zoomWindow.canvas.setVisible(true);
+        }
+        if (selectedMessage != null) {
             selectedMessage.selected = 1;
         }
     }
@@ -128,15 +132,24 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
 
     @Override
     public void mouseMoved(MouseEvent mouse) {
+        //spravy
+        if (selectedMessage != null) {
+            selectedMessage.selected = 0;
+        }
+        selectedMessage = graph.getMessage(mouseGetX(mouse), mouseGetY(mouse));
+        if (selectedMessage != null) {
+            selectedMessage.selected = 5;
+        }
+        //vrcholy
         for (Vertex vertex : graph.vertices) {
             if (vertex.isNearPoint(mouseGetX(mouse), mouseGetY(mouse), graph.canvas.zoom)) {
-                if (vertex.informationPanel.getTransparency())
+                if (vertex.informationBubble.getTransparency())
                     continue;
-                vertex.informationPanel.setTransparency(true);
+                vertex.informationBubble.setTransparency(true);
             } else {
-                if (!vertex.informationPanel.getTransparency())
+                if (!vertex.informationBubble.getTransparency())
                     continue;
-                vertex.informationPanel.setTransparency(false);
+                vertex.informationBubble.setTransparency(false);
             }
         }
         GUI.gRepaint();

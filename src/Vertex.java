@@ -16,6 +16,7 @@ public class Vertex {
     private double x, y, radius;
     private int ID;
     private Color color;
+    private Color auraColor;
 
     // @formatter:off
     public int getID() { return ID; }
@@ -27,13 +28,19 @@ public class Vertex {
     public double getRadius() { return radius; }
     public void move(double x, double y) { this.x = x; this.y = y; }
     public Color getColor() { return color; }
-    public void setColor(Color color) { this.color = color; }
-    public void setRadius(double radius) { this.radius = radius; GUI.graph.pushAway(this);}
+    public void setColor(Color color) { this.color = color;}
+    public Color getAuraColor() { return auraColor; }
+    public void setAuraColor(Color color) { this.auraColor = color;}
+    public void setRadius(double radius) {
+        this.radius = radius;
+        GUI.graph.pushAway(this);
+        informationBubble.setY(this.y-this.radius);
+    }
     // @formatter:on
 
     ArrayList<Edge> edges;
     Program program;
-    VertexInformationPanel informationPanel;
+    InformationBubble informationBubble;
 
     public Vertex(double x, double y) {
         this(x, y, 0);
@@ -47,13 +54,14 @@ public class Vertex {
         radius = CONST.vertexSize;
         watchVariables = new HashMap<String, Integer>();
         color = new Color(0, 255, 0);
-        informationPanel = new VertexInformationPanel(this);
+        informationBubble = new InformationBubble(this.x, this.y - this.radius);
+        auraColor = new Color(255, 255, 255, 0);
     }
 
     public void defaultSettings() {
         color = new Color(0, 255, 0);
         radius = CONST.vertexSize;
-        informationPanel.defaultSettings();
+        informationBubble.defaultSettings();
     }
 
     void send(Message message) {
@@ -93,6 +101,7 @@ public class Vertex {
     }
 
     public void draw(Graphics2D g, boolean showID) {
+        drawAura(g);
         Ellipse2D ellipse = new Ellipse2D.Double(x - radius, y - radius, 2 * radius, 2 * radius);
         g.setColor(color);
         g.fill(ellipse);
@@ -110,6 +119,13 @@ public class Vertex {
                     (float) (y + g.getFontMetrics().getAscent() / 2));
         }
 
+    }
+
+    public void drawAura(Graphics2D g) {
+        g.setColor(auraColor);
+        Ellipse2D ellipse = new Ellipse2D.Double(x - radius - 6f, y - radius - 6f,
+                2f * radius + 12f, 2f * radius + 12f);
+        g.fill(ellipse);
     }
 
     public void zoomDraw(Graphics2D g) {

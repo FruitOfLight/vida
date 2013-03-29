@@ -4,69 +4,67 @@ import java.awt.Composite;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.util.TimerTask;
 
-public class VertexInformationPanel implements Drawable {
+public class InformationBubble implements Drawable {
 
     class Information {
 
-        public String info;
-        public long time;
+        int expiration;
+        String info;
 
-        public Information(String info, long time) {
+        // @formatter:off
+        public int getExpiration() {return expiration;}
+        public void setExpiration(int expiration) {this.expiration = expiration;}
+        public String getInfo() {return info;}
+        public void setInfo(String info) {this.info = info;}
+        // @formatter:on
+
+        public Information(String info, int expiration) {
             this.info = info;
-            this.time = time;
-        }
-
-        public String getInfo() {
-            return info;
-        }
-
-        public long getTime() {
-            return time;
-        }
-
-        public void setInfo(String info) {
-            this.info = info;
-        }
-
-        public void setTime(long time) {
-            this.time = time;
+            this.expiration = expiration;
         }
 
     }
 
+    public double x, y;
     public ArrayList<Information> informations;
-    public Vertex vertex;
+    public boolean transparency;
     private int padding = 3;
-    long expiration = 2000;
-    boolean transparency = false;
 
-    public boolean getTransparency() {
-        return transparency;
-    }
+    // @formatter:off
+    public double getX() {return x;}
+    public double getY() {return y;}
+    public void setX(double x) {this.x = x;}
+    public void setY(double y) {this.y = y;}
+    public boolean getTransparency() {return transparency;}
+    public void setTransparency(boolean transparency) {this.transparency = transparency;}
+    // @formatter:on
 
-    public void setTransparency(boolean transparency) {
-        this.transparency = transparency;
-    }
-
-    public VertexInformationPanel(Vertex vertex) {
-        this.vertex = vertex;
+    public InformationBubble(double x, double y) {
+        this.x = x;
+        this.y = y;
         informations = new ArrayList<Information>();
+        GUI.informationBubbleList.add(this);
+    }
+
+    public void addInformation(String info, int expiration) {
+        informations.add(new Information(info, expiration));
+    }
+
+    public void updateExpiration() {
+        ArrayList<Information> help = new ArrayList<Information>();
+        for (Information i : informations) {
+            if (i.getExpiration() > 0)
+                i.setExpiration(i.getExpiration() - 1);
+            if (i.getExpiration() != 0)
+                help.add(i);
+        }
+        informations = help;
     }
 
     public void defaultSettings() {
         informations = new ArrayList<Information>();
-    }
-
-    public void updateTimeExpiration() {
-        ArrayList<Information> help = new ArrayList<Information>();
-        long time = System.currentTimeMillis();
-        for (Information i : informations) {
-            if (time - i.getTime() > expiration && GUI.model.getRunState() == RunState.running)
-                continue;
-            help.add(i);
-        }
-        informations = help;
     }
 
     private AlphaComposite makeComposite(float alpha) {
@@ -75,7 +73,6 @@ public class VertexInformationPanel implements Drawable {
     }
 
     public void draw(Graphics2D g) {
-        updateTimeExpiration();
         Composite originalComposite = g.getComposite();
         if (transparency)
             g.setComposite(makeComposite(0.5f));
@@ -83,7 +80,6 @@ public class VertexInformationPanel implements Drawable {
             return;
         g.setColor(Canvas.contrastColor(new Color(255, 255, 255), Constrast.textbw));
         g.setFont(new Font(Font.DIALOG, Font.PLAIN, 10));
-        double x = vertex.getX(), y = vertex.getY() - vertex.getRadius();
         double w = 0;
         for (Information i : informations) {
             w = Math.max(w, g.getFontMetrics().stringWidth(i.getInfo()));
@@ -105,8 +101,15 @@ public class VertexInformationPanel implements Drawable {
         g.setComposite(originalComposite);
     }
 
-    public void setInformation(String s) {
-        informations.add(new Information(s, System.currentTimeMillis()));
+    static class ExpirationEvent extends TimerTask {
+
+        @Override
+        public void run() {
+            for (InformationBubble i : GUI.informationBubbleList) {
+                i.updateExpiration();
+            }
+            GUI.globalTimer.schedule(new ExpirationEvent(), 100);
+        }
     }
 
 }

@@ -63,7 +63,7 @@ public class Graph implements Drawable {
             edge.queue.draw(g);
         }
         for (Vertex vertex : vertices) {
-            vertex.informationPanel.draw(g);
+            vertex.informationBubble.draw(g);
         }
     }
 

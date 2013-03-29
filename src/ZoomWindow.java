@@ -5,6 +5,7 @@ public class ZoomWindow implements Drawable {
 
     public Canvas canvas;
     public Vertex vertex;
+    public Message message;
     public int width, height;
 
     public ZoomWindow() {
@@ -22,8 +23,15 @@ public class ZoomWindow implements Drawable {
 
     public void drawVertex(Vertex v) {
         vertex = v;
+        message = null;
         GUI.gRepaint();
         //canvas.repaint();
+    }
+
+    public void drawMessage(Message m) {
+        vertex = null;
+        message = m;
+        GUI.gRepaint();
     }
 
     public void draw(Graphics2D g) {
@@ -31,8 +39,9 @@ public class ZoomWindow implements Drawable {
         //g.fillRect(0, 0, width, height);
         g.setColor(new Color(0, 0, 0));
         g.drawRect(0, 0, width - 1, height - 1);
-        if (vertex == null)
-            return;
-        vertex.zoomDraw(g);
+        if (vertex != null)
+            vertex.zoomDraw(g);
+        if (message != null)
+            message.zoomDraw(g);
     }
 }

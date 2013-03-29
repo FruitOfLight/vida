@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.Scanner;
@@ -87,11 +88,14 @@ public class Model {
         running = RunState.paused;
     }
 
-    void pauseFromProcess(int wait) {
-        GUI.graph.pauseTime = System.currentTimeMillis();
+    void pauseFromProcess(Vertex vertex) {
+        GUI.model.running = RunState.paused;
+        GUI.globalTimer.schedule(new AuraEvent(vertex, 7), 0);
+        GUI.model.pause();
+        /*GUI.graph.pauseTime = System.currentTimeMillis();
         GUI.graph.waitTime = wait;
         GUI.model.running = RunState.paused;
-        GUI.model.pause();
+        GUI.model.pause();*/
     }
 
     public void print(PrintStream out) {
@@ -161,6 +165,31 @@ public class Model {
 
             GUI.gRepaint();
             GUI.globalTimer.schedule(new StepEvent(model, id), 20);
+        }
+    }
+
+    static class AuraEvent extends TimerTask {
+        Vertex vertex;
+        int count;
+
+        public AuraEvent(Vertex vertex, int count) {
+            this.vertex = vertex;
+            this.count = count;
+        }
+
+        @Override
+        public void run() {
+            if (count % 2 == 1)
+                vertex.setAuraColor(new Color(0, 50, 125, 50));
+            else
+                vertex.setAuraColor(new Color(0, 50, 125, 200));
+            GUI.gRepaint();
+            if (count == 0) {
+                vertex.setAuraColor(new Color(255, 255, 255, 0));
+                GUI.model.running = RunState.running;
+                GUI.model.start();
+            } else
+                GUI.globalTimer.schedule(new AuraEvent(vertex, count - 1), 200);
         }
     }
 

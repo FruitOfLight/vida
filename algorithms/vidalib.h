@@ -121,9 +121,9 @@ namespace Messager {
         fflush(stdout);
     }
 
-    void pauseProgram(int wait) {
+    void pauseProgram() {
         char c='%';
-        printf("%c %d\n",c,wait);
+        printf("%c\n",c);
         fflush(stdout);
     }
 
