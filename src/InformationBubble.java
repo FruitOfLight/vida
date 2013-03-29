@@ -75,7 +75,7 @@ public class InformationBubble implements Drawable {
     public void draw(Graphics2D g) {
         Composite originalComposite = g.getComposite();
         if (transparency)
-            g.setComposite(makeComposite(0.5f));
+            g.setComposite(makeComposite(0.9f));
         if (informations.size() == 0)
             return;
         g.setColor(Canvas.contrastColor(new Color(255, 255, 255), Constrast.textbw));

@@ -142,7 +142,7 @@ void init(){
     setIValue("state",2);
     parentPort = -1;
     char buffer[100];
-    sprintf(buffer,"capture {%d,%d} aa sadfd sdf erg dd sa xcv dtrtyy safvxz sswe asdf asdfwert sfdssadfv zxdfads saw",getIValue("level"),id);
+    sprintf(buffer,"capture {%d,%d}",getIValue("level"),id);
     wait = 0;
     sendMessage(ports[0],string(buffer));
 }

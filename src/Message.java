@@ -16,6 +16,7 @@ class Message {
     double position, mass, force, defDist;
     Message prevM, nextM;
     int selected;
+    InformationBubble informationBubble;
 
     DeliverState state;
     Color gColor;
@@ -28,6 +29,8 @@ class Message {
         gColor = Color.red;
         mass = getRandomMessageMass();
         processContent();
+        informationBubble = new InformationBubble(0.0, 0.0);
+        informationBubble.addInformation(rawContent, -1);
     }
 
     void processContent() {
@@ -112,6 +115,8 @@ class Message {
         g.setColor(gColor);
         double x = edge.from.getX() * (1.0 - position) + edge.to.getX() * position;
         double y = edge.from.getY() * (1.0 - position) + edge.to.getY() * position;
+        informationBubble.setX(x);
+        informationBubble.setY(y);
         // Tu sa da nastavovat velkost trojuholnika
         double rR;
         if (selected != 5)
@@ -129,6 +134,8 @@ class Message {
         polygon.lineTo(x + vx - vy * 0.5, y + vy + vx * 0.5);
         polygon.lineTo(x, y);
         g.fill(polygon);
+        informationBubble.setTransparency(true);
+        informationBubble.draw(g);
         // g.drawString(((Integer) edge.to.getID()).toString(), x, y);
     }
 
