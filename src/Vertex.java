@@ -31,12 +31,16 @@ public class Vertex {
     public void setColor(Color color) { this.color = color;}
     public Color getAuraColor() { return auraColor; }
     public void setAuraColor(Color color) { this.auraColor = color;}
-    public void setRadius(double radius) { this.radius = radius; GUI.graph.pushAway(this);}
+    public void setRadius(double radius) {
+        this.radius = radius;
+        GUI.graph.pushAway(this);
+        informationBubble.setY(this.y-this.radius);
+    }
     // @formatter:on
 
     ArrayList<Edge> edges;
     Program program;
-    VertexInformationPanel informationPanel;
+    InformationBubble informationBubble;
 
     public Vertex(double x, double y) {
         this(x, y, 0);
@@ -50,14 +54,14 @@ public class Vertex {
         radius = CONST.vertexSize;
         watchVariables = new HashMap<String, Integer>();
         color = new Color(0, 255, 0);
-        informationPanel = new VertexInformationPanel(this);
+        informationBubble = new InformationBubble(this.x, this.y - this.radius);
         auraColor = new Color(255, 255, 255, 0);
     }
 
     public void defaultSettings() {
         color = new Color(0, 255, 0);
         radius = CONST.vertexSize;
-        informationPanel.defaultSettings();
+        informationBubble.defaultSettings();
     }
 
     void send(Message message) {

@@ -87,7 +87,7 @@ public class Model {
 
     void pauseFromProcess(Vertex vertex) {
         GUI.model.running = RunState.paused;
-        GUI.globalTimer.schedule(new AuraEvent(vertex, 10), 0);
+        GUI.globalTimer.schedule(new AuraEvent(vertex, 7), 0);
         GUI.model.pause();
         /*GUI.graph.pauseTime = System.currentTimeMillis();
         GUI.graph.waitTime = wait;
