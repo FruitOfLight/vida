@@ -203,8 +203,7 @@ public class GUI {
             file = new File("backup/program.in");
             in = new Scanner(file);
             model.read(in);
-            if (!model.path.equals(""))
-                Program.compile(model.path.substring(0, model.path.length() - 4));
+            model.compile();
             in.close();
             file = new File("backup/settings.in");
             in = new Scanner(file);

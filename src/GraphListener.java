@@ -37,16 +37,14 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
 
     @Override
     public void mouseClicked(MouseEvent mouse) {
+
         if (noClick) {
             noClick = false;
-            return;
+            //return;
         }
         if (GUI.gkl.isPressed(CONST.deleteKey)) {
+            System.out.println("ctrl");
             if (GUI.model.running != RunState.stopped) {
-                return;
-            }
-            // TODO dovolit, ale opravit graf
-            if (GUI.model.settings.getGraphType() != GraphType.any) {
                 return;
             }
             graph.deleteWithMouse(mouse);
@@ -55,6 +53,8 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
         }
         if (!GUI.gkl.isPressed(CONST.deleteKey) && !GUI.gkl.isPressed(CONST.moveKey)) {
             graph.clickWithMouse(mouse);
+        } else {
+            System.out.println("shift");
         }
     }
 
@@ -85,6 +85,7 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
     public void mouseReleased(MouseEvent mouse) {
         if (selectedMessage != null) {
             selectedMessage.selected = 0;
+            selectedMessage = null;
             noClick = true;
         }
         if (GUI.model.running == RunState.stopped) {

@@ -19,6 +19,10 @@ public class Graph implements Drawable {
     //
     private GraphType type;
 
+    public GraphType getType() {
+        return type;
+    }
+
     // boolean moving = false, deleting = false;
     //pausnuty graf
     long pauseTime = -1;
@@ -93,17 +97,15 @@ public class Graph implements Drawable {
             }
             return;
         }
-
         for (Vertex vertex : vertices) {
             if (vertex.isNearPoint(x, y, newRadius)) {
                 return;
             }
         }
         if (GUI.model.running == RunState.running) {
-            GUI.controls.onClick("pause");
+            GUI.controls.onClick("p_pause");
         } else if (GUI.model.running == RunState.paused) {
-            GUI.model.start();
-            GUI.controls.onClick("start");
+            GUI.controls.onClick("p_start");
         } else {
             createVertex(x, y, getNewVertexID());
         }
@@ -252,7 +254,7 @@ public class Graph implements Drawable {
         edge.removeFromVertex();
     }
 
-    private static final String version = "Version 1.00";
+    private static final String version = "Version 1.01";
 
     public void read(Scanner input) {
         emptyGraph();
@@ -261,6 +263,7 @@ public class Graph implements Drawable {
             if (!line.equals(version)) {
                 throw new ParseException(line);
             }
+            GraphType loadedType = GraphType.valueOf(input.nextLine());
             int n = Integer.parseInt(input.next()), m = Integer.parseInt(input.next());
             for (int i = 0; i < n; i++) {
                 double x = Double.parseDouble(input.next()), y = Double.parseDouble(input.next());
@@ -271,14 +274,17 @@ public class Graph implements Drawable {
                 int f = Integer.parseInt(input.next()), t = Integer.parseInt(input.next());
                 createEdge(vertices.get(f), vertices.get(t));
             }
+            type = loadedType;
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Exception while loading graph");
+            emptyGraph();
         }
         GUI.gRepaint();
     }
 
     public void print(PrintStream output) {
         output.println(version);
+        output.println(type.name());
         output.println(vertices.size() + " " + edges.size());
         for (int i = 0; i < vertices.size(); i++) {
             output.println(vertices.get(i).getX() + " " + vertices.get(i).getY() + " "

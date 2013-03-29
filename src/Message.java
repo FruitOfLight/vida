@@ -30,7 +30,14 @@ class Message {
         mass = getRandomMessageMass();
         processContent();
         informationBubble = new InformationBubble(0.0, 0.0);
-        informationBubble.addInformation(rawContent, -1);
+        int from = 0, to;
+        while ((from = content.indexOf("{", from)) != -1) {
+            from++;
+            to = content.indexOf("}", from);
+            if (to != -1)
+                informationBubble.addInformation(content.substring(from, to), -1);
+        }
+        //informationBubble.addInformation(rawContent, -1);
     }
 
     void processContent() {

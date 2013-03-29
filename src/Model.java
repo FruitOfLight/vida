@@ -7,15 +7,20 @@ import java.util.TimerTask;
 import javax.swing.JFileChooser;
 
 public class Model {
-    String path = "";
+    private String programPath = "";
+    private String binaryPath = "./box/program";
+    String programName = "";
+
     Graph graph;
     RunState running;
     ModelSettings settings;
+    JFileChooser programLoader;
     long startingTime;
 
     Model() {
         running = RunState.stopped;
         settings = new ModelSettings();
+        programLoader = new JFileChooser("./algorithms/");
     }
 
     public RunState getRunState() {
@@ -24,19 +29,32 @@ public class Model {
 
     public void openProgram() {
         try {
-            JFileChooser programLoader = new JFileChooser("./");
-            String path = "";
             int value = programLoader.showOpenDialog(null);
             if (value == JFileChooser.APPROVE_OPTION) {
-                GUI.graph.emptyGraph();
-                GUI.gRepaint();
                 File file = programLoader.getSelectedFile();
                 settings.readHeader(file);
-                path = file.getPath();
+                if (settings.getGraphType() != GraphType.any
+                        && settings.getGraphType() != graph.getType()) {
+                    graph.emptyGraph();
+                    GUI.gRepaint();
+                }
+                programPath = file.getPath();
+                compile();
+                programName = programPath.substring(programPath.lastIndexOf('/') + 1,
+                        programPath.lastIndexOf('.'));
             }
-            Program.compile(path);
-            this.path = path + ".bin";
+
             GUI.controls.refresh();
+        } catch (Exception e) {
+            Dialog.showError("Something went horribly wrong");
+        }
+    }
+
+    public void compile() {
+        if (programPath.equals(""))
+            return;
+        try {
+            Runtime.getRuntime().exec("bash box/compile.sh " + programPath + " " + binaryPath);
         } catch (Exception e) {
             Dialog.showError("Something went horribly wrong");
         }
@@ -48,7 +66,7 @@ public class Model {
         graph = GUI.graph;
         for (Vertex v : graph.vertices) {
             v.program = new Program(v, this);
-            v.program.load(path);
+            v.program.load(binaryPath + ".bin");
         }
     }
 
@@ -98,12 +116,24 @@ public class Model {
         GUI.model.pause();*/
     }
 
+    private static final String version = "Version 1.00";
+
     public void print(PrintStream out) {
-        out.println(path);
+        out.println(version);
+        out.println(programPath);
+        out.println(programName);
     }
 
     public void read(Scanner in) {
-        path = in.nextLine();
+        String line = in.nextLine();
+        if (!line.equals(version)) {
+            System.err.println("Exception while loading program");
+            programName = "";
+            programPath = "";
+        } else {
+            programPath = in.nextLine();
+            programName = in.nextLine();
+        }
     }
 
     private double sendSpeed = 1.2;

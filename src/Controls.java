@@ -50,7 +50,7 @@ public class Controls implements Drawable {
             panel.add(new ControlButton(this, "s_settings", 2, 1));
             panel.add(new ControlButton(this, "p_slow", 2, 1));
             panel.add(new ControlButton(this, "p_fast", 3, 1));
-            panel.add(new ControlButton(this, "v_bubble", 11, 1));
+            panel.add(new ControlButton(this, "v_bubble", 11, 1, CBtype.toggle));
 
             panel.add(new ControlButton(this, "g_new", 0, 0));
             panel.add(new ControlButton(this, "g_open", 1, 0));
@@ -83,9 +83,8 @@ public class Controls implements Drawable {
                     System.err.println(s + " not found");
                 map.get(s).setVisible(true);
             }
-            String s[] = model.path.split("/");
-            ((JLabel) map.get("l_program")).setText((model.path.equals("")) ? "none"
-                    : s[s.length - 1]);
+            ((JLabel) map.get("l_program")).setText((model.programName.equals("")) ? "none"
+                    : model.programName);
             ((JLabel) map.get("l_graph")).setText(GUI.graph.getTypeString());
             ((JLabel) map.get("l_running"))
                     .setText("Stopped (" + model.getSendSpeedString(5) + ")");
@@ -117,38 +116,29 @@ public class Controls implements Drawable {
     public void onClick(String name) {
         if (name == "p_start") {
             GUI.model.start();
-        }
-        if (name == "s_run") {
+        } else if (name == "s_run") {
             GUI.model.start();
-        }
-        if (name == "p_pause") {
+        } else if (name == "p_pause") {
             GUI.model.pause();
-        }
-        if (name == "p_stop") {
+        } else if (name == "p_stop") {
             GUI.model.stop();
-        }
-        if (name == "p_fast") {
+        } else if (name == "p_fast") {
             GUI.model.setSendSpeed(GUI.model.getSendSpeed() * CONST.speedFactor);
-        }
-        if (name == "p_slow") {
+        } else if (name == "p_slow") {
             GUI.model.setSendSpeed(GUI.model.getSendSpeed() / CONST.speedFactor);
-        }
-        if (name == "s_load") {
+        } else if (name == "s_load") {
             Menu.performAction(2, 0);
-        }
-        if (name == "s_settings") {
+        } else if (name == "s_settings") {
             Menu.performAction(2, 1);
-        }
-        if (name == "g_open") {
+        } else if (name == "g_open") {
             Menu.performAction(1, 1);
-        }
-        if (name == "g_save") {
+        } else if (name == "g_save") {
             Menu.performAction(1, 2);
-        }
-        if (name == "g_new") {
+        } else if (name == "g_new") {
             Menu.performAction(1, 0);
+        } else {
+            System.out.println("Unknown action " + name);
         }
-
         //System.out.println("clicked " + button.name);
     }
 
@@ -183,11 +173,26 @@ class ControlButton extends JButton implements ActionListener, MouseListener {
     private static final long serialVersionUID = 8676998593915111855L;
     String name;
     Controls controls;
+    CBtype type;
 
-    ControlButton(Controls controls, String name, String filename, int x, int y) throws IOException {
-        super(new ImageIcon(ImageIO.read(new File("images/gui-buttons/" + filename + ".png"))));
+    ControlButton(Controls controls, String name, int x, int y, CBtype type) throws IOException {
+        super();
+        String t = (type == CBtype.toggle) ? "-inactive" : "";
+        this.setIcon(new ImageIcon(ImageIO.read(new File("images/gui-buttons" + t + "/" + "b_"
+                + name + ".png"))));
+        this.setRolloverIcon(new ImageIcon(ImageIO.read(new File("images/gui-buttons" + t
+                + "-hover/" + "b_" + name + ".png"))));
+        this.setPressedIcon(new ImageIcon(ImageIO.read(new File("images/gui-buttons-pressed/"
+                + "b_" + name + ".png"))));
+        if (type == CBtype.toggle) {
+            this.setSelectedIcon(new ImageIcon(ImageIO.read(new File("images/gui-buttons-active/"
+                    + "b_" + name + ".png"))));
+            this.setRolloverSelectedIcon(new ImageIcon(ImageIO.read(new File(
+                    "images/gui-buttons-active-hover/" + "b_" + name + ".png"))));
+        }
         this.controls = controls;
         this.name = name;
+        this.type = type;
         controls.map.put("b_" + name, this);
         this.addActionListener(this);
         this.addMouseListener(this);
@@ -196,10 +201,11 @@ class ControlButton extends JButton implements ActionListener, MouseListener {
         this.setVisible(true);
         this.setBorder(BorderFactory.createEmptyBorder());
         this.setContentAreaFilled(false);
+        this.setFocusable(false);
     }
 
     ControlButton(Controls controls, String name, int x, int y) throws IOException {
-        this(controls, name, "b_" + name, x, y);
+        this(controls, name, x, y, CBtype.normal);
     }
 
     @Override
@@ -210,6 +216,8 @@ class ControlButton extends JButton implements ActionListener, MouseListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (type == CBtype.toggle)
+            setSelected(!isSelected());
         controls.onClick(this);
         controls.refresh();
     }
@@ -235,7 +243,10 @@ class ControlButton extends JButton implements ActionListener, MouseListener {
     @Override
     public void mouseReleased(MouseEvent e) {
     }
+}
 
+enum CBtype {
+    normal, toggle;
 }
 
 class ControlLabel extends JLabel {
