@@ -328,6 +328,10 @@ public class Graph implements Drawable {
         }
     }
 
+    public String getTypeString() {
+        return type.toString() + " " + vertices.size();
+    }
+
     public void createNew() {
         Dialog.DialogNewGraph newGraphDialog = new Dialog.DialogNewGraph(
                 GUI.model.settings.getGraphType());
@@ -370,16 +374,15 @@ public class Graph implements Drawable {
     }
 
     public void emptyGraph() {
-        type = GraphType.any;
         canvas.offX = canvas.getWidth() / 2;
         canvas.offY = canvas.getHeight() / 2;
         canvas.zoom = 1.0;
         vertices.clear();
         edges.clear();
+        type = GraphType.any;
     }
 
     private void createClique(int n, boolean edges) {
-        type = GraphType.clique;
         double d = canvas.getHeight() / 3;
 
         for (int i = 0; i < n; ++i) {
@@ -393,10 +396,10 @@ public class Graph implements Drawable {
                 }
             }
         }
+        type = GraphType.clique;
     }
 
     private void createCycle(int n, boolean edges) {
-        type = GraphType.cycle;
         int d = canvas.getHeight() / 3;
 
         for (int i = 0; i < n; ++i) {
@@ -408,10 +411,10 @@ public class Graph implements Drawable {
                 createEdge(vertices.get(i), vertices.get((i + 1) % n));
             }
         }
+        type = GraphType.cycle;
     }
 
     private void createWheel(int n, boolean edges) {
-        type = GraphType.wheel;
         int d = canvas.getHeight() / 3;
 
         createVertex(0.0, 0.0, getNewVertexID());
@@ -425,10 +428,10 @@ public class Graph implements Drawable {
                 createEdge(vertices.get(0), vertices.get(i + 1));
             }
         }
+        type = GraphType.wheel;
     }
 
     private void createGrid(int m, int n, boolean edges) {
-        type = GraphType.grid;
         canvas.offX = 0;
         canvas.offY = 0;
         double dy = (canvas.getHeight() - 30) / (double) (m - 1);
@@ -451,6 +454,7 @@ public class Graph implements Drawable {
                 }
             }
         }
+        type = GraphType.grid;
     }
 
     public void setDefaultValues() {

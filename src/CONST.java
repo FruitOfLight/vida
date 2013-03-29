@@ -8,7 +8,7 @@ public class CONST {
     public static final int minWindowWidth = 700;
     public static final int minWindowHeight = 600;
     public static final int menuHeight = 25;
-    public static final int controlsHeight = 60;
+    public static final int controlsHeight = 70;
     public static final int zoomWindowWidth = 300;
     public static final int zoomWindowHeight = 300;
     public static final int informationWidth = 300;

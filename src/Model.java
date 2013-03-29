@@ -55,6 +55,7 @@ public class Model {
     int timerid = 0;
 
     void start() {
+        GUI.controls.refresh();
         startingTime = System.currentTimeMillis();
         if (running == RunState.stopped)
             load();
@@ -65,6 +66,7 @@ public class Model {
     }
 
     void stop() {
+        GUI.controls.refresh();
         if (running == RunState.stopped)
             return;
         running = RunState.stopped;
@@ -79,6 +81,7 @@ public class Model {
     }
 
     void pause() {
+        GUI.controls.refresh();
         if (running == RunState.stopped)
             return;
         running = RunState.paused;
@@ -109,6 +112,13 @@ public class Model {
 
     double getSendSpeed() {
         return sendSpeed;
+    }
+
+    String getSendSpeedString(int length) {
+        String result = ((Double) getSendSpeed()).toString();
+        if (result.length() > length)
+            result = result.substring(0, length);
+        return result;
     }
 
     static class StepEvent extends TimerTask {
@@ -150,7 +160,7 @@ public class Model {
             }
 
             GUI.gRepaint();
-            GUI.globalTimer.schedule(new StepEvent(model, id), 15);
+            GUI.globalTimer.schedule(new StepEvent(model, id), 20);
         }
     }
 

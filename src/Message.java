@@ -136,18 +136,18 @@ class Message {
         }
 
         if ((prevM != null) && (prevM.position - position < defDist)) {
-            if (prevM.position - position < defDist * 0.1) {
+            /*if (prevM.position - position < defDist * 0.1) {
                 force -= Math.pow(2 * 0.9, 2);
-            } else {
-                force -= Math.pow(2 * (defDist - prevM.position + position) / defDist, 2);
-            }
+            } else {*/
+            force -= Math.pow(2 * (defDist - prevM.position + position) / defDist, 2);
+            //}
         }
         if ((nextM != null) && (position - nextM.position < defDist)) {
-            if (position - nextM.position < defDist * 0.1) {
+            /*if (position - nextM.position < defDist * 0.1) {
                 force += Math.pow(1.0 * 0.9, 2);
-            } else {
-                force += Math.pow(1.0 * (defDist - position + nextM.position) / defDist, 2);
-            }
+            } else {*/
+            force += Math.pow(1.0 * (defDist - position + nextM.position) / defDist, 2);
+            //}
         }
     }
 
