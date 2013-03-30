@@ -10,11 +10,8 @@ using namespace Messager;
 using namespace Property;
 
 void recieve(int port, string message) {
-    char inf[100];
-    sprintf(inf,"%d:%s",port,message.c_str());
-    sendInformation(string(inf));
     vi used = vi(ports.size()*2+47,0); 
-    while(rand()%2 || rand()%47==0){
+    while(rand()%2 || rand()%13==0){
         int to = ports[rand()%ports.size()];
         char buffer[100];
         if (used[to])

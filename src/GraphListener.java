@@ -37,10 +37,9 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
 
     @Override
     public void mouseClicked(MouseEvent mouse) {
-
         if (noClick) {
             noClick = false;
-            //return;
+            return;
         }
         if (GUI.gkl.isPressed(CONST.deleteKey)) {
             System.out.println("ctrl");

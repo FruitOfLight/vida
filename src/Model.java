@@ -39,9 +39,9 @@ public class Model {
                     GUI.gRepaint();
                 }
                 programPath = file.getPath();
-                compile();
                 programName = programPath.substring(programPath.lastIndexOf('/') + 1,
                         programPath.lastIndexOf('.'));
+                compile();
             }
 
             GUI.controls.refresh();
@@ -63,6 +63,7 @@ public class Model {
     private void load() {
         if (running != RunState.stopped)
             stop();
+        compile();
         graph = GUI.graph;
         for (Vertex v : graph.vertices) {
             v.program = new Program(v, this);
@@ -78,6 +79,7 @@ public class Model {
         startingTime = System.currentTimeMillis();
         if (running == RunState.stopped)
             load();
+
         running = RunState.running;
         timerid++;
         StepEvent.time = System.currentTimeMillis();
