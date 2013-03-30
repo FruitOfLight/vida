@@ -83,7 +83,8 @@ namespace Messager {
         string clean(string str){
             string res = "";
             bool active = true;
-            For(i, str.size()-1) {
+            For(i, str.size()) {
+                if (str[i]<32) continue;
                 if (str[i]=='$') active = false;
                 if (active) res+=str[i];
                 if (str[i]==' ') active = true;                

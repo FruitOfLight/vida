@@ -39,13 +39,14 @@ public class CliqueLEAlgorithm implements Algorithm {
     boolean accept;
     boolean defeat;
 
-    public void recieveUpdate(String s) {
+    public void recieveUpdate(Vertex vertex, String s) {
         System.out.println(s);
         if (s.contains("level")) {
             int level = Integer.parseInt(s.substring(6).trim());
             levelCounter.set(level, levelCounter.get(level) + 1);
         }
         if (s.contains("capture-active") && !captureActive) {
+            GUI.globalTimer.schedule(new Model.AuraEvent(vertex, 7), 0);
             String values[] = s.split(":");
             generalInfo.addInformation("Process with level " + values[3] + " and id " + values[4]
                     + " is trying", -2);
@@ -57,6 +58,7 @@ public class CliqueLEAlgorithm implements Algorithm {
             GUI.model.pause();
         }
         if (s.contains("capture-capture") && !captureCapture) {
+            GUI.globalTimer.schedule(new Model.AuraEvent(vertex, 7), 0);
             String values[] = s.split(":");
             generalInfo.addInformation("Process with id " + values[3]
                     + " is attacked by process with level " + values[1] + " and id " + values[2]
@@ -69,6 +71,7 @@ public class CliqueLEAlgorithm implements Algorithm {
             GUI.model.pause();
         }
         if (s.contains("help-win") && !helpWin) {
+            GUI.globalTimer.schedule(new Model.AuraEvent(vertex, 7), 0);
             String values[] = s.split(":");
             generalInfo.addInformation("Process with level " + values[1] + " and id " + values[2]
                     + " recieve help message from its subordinate.", -2);
@@ -81,6 +84,7 @@ public class CliqueLEAlgorithm implements Algorithm {
             GUI.model.pause();
         }
         if (s.contains("help-defeat") && !helpDefeat) {
+            GUI.globalTimer.schedule(new Model.AuraEvent(vertex, 7), 0);
             String values[] = s.split(":");
             generalInfo.addInformation("Process with level " + values[1] + " and id " + values[2]
                     + " recieve help message from its subordinate.", -2);
@@ -96,6 +100,7 @@ public class CliqueLEAlgorithm implements Algorithm {
             GUI.model.pause();
         }
         if (s.contains("accept") && !accept) {
+            GUI.globalTimer.schedule(new Model.AuraEvent(vertex, 7), 0);
             String values[] = s.split(":");
             generalInfo.addInformation("Process " + values[1]
                     + " won battle, it gain new subordinate and go to level " + values[2], -2);
@@ -103,6 +108,7 @@ public class CliqueLEAlgorithm implements Algorithm {
             GUI.model.pause();
         }
         if (s.contains("Defeat") && !defeat) {
+            GUI.globalTimer.schedule(new Model.AuraEvent(vertex, 7), 0);
             String values[] = s.split(":");
             generalInfo
                     .addInformation("Leader of process " + values[1]

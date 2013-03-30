@@ -227,8 +227,8 @@ public class Model {
             GUI.gRepaint();
             if (count == 0) {
                 vertex.setAuraColor(new Color(255, 255, 255, 0));
-                GUI.model.running = RunState.running;
-                GUI.model.start();
+                //GUI.model.running = RunState.running;
+                //GUI.model.start();
             } else
                 GUI.globalTimer.schedule(new AuraEvent(vertex, count - 1), 200);
         }

@@ -152,6 +152,10 @@ public class InformationBubble implements Drawable {
 
         @Override
         public void run() {
+            if (GUI.model.running != RunState.running) {
+                GUI.globalTimer.schedule(new ExpirationEvent(), 100);
+                return;
+            }
             for (InformationBubble i : GUI.informationBubbleList) {
                 i.updateExpiration();
             }
