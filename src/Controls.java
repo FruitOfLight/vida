@@ -20,7 +20,6 @@ public class Controls implements Drawable {
         model = GUI.model;
         panel = new JPanel();
         canvas = new Canvas(this);
-        //panel.setBackground(new Color(200, 200, 100, 20));
         panel.setLayout(null);
         hintLabel = new JLabel("");
         hintLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -130,7 +129,9 @@ public class Controls implements Drawable {
     public void hintOn(Component c) {
         hintElement = c;
         hintLabel.setText(c.toString());
-        hintLabel.setLocation((c.getX() + (c.getWidth() - hintLabel.getWidth()) / 2),
+        int width = hintLabel.getFontMetrics(hintLabel.getFont()).stringWidth(hintLabel.getText());
+        hintLabel.setSize(width, hintLabel.getHeight());
+        hintLabel.setLocation(Math.max(2, c.getX() + (c.getWidth() - hintLabel.getWidth()) / 2),
                 Controls.gridHeight);
         hintLabel.setVisible(true);
         //System.out.println("label " + hintLabel.getX() + " " + hintLabel.getY());

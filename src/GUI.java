@@ -215,11 +215,12 @@ public class GUI {
 
     public static void main(String[] args) {
         // TODO spravit krajsie
+        gkl = new GlobalKeyListener();
         informationBubbleList = new ArrayList<InformationBubble>();
         graph = new Graph();
         model = new Model();
         controls = new Controls();
-        gkl = new GlobalKeyListener();
+
         zoomWindow = new ZoomWindow();
         informationPanel = new InformationPanel();
         globalTimer = new Timer();

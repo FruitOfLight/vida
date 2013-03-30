@@ -40,15 +40,15 @@ class ControlBuilder {
             box.addElement(new ControlClickButton(c, "s_load", null));
             box.addElement(new ControlClickButton(c, "s_settings", null));
             box.addElement(new ControlLabel(c, "program", 8));
-            box.addElement(new ControlSwitchButton(c, "v_bubble", null));
+            box.addElement(new ControlSwitchButton(c, "v_bubble", KeyEvent.VK_B));
             getBox("bottomBox").addElement(box);
             box = new ControlBox(c, get("stopButton"));
-            box.addElement(new ControlClickButton(c, "p_start", null));
-            box.addElement(new ControlClickButton(c, "p_pause", null));
-            box.addElement(new ControlClickButton(c, "p_slow", null));
-            box.addElement(new ControlClickButton(c, "p_fast", null));
+            box.addElement(new ControlClickButton(c, "p_start", KeyEvent.VK_P));
+            box.addElement(new ControlClickButton(c, "p_pause", KeyEvent.VK_P));
+            box.addElement(new ControlClickButton(c, "p_slow", KeyEvent.VK_LEFT));
+            box.addElement(new ControlClickButton(c, "p_fast", KeyEvent.VK_RIGHT));
             box.addElement(new ControlLabel(c, "running", 8));
-            box.addElement(new ControlSwitchButton(c, "v_bubble", null));
+            box.addElement(new ControlSwitchButton(c, "v_bubble", KeyEvent.VK_B));
             getBox("bottomBox").addElement(box);
             box = new ControlBox(c, get("playButton"));
             box.addElement(new ControlClickButton(c, "g_new", null));
@@ -151,6 +151,9 @@ class ControlClickButton extends JButton implements ControlElement, ActionListen
         this.setBorder(BorderFactory.createEmptyBorder());
         this.setContentAreaFilled(false);
         this.setFocusable(false);
+
+        if (key != null)
+            GUI.gkl.addButton(key, this);
     }
 
     ControlClickButton(Controls controls, String name, Integer key) throws IOException {
@@ -213,6 +216,7 @@ class ControlClickButton extends JButton implements ControlElement, ActionListen
 class ControlSwitchButton extends ControlClickButton {
     private static final long serialVersionUID = -2917209616766738855L;
     String bindingToggle;
+    boolean kweak;
     ArrayList<ControlSwitchButton> deactivateList = new ArrayList<ControlSwitchButton>();
 
     public ControlSwitchButton(Controls controls, String name, Integer key, boolean kweak)
@@ -228,6 +232,7 @@ class ControlSwitchButton extends ControlClickButton {
                 + "b_" + name + ".png"))));
         this.setRolloverSelectedIcon(new ImageIcon(ImageIO.read(new File(
                 "images/gui-buttons-active-hover/" + "b_" + name + ".png"))));
+        this.kweak = kweak;
     }
 
     public ControlSwitchButton(Controls controls, String name, Integer key) throws IOException {
