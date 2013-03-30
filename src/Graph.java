@@ -69,6 +69,8 @@ public class Graph implements Drawable {
         for (Vertex vertex : vertices) {
             vertex.informationBubble.draw(g);
         }
+        if (GUI.model.algorithm != null)
+            GUI.model.algorithm.draw(g);
     }
 
     public void clickWithMouse(MouseEvent mouse) {

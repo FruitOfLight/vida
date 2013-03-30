@@ -16,11 +16,14 @@ public class Model {
     ModelSettings settings;
     JFileChooser programLoader;
     long startingTime;
+    Algorithm algorithm;
 
     Model() {
         running = RunState.stopped;
         settings = new ModelSettings();
         programLoader = new JFileChooser("./algorithms/");
+        //FIXME pridany riadok na testovanie
+        algorithm = new CliqueLEAlgorithm();
     }
 
     public RunState getRunState() {
@@ -76,12 +79,17 @@ public class Model {
     void start() {
         GUI.controls.refresh();
         startingTime = System.currentTimeMillis();
-        if (running == RunState.stopped)
+        boolean start = false;
+        if (running == RunState.stopped) {
             load();
+            start = true;
+        }
         running = RunState.running;
         timerid++;
         StepEvent.time = System.currentTimeMillis();
         GUI.globalTimer.schedule(new StepEvent(this, timerid), 0);
+        if (algorithm != null && start)
+            algorithm.startAlgorithm();
     }
 
     void stop() {
@@ -96,7 +104,9 @@ public class Model {
         graph.setDefaultValues();
         MessageQueue.messageCount = 0;
         GUI.informationPanel.erase();
-
+        for (InformationBubble i : GUI.informationBubbleList)
+            i.defaultSettings();
+        GUI.gRepaint();
     }
 
     void pause() {

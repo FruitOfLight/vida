@@ -30,6 +30,7 @@ public class InformationBubble implements Drawable {
     public double x, y;
     public ArrayList<Information> informations;
     public boolean transparency;
+    public boolean lockedPosition;
     private int padding = 3;
 
     // @formatter:off
@@ -44,6 +45,15 @@ public class InformationBubble implements Drawable {
     public InformationBubble(double x, double y) {
         this.x = x;
         this.y = y;
+        lockedPosition = false;
+        informations = new ArrayList<Information>();
+        GUI.informationBubbleList.add(this);
+    }
+
+    public InformationBubble(double x, double y, boolean locked) {
+        this.x = x;
+        this.y = y;
+        lockedPosition = locked;
         informations = new ArrayList<Information>();
         GUI.informationBubbleList.add(this);
     }
@@ -57,7 +67,9 @@ public class InformationBubble implements Drawable {
         for (Information i : informations) {
             if (i.getExpiration() > 0)
                 i.setExpiration(i.getExpiration() - 1);
-            if (i.getExpiration() != 0)
+            if (i.getExpiration() != 0 && i.getExpiration() != -2)
+                help.add(i);
+            else if (i.getExpiration() == -2 && GUI.model.running != RunState.running)
                 help.add(i);
         }
         informations = help;
@@ -73,9 +85,13 @@ public class InformationBubble implements Drawable {
     }
 
     public void draw(Graphics2D g) {
+        if (lockedPosition) {
+            drawLocked(g);
+            return;
+        }
         Composite originalComposite = g.getComposite();
         if (transparency)
-            g.setComposite(makeComposite(0.9f));
+            g.setComposite(makeComposite(0.8f));
         if (informations.size() == 0)
             return;
         g.setColor(Canvas.contrastColor(new Color(255, 255, 255), Constrast.textbw));
@@ -97,6 +113,37 @@ public class InformationBubble implements Drawable {
         for (Information i : informations) {
             j++;
             g.drawString(i.getInfo(), (float) x, (float) (y - (n - j) * h - padding));
+        }
+        g.setComposite(originalComposite);
+    }
+
+    public void drawLocked(Graphics2D g) {
+        Composite originalComposite = g.getComposite();
+        if (transparency)
+            g.setComposite(makeComposite(0.8f));
+        if (informations.size() == 0)
+            return;
+        g.setColor(Canvas.contrastColor(new Color(255, 255, 255), Constrast.textbw));
+        g.setFont(new Font(Font.DIALOG, Font.PLAIN, 11));
+        double w = 0;
+        for (Information i : informations) {
+            w = Math.max(w, g.getFontMetrics().stringWidth(i.getInfo()));
+        }
+        double h = g.getFontMetrics().getAscent();
+        int n = informations.size();
+        double x1 = (x - GUI.graph.canvas.offX) / GUI.graph.canvas.zoom, y1 = (y - GUI.graph.canvas.offY)
+                / GUI.graph.canvas.zoom;
+        g.setColor(new Color(150, 214, 250));
+        g.fillRoundRect((int) (x1 - padding), (int) (y1 - padding), (int) w + 2 * padding,
+                (int) (n * h) + 2 * padding, 10, 10);
+        g.setColor(new Color(0, 0, 250));
+        g.drawRoundRect((int) (x1 - padding), (int) (y1 - padding), (int) w + 2 * padding,
+                (int) (n * h) + 2 * padding, 10, 10);
+        g.setColor(Canvas.contrastColor(new Color(255, 255, 255), Constrast.textbw));
+        int j = 0;
+        for (Information i : informations) {
+            j++;
+            g.drawString(i.getInfo(), (float) x1, (float) (y1 + j * h - padding));
         }
         g.setComposite(originalComposite);
     }

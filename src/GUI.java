@@ -172,7 +172,6 @@ public class GUI {
         //GUI.informationPanel.scrollPanel.repaint();
         if (layeredPane != null)
             GUI.layeredPane.repaint();
-
     }
 
     public static void saveApp() {
@@ -216,6 +215,7 @@ public class GUI {
 
     public static void main(String[] args) {
         // TODO spravit krajsie
+        informationBubbleList = new ArrayList<InformationBubble>();
         graph = new Graph();
         model = new Model();
         controls = new Controls();
@@ -223,7 +223,6 @@ public class GUI {
         zoomWindow = new ZoomWindow();
         informationPanel = new InformationPanel();
         globalTimer = new Timer();
-        informationBubbleList = new ArrayList<InformationBubble>();
         globalTimer.schedule(new InformationBubble.ExpirationEvent(), 0);
         final Window window = new Window();
         SwingUtilities.invokeLater(window);
