@@ -61,6 +61,9 @@ public class Program extends Thread {
                 if (line.charAt(0) == '%') {
                     GUI.model.pauseFromProcess(vertex);
                 }
+                if (line.charAt(0) == '*' && GUI.model.algorithm != null) {
+                    GUI.model.algorithm.recieveUpdate(line.substring(1).trim());
+                }
             }
             out.close();
         } catch (Exception e) {

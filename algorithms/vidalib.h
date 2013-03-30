@@ -121,6 +121,11 @@ namespace Messager {
         fflush(stdout);
     }
 
+    void algorithmUpdate(const string &str) {
+        printf("* %s\n",str.c_str());
+        fflush(stdout);
+    }
+
     void pauseProgram() {
         char c='%';
         printf("%c\n",c);
