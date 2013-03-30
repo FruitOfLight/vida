@@ -24,7 +24,7 @@ public class Controls implements Drawable {
         hintLabel = new JLabel("");
         hintLabel.setHorizontalAlignment(SwingConstants.CENTER);
         hintLabel.setFont(new Font(null, Font.PLAIN, 10));
-        hintLabel.setSize(100, 10);
+        hintLabel.setSize(100, 15);
         panel.add(hintLabel);
 
         canvas.setSize(300, CONST.controlsHeight);
@@ -84,6 +84,8 @@ public class Controls implements Drawable {
             return model.running == RunState.running;
         } else if (name.equals("p_stop")) {
             return model.running != RunState.stopped;
+        } else if (name.equals("gs_message")) {
+            return model.running != RunState.stopped;
         } else {
             return true;
         }
@@ -132,7 +134,7 @@ public class Controls implements Drawable {
         int width = hintLabel.getFontMetrics(hintLabel.getFont()).stringWidth(hintLabel.getText());
         hintLabel.setSize(width, hintLabel.getHeight());
         hintLabel.setLocation(Math.max(2, c.getX() + (c.getWidth() - hintLabel.getWidth()) / 2),
-                Controls.gridHeight);
+                Controls.gridHeight - 2);
         hintLabel.setVisible(true);
         //System.out.println("label " + hintLabel.getX() + " " + hintLabel.getY());
     }

@@ -21,7 +21,7 @@ public class GlobalKeyListener implements KeyEventDispatcher {
             if (buttons.containsKey(e.getKeyCode())) {
                 for (JButton button : buttons.get(e.getKeyCode())) {
                     if (button != null && button.isVisible()) {
-                        button.doClick(100);
+                        button.doClick();
                         break;
                     }
                 }

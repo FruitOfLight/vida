@@ -18,9 +18,9 @@ for imgfile in glob.glob('gui-buttons/*.png'):
     for pixel in data:
         r,g,b,a = pixel
         hoverData.append((127-3*r//2, 127-3*g//2, 127-3*b//2, a))
-        activeData.append((0, r+g+b, 0, a))
+        activeData.append((0, r+g+b+48, 0, a))
         activeHoverData.append((0, 255-r-g-b, 0, a))
-        inactiveData.append((r+g+b, 0, 0, a))
+        inactiveData.append((r+g+b+48, 0, 0, a))
         inactiveHoverData.append((255-r-g-b, 0, 0, a))
         pressedData.append((0, 0, 255-r-g-b, a))
 
