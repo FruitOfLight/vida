@@ -36,6 +36,7 @@ class ControlBuilder {
             getBox("bottomBox").addElement(get("playButton"));
             getBox("bottomBox").addElement(get("stopButton"));
             ControlBox box;
+            ControlSwitchButton csb;
             box = new ControlBox(c, get("playButton"));
             box.addElement(new ControlClickButton(c, "s_load", null));
             box.addElement(new ControlClickButton(c, "s_settings", null));
@@ -56,6 +57,14 @@ class ControlBuilder {
             box.addElement(new ControlClickButton(c, "g_save", null));
             box.addElement(new ControlLabel(c, "graph", 8));
             getBox("topBox").addElement(box);
+            box = new ControlBox(c, null);
+            box.addElement(csb = new ControlSwitchButton(c, "gs_vertex", KeyEvent.VK_V));
+            csb.addRadio("selectors", 1);
+            box.addElement(csb = new ControlSwitchButton(c, "gs_edge", KeyEvent.VK_E));
+            csb.addRadio("selectors", 1);
+            box.addElement(csb = new ControlSwitchButton(c, "gs_message", KeyEvent.VK_M));
+            csb.addRadio("selectors", 1);
+            getBox("topBox").addElement(box);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -63,8 +72,8 @@ class ControlBuilder {
     }
 
     static void refresh() {
-        get("topBox").place(true, 0, 0);
         get("bottomBox").place(true, 0, Controls.gridHeight + Controls.gridSpace);
+        get("topBox").place(true, 0, 0);
     }
 
     public static ControlElement get(String s) {
@@ -215,9 +224,12 @@ class ControlClickButton extends JButton implements ControlElement, ActionListen
 
 class ControlSwitchButton extends ControlClickButton {
     private static final long serialVersionUID = -2917209616766738855L;
+    static private Map<String, ArrayList<ControlSwitchButton>> radioGroups = new TreeMap<String, ArrayList<ControlSwitchButton>>();
+
     String bindingToggle;
     boolean kweak;
-    ArrayList<ControlSwitchButton> deactivateList = new ArrayList<ControlSwitchButton>();
+    private String radioName = null;
+    int radioLevel;
 
     public ControlSwitchButton(Controls controls, String name, Integer key, boolean kweak)
             throws IOException {
@@ -239,10 +251,29 @@ class ControlSwitchButton extends ControlClickButton {
         this(controls, name, key, false);
     }
 
+    public void addRadio(String name, int level) {
+        radioName = name;
+        radioLevel = level;
+        if (!radioGroups.containsKey(radioName))
+            radioGroups.put(radioName, new ArrayList<ControlSwitchButton>());
+        radioGroups.get(radioName).add(this);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e);
         setSelected(!isSelected());
+        if (radioName != null) {
+            for (ControlSwitchButton button : radioGroups.get(radioName))
+                if (!name.equals(button.name)) {
+                    if (button.radioLevel == radioLevel && isSelected() && button.isSelected())
+                        button.setSelected(false);
+                    if (button.radioLevel > radioLevel && isSelected() && !button.isSelected())
+                        button.setSelected(true);
+                    if (button.radioLevel < radioLevel && !isSelected() && button.isSelected())
+                        button.setSelected(false);
+                }
+        }
     }
 
     @Override
