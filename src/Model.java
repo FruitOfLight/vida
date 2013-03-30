@@ -94,6 +94,8 @@ public class Model {
     }
 
     void stop() {
+        if (algorithm != null)
+            algorithm.defaultSettings();
         GUI.controls.refresh();
         if (running == RunState.stopped)
             return;

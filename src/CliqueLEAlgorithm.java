@@ -7,6 +7,10 @@ public class CliqueLEAlgorithm implements Algorithm {
     public ArrayList<Integer> levelCounter;
 
     public CliqueLEAlgorithm() {
+        this.defaultSettings();
+    }
+
+    public void defaultSettings() {
         generalInfo = new InformationBubble(10, 10, true);
         levelInfo = new InformationBubble(10, 200, true);
         levelCounter = new ArrayList<Integer>();
@@ -40,7 +44,7 @@ public class CliqueLEAlgorithm implements Algorithm {
     boolean defeat;
 
     public void recieveUpdate(Vertex vertex, String s) {
-        System.out.println(s);
+        //System.out.println(s);
         if (s.contains("level")) {
             int level = Integer.parseInt(s.substring(6).trim());
             levelCounter.set(level, levelCounter.get(level) + 1);

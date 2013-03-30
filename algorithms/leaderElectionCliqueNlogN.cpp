@@ -18,21 +18,21 @@ int wait;
 int parentPort;
 
 void recieveCapture(int port, pair<int,int> strength) {
-    if(getIValue("state")!=1 && strength > make_pair(getIValue("level"),id)) {
+    if(getSValue("state")!="captured" && strength > make_pair(getIValue("level"),id)) {
         char inf[100];
         sprintf(inf,"I'm captured by ID %d with level %d",strength.second,strength.first);
         sendInformation(string(inf));
-        setIValue("state",1);
+        setSValue("state","captured");
         setIValue("parent",strength.second);
         parentPort = port;
-        setIValue("leader",0);
+        setSValue("leader","no");
         setSValue("_vertex_color","255,0,0");
         char up[100];
         sprintf(up,"capture-active:%d:%d:%d:%d",getIValue("level"),id,strength.first,strength.second);
         algorithmUpdate(string(up));
         sendMessage(port, "{accept}");
     }
-    else if(getIValue("state")==1) {
+    else if(getSValue("state")=="captured") {
         char inf[100];
         sprintf(inf,"I need help from my leader");
         sendInformation(string(inf));
@@ -46,7 +46,7 @@ void recieveCapture(int port, pair<int,int> strength) {
 }
 
 void recieveAccept(int port) {
-    if(getIValue("state")!=2) return;
+    if(getSValue("state")!="active") return;
     setIValue("level",getIValue("level")+1);
     char inf[100];
     sprintf(inf,"I get subordinate, my actual level is %d",getIValue("level"));
@@ -61,7 +61,7 @@ void recieveAccept(int port) {
     setSValue("_vertex_size",string(num));
     if(getIValue("level")==ports.size()) {
         setSValue("_vertex_color","0,0,255");
-        setIValue("leader",1);
+        setSValue("leader","yes");
         sendInformation("I'm the leader");
         return;
     }
@@ -80,7 +80,8 @@ void recieveHelp(int port, pair<int,int> strength, int port1) {
         sendMessage(port,"{victory}");
         return ;
     }
-    if(getIValue("state") == 2) setIValue("state",0);
+    if(getSValue("state") == "active") setSValue("state","killed");
+    setSValue("leader","no");
     setSValue("_vertex_color","255,0,0");
     char buff[100];
     sendInformation("I'm defeated");
@@ -156,8 +157,8 @@ void recieve(int port, string message) {
 void init(){
     setIValue("level",0);
     setIValue("parent",-1);
-    setIValue("leader",-1);
-    setIValue("state",2);
+    setSValue("leader","maybe");
+    setSValue("state","active");
     parentPort = -1;
     char buffer[100];
     sprintf(buffer,"{capture %d,%d}",getIValue("level"),id);

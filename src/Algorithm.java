@@ -4,4 +4,6 @@ public interface Algorithm extends Drawable {
 
     public void recieveUpdate(Vertex vertex, String s);
 
+    public void defaultSettings();
+
 }
