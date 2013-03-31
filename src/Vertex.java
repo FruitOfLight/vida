@@ -52,7 +52,7 @@ public class Vertex {
         this.y = y;
         this.ID = ID;
         radius = CONST.vertexSize;
-        watchVariables = new HashMap<String, Integer>();
+        watchVariables = new HashMap<String, String>();
         color = new Color(0, 255, 0);
         informationBubble = new InformationBubble(this.x, this.y - this.radius);
         auraColor = new Color(255, 255, 255, 0);
@@ -76,7 +76,7 @@ public class Vertex {
         }
     }
 
-    public Map<String, Integer> watchVariables;
+    public Map<String, String> watchVariables;
 
     public void setVariable(String name, String value) {
         // TODO Fuj object hore nechceme, ale toto je len provizorne riesenie 
@@ -91,7 +91,7 @@ public class Vertex {
             }
         } else {
             watchVariables.remove(name);
-            watchVariables.put(name, Integer.parseInt(value));
+            watchVariables.put(name, value);
         }
         GUI.gRepaint();//zoomWindow.repaint();
     }
@@ -186,12 +186,12 @@ public class Vertex {
         g.setFont(new Font(null, Font.PLAIN, 15));
         g.drawString("ID: " + ((Integer) this.getID()).toString(), indent + 5, indent + edgeHeight
                 + 15);
-        Iterator<Entry<String, Integer>> it = watchVariables.entrySet().iterator();
+        Iterator<Entry<String, String>> it = watchVariables.entrySet().iterator();
         int count = 2;
         while (it.hasNext()) {
-            Map.Entry<String, Integer> me = it.next();
-            g.drawString(me.getKey() + ": " + ((Integer) me.getValue()).toString(), indent + 5,
-                    indent + edgeHeight + 15 * count);
+            Map.Entry<String, String> me = it.next();
+            g.drawString(me.getKey() + ": " + me.getValue(), indent + 5, indent + edgeHeight + 15
+                    * count);
             count++;
         }
     }

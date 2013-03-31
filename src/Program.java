@@ -52,7 +52,7 @@ public class Program extends Thread {
                 }
                 if (line.charAt(0) == '#') {
                     GUI.informationPanel.printInformation(vertex, line.substring(1).trim());
-                    vertex.informationBubble.addInformation(line.substring(1).trim(), 10);
+                    vertex.informationBubble.addInformation(line.substring(1).trim(), 20);
                 }
                 if (line.charAt(0) == '$') {
                     String parts[] = line.substring(1).split(":", 2);
@@ -62,7 +62,7 @@ public class Program extends Thread {
                     GUI.model.pauseFromProcess(vertex);
                 }
                 if (line.charAt(0) == '*' && GUI.model.algorithm != null) {
-                    GUI.model.algorithm.recieveUpdate(line.substring(1).trim());
+                    GUI.model.algorithm.recieveUpdate(vertex, line.substring(1).trim());
                 }
             }
             out.close();
