@@ -69,7 +69,7 @@ public class Controls implements Drawable {
         } else if (name.equals("g_new")) {
             Menu.performAction(1, 0);
         } else {
-            System.out.println("Unknown action " + name);
+            System.err.println("Unknown action " + name);
         }
         refresh();
         //System.out.println("clicked " + button.name);

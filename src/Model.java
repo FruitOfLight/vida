@@ -1,10 +1,13 @@
 import java.awt.Color;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.Scanner;
 import java.util.TimerTask;
 
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Model {
     private String programPath = "";
@@ -22,6 +25,7 @@ public class Model {
         running = RunState.stopped;
         settings = new ModelSettings();
         programLoader = new JFileChooser("./algorithms/");
+        programLoader.setFileFilter(new FileNameExtensionFilter("Algorihms", "cpp"));
         //FIXME pridany riadok na testovanie
         algorithm = new CliqueLEAlgorithm();
     }
@@ -35,6 +39,7 @@ public class Model {
             int value = programLoader.showOpenDialog(null);
             if (value == JFileChooser.APPROVE_OPTION) {
                 File file = programLoader.getSelectedFile();
+
                 settings.readHeader(file);
                 if (settings.getGraphType() != GraphType.any
                         && settings.getGraphType() != graph.getType()) {
@@ -57,7 +62,19 @@ public class Model {
         if (programPath.equals(""))
             return;
         try {
-            Runtime.getRuntime().exec("bash box/compile.sh " + programPath + " " + binaryPath);
+            System.out.println("Compiling: " + programPath + " " + binaryPath);
+            Process p = Runtime.getRuntime().exec(
+                    "./box/compile.sh " + programPath + " " + binaryPath);
+            BufferedReader err = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            String line;
+            while ((line = err.readLine()) != null) {
+                if ("debug".equals("debug")) {
+                    System.err.println("Compiling: " + line);
+                }
+            }
+            err.close();
+            System.out.println("Compiling: done.");
+
         } catch (Exception e) {
             Dialog.showError("Something went horribly wrong");
         }
@@ -66,7 +83,6 @@ public class Model {
     private void load() {
         if (running != RunState.stopped)
             stop();
-        compile();
         graph = GUI.graph;
         for (Vertex v : graph.vertices) {
             v.program = new Program(v, this);

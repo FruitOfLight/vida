@@ -6,7 +6,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 
-public class PopupPanel extends JPanel {
+public class PopupPanel extends JPanel implements MouseListener {
 
     private static final long serialVersionUID = 4907612881980276015L;
     public Component element;
@@ -15,44 +15,42 @@ public class PopupPanel extends JPanel {
     public PopupPanel(Component element_) {
         this.element = element_;
         lockShow = false;
-        this.addMouseListener(new MouseListener() {
+        this.addMouseListener(this);
+    }
 
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
+    @Override
+    public void mouseReleased(MouseEvent e) {
+    }
 
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
+    @Override
+    public void mousePressed(MouseEvent e) {
+    }
 
-            @Override
-            public void mouseExited(MouseEvent e) {
-                if (lockShow)
-                    return;
-                if (element.isVisible())
-                    element.setVisible(false);
-            }
+    @Override
+    public void mouseExited(MouseEvent e) {
+        if (lockShow)
+            return;
+        if (element.isVisible())
+            element.setVisible(false);
+    }
 
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                if (lockShow)
-                    return;
-                if (!element.isVisible())
-                    element.setVisible(true);
-            }
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        if (lockShow)
+            return;
+        if (!element.isVisible())
+            element.setVisible(true);
+    }
 
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (lockShow) {
-                    lockShow = false;
-                    element.setVisible(false);
-                } else {
-                    lockShow = true;
-                    element.setVisible(true);
-                }
-            }
-        });
-
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (lockShow) {
+            lockShow = false;
+            element.setVisible(false);
+        } else {
+            lockShow = true;
+            element.setVisible(true);
+        }
     }
 
     @Override

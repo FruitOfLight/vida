@@ -7,4 +7,5 @@ else
     binary=$source
 fi
 
-g++ $source -o $binary.bin -O2 -std=c++0x
+rm $binary.bin
+g++ $source -o $binary.bin -O2 -std=c++0x -Wno-unused-result
