@@ -21,6 +21,9 @@ public class Model {
     long startingTime;
     Algorithm algorithm;
 
+    //statistics
+    int overallMessageCount;
+
     Model() {
         running = RunState.stopped;
         settings = new ModelSettings();
@@ -28,6 +31,11 @@ public class Model {
         programLoader.setFileFilter(new FileNameExtensionFilter("Algorihms", "cpp"));
         //FIXME pridany riadok na testovanie
         algorithm = new CliqueLEAlgorithm();
+        overallMessageCount = 0;
+    }
+
+    public void statisticMessage() {
+        overallMessageCount++;
     }
 
     public RunState getRunState() {
@@ -133,6 +141,9 @@ public class Model {
         if (running == RunState.stopped)
             return;
         running = RunState.paused;
+    }
+
+    void processExit(String exitValue, Vertex vertex) {
     }
 
     void pauseFromProcess(Vertex vertex) {
