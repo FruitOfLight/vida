@@ -222,7 +222,7 @@ public class GUI {
         graph = new Graph();
         //FIXME len na testovanie
         //model = new Model();
-        model = new LeaderElectionModel();
+        model = new BroadcastModel();
         controls = new Controls();
         graph.listener.setControls(controls);
 

@@ -69,6 +69,7 @@ public class Model {
 
             GUI.controls.refresh();
         } catch (Exception e) {
+            System.out.println(e.toString());
             Dialog.showError("Something went horribly wrong");
         }
     }
@@ -95,6 +96,7 @@ public class Model {
             System.out.println("Compiling: done.");
 
         } catch (Exception e) {
+            System.out.println(e.toString());
             Dialog.showError("Something went horribly wrong");
         }
         compiling = false;
@@ -191,6 +193,8 @@ public class Model {
                 algorithm = null;
             else if (alg.equals("LECNlogN"))
                 algorithm = new CliqueLEAlgorithm();
+            else if (alg.equals("BFS"))
+                algorithm = new BFSAlgorithm();
         }
     }
 
