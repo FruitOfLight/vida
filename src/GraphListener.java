@@ -9,6 +9,7 @@ import java.awt.geom.Line2D;
 
 class GraphListener implements MouseListener, MouseMotionListener, MouseWheelListener {
     private Graph graph;
+    private Controls controls;
 
     public Vertex begin = null;
     double xlast, ylast;
@@ -24,12 +25,15 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
         ylast = 0;
     }
 
+    public void setControls(Controls c) {
+        controls = c;
+    }
+
     public void draw(Graphics2D g) {
+        Tool tool = controls.getTool();
         // vykresli polhranu
-        if (GUI.model.running != RunState.stopped)
-            return;
-        if (begin != null && !GUI.gkl.isPressed(CONST.deleteKey)
-                && !GUI.gkl.isPressed(CONST.moveKey)) {
+        if (begin != null && GUI.model.running == RunState.stopped
+                && tool.compatible(ToolType.create) && tool.compatible(ToolTarget.edge)) {
             g.setColor(new Color(0, 0, 0));
             g.draw(new Line2D.Double(begin.getX(), begin.getY(), xlast, ylast));
         }
@@ -37,74 +41,96 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
 
     @Override
     public void mouseClicked(MouseEvent mouse) {
-        if (noClick) {
-            noClick = false;
-            return;
-        }
-        if (GUI.gkl.isPressed(CONST.deleteKey)) {
-            System.out.println("ctrl");
-            if (GUI.model.running != RunState.stopped) {
+        try {
+            if (noClick) {
+                noClick = false;
                 return;
             }
-            graph.deleteWithMouse(mouse);
+            Tool tool = controls.getTool();
+            tool.print(System.out);
+            if (tool.compatible(ToolType.select)) {
+                if (graph.selectWithMouse(mouse))
+                    return;
+            }
+            if (tool.compatible(ToolType.create) && tool.compatible(ToolTarget.vertex)) {
+                if (graph.createVertex(mouseGetX(mouse), mouseGetY(mouse), graph.getNewVertexID()))
+                    return;
+            }
+            if (tool.compatible(ToolType.delete)) {
+                if (graph.deleteWithMouse(mouse))
+                    return;
+            }
+            if (GUI.model.running == RunState.running) {
+                GUI.controls.onClick("p_pause");
+            } else if (GUI.model.running == RunState.paused) {
+                GUI.controls.onClick("p_start");
+            }
+        } finally {
             GUI.gRepaint();
-            return;
-        }
-        if (!GUI.gkl.isPressed(CONST.deleteKey) && !GUI.gkl.isPressed(CONST.moveKey)) {
-            graph.clickWithMouse(mouse);
-        } else {
-            System.out.println("shift");
         }
     }
 
     @Override
     public void mousePressed(MouseEvent mouse) {
-        noClick = false;
-        begin = graph.getVertex(mouseGetX(mouse), mouseGetY(mouse));
-        xlast = mouseGetX(mouse);
-        ylast = mouseGetY(mouse);
-        preClickX = mouse.getX();
-        preClickY = mouse.getY();
-        oldOffX = graph.canvas.offX;
-        oldOffY = graph.canvas.offY;
-        if (selectedMessage != null) {
-            selectedMessage.selected = 0;
-        }
-        selectedMessage = graph.getMessage(mouseGetX(mouse), mouseGetY(mouse));
-        if (selectedMessage != null) {
-            GUI.zoomWindow.drawMessage(selectedMessage);
-            GUI.zoomWindow.canvas.setVisible(true);
-        }
-        if (selectedMessage != null) {
-            selectedMessage.selected = 1;
+        try {
+            Tool tool = controls.getTool();
+            tool.print(System.out);
+            noClick = false;
+            begin = graph.getVertex(mouseGetX(mouse), mouseGetY(mouse));
+            xlast = mouseGetX(mouse);
+            ylast = mouseGetY(mouse);
+            preClickX = mouse.getX();
+            preClickY = mouse.getY();
+            oldOffX = graph.canvas.offX;
+            oldOffY = graph.canvas.offY;
+            if (selectedMessage != null) {
+                selectedMessage.selected = 0;
+            }
+
+            if (tool.compatible(ToolTarget.message)) {
+                selectedMessage = graph.getMessage(mouseGetX(mouse), mouseGetY(mouse));
+                if (selectedMessage != null) {
+                    GUI.zoomWindow.drawMessage(selectedMessage);
+                    GUI.zoomWindow.canvas.setVisible(true);
+                }
+                if (selectedMessage != null) {
+                    selectedMessage.selected = 1;
+                }
+            }
+        } finally {
+            GUI.gRepaint();
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent mouse) {
+        Tool tool = controls.getTool();
+        tool.print(System.out);
         if (selectedMessage != null) {
             selectedMessage.selected = 0;
             selectedMessage = null;
             noClick = true;
         }
-        if (GUI.model.running == RunState.stopped) {
+        if (tool.compatible(ToolType.create) && tool.compatible(ToolTarget.edge)
+                && GUI.model.running == RunState.stopped) {
             graph.createEdge(begin, graph.getVertex(mouseGetX(mouse), mouseGetY(mouse)));
         }
-        GUI.gRepaint();
         begin = null;
         xlast = 0;
         ylast = 0;
+        GUI.gRepaint();
     }
 
     @Override
     public void mouseDragged(MouseEvent mouse) {
+        Tool tool = controls.getTool();
         if (begin == null && selectedMessage == null) {
             graph.canvas.offX = oldOffX + (mouse.getX() - preClickX);
             graph.canvas.offY = oldOffY + (mouse.getY() - preClickY);
             GUI.gRepaint();
             return;
         }
-        if (GUI.gkl.isPressed(CONST.moveKey)) {
+        if (tool.type == ToolType.move) {
             for (Vertex vertex : graph.vertices) {
                 if (!vertex.equals(begin)
                         && vertex
@@ -114,7 +140,6 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
             }
             begin.move(mouseGetX(mouse), mouseGetY(mouse));
             GUI.gRepaint();
-
         } else {
             xlast = mouseGetX(mouse);
             ylast = mouseGetY(mouse);
@@ -132,13 +157,16 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
 
     @Override
     public void mouseMoved(MouseEvent mouse) {
+        Tool tool = controls.getTool();
         //spravy
-        if (selectedMessage != null) {
-            selectedMessage.selected = 0;
-        }
-        selectedMessage = graph.getMessage(mouseGetX(mouse), mouseGetY(mouse));
-        if (selectedMessage != null) {
-            selectedMessage.selected = 5;
+        if (tool.compatible(ToolTarget.message)) {
+            if (selectedMessage != null) {
+                selectedMessage.selected = 0;
+            }
+            selectedMessage = graph.getMessage(mouseGetX(mouse), mouseGetY(mouse));
+            if (selectedMessage != null) {
+                selectedMessage.selected = 5;
+            }
         }
         //vrcholy
         //TODO

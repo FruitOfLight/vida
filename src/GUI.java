@@ -224,6 +224,7 @@ public class GUI {
         //model = new Model();
         model = new LeaderElectionModel();
         controls = new Controls();
+        graph.listener.setControls(controls);
 
         zoomWindow = new ZoomWindow();
         informationPanel = new InformationPanel();

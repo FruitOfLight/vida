@@ -73,7 +73,10 @@ public class Model {
         }
     }
 
+    boolean compiling = false;
+
     public void compile() {
+        compiling = true;
         if (programPath.equals(""))
             return;
         try {
@@ -94,6 +97,7 @@ public class Model {
         } catch (Exception e) {
             Dialog.showError("Something went horribly wrong");
         }
+        compiling = false;
     }
 
     public void load() {
@@ -107,11 +111,14 @@ public class Model {
         startingTime = System.currentTimeMillis();
         boolean start = false;
         if (running == RunState.stopped) {
+            if (compiling) {
+                Dialog.showMessage("Program is still compiling, try it again, please");
+                return;
+            }
             load();
             start = true;
         }
         running = RunState.running;
-        timerid++;
         StepEvent.time = System.currentTimeMillis();
         GUI.globalTimer.schedule(new StepEvent(this, timerid), 0);
         if (algorithm != null && start)
@@ -189,7 +196,6 @@ public class Model {
 
     private double sendSpeed = 1.2;
     static int fps, afps, sfps;
-    static int ticks, totaltime, longest;
 
     void setSendSpeed(double speed) {
         sendSpeed = speed;
@@ -226,16 +232,6 @@ public class Model {
             long delay = time - prevTime;
             if (delay > 0)
                 fps = (int) (1000 / delay);
-            ticks++;
-            totaltime += delay;
-            longest = Math.max(longest, (int) delay);
-            if (totaltime >= 2000) {
-                afps = 1000 * ticks / totaltime;
-                sfps = 1000 / longest;
-                ticks = 0;
-                longest = 0;
-                totaltime = 0;
-            }
 
             // Spravy
             if (model.running != RunState.stopped) {

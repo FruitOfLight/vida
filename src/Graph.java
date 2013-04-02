@@ -44,8 +44,27 @@ public class Graph implements Drawable {
         // this.canvas.setFocusable(true);
     }
 
+    static long ticks, totalTime, longest;
+    static long time, lastTime, delay;
+
     @Override
     public void draw(Graphics2D g) {
+        // TODO toto fps meranie je tu len docasne
+        time = System.currentTimeMillis();
+        delay = time - lastTime;
+        lastTime = time;
+        longest = Math.max(longest, delay);
+        totalTime += delay;
+        ticks++;
+        if (totalTime >= 2000) {
+            Model.sfps = (int) (1000 / longest);
+            Model.afps = (int) (1000 * ticks / totalTime);
+            totalTime = 0;
+            longest = 0;
+            ticks = 0;
+        }
+        //
+
         if (pauseTime > 0) {
             if (System.currentTimeMillis() - pauseTime > waitTime) {
                 pauseTime = -1;
@@ -73,58 +92,43 @@ public class Graph implements Drawable {
             GUI.model.algorithm.draw(g);
     }
 
-    public void clickWithMouse(MouseEvent mouse) {
-        double x = mouseGetX(mouse);
-        double y = mouseGetY(mouse);
-        double newRadius = CONST.vertexSize;
-        for (Vertex vertex : vertices) {
-            if (vertex.isNearPoint(x, y, 0) && mouse.getClickCount() == 2
-                    && GUI.model.running == RunState.stopped) {
-                vertex.onClicked();
-                GUI.gRepaint();
-                return;
-            } else if (vertex.isNearPoint(x, y, 0)) {
-                GUI.zoomWindow.drawVertex(vertex);
+    public boolean selectWithMouse(MouseEvent mouse) {
+        Tool tool = GUI.controls.getTool();
+        Object o = getObject(mouseGetX(mouse), mouseGetY(mouse), tool);
+
+        if (o == null)
+            return false;
+        if (o instanceof Vertex) {
+            if (mouse.getClickCount() == 2 && GUI.model.running == RunState.stopped) {
+                ((Vertex) o).onClicked();
+            } else {
+                GUI.zoomWindow.drawVertex(((Vertex) o));
                 GUI.zoomWindow.canvas.setVisible(true);
-                return;
             }
+            return true;
+        } else if (o instanceof Edge) {
+            ((Edge) o).selected ^= true;
+            return true;
+        } else if (o instanceof Message) {
+            ((Message) o).selected = 5;
+            return true;
         }
-        ArrayList<Edge> clickedEdges = getEdges(mouseGetX(mouse), mouseGetY(mouse));
-        if (clickedEdges.size() > 0) {
-            for (Edge edge : edges) {
-                edge.selected = false;
-            }
-            for (Edge edge : clickedEdges) {
-                edge.selected = true;
-            }
-            return;
-        }
-        for (Vertex vertex : vertices) {
-            if (vertex.isNearPoint(x, y, newRadius)) {
-                return;
-            }
-        }
-        if (GUI.model.running == RunState.running) {
-            GUI.controls.onClick("p_pause");
-        } else if (GUI.model.running == RunState.paused) {
-            GUI.controls.onClick("p_start");
-        } else {
-            createVertex(x, y, getNewVertexID());
-        }
-        GUI.gRepaint();
+        return false;
     }
 
-    public void deleteWithMouse(MouseEvent mouse) {
-        Vertex v = getVertex(mouseGetX(mouse), mouseGetY(mouse));
-        if (v != null) {
-            removeVertex(v);
-            return;
+    public boolean deleteWithMouse(MouseEvent mouse) {
+        Tool tool = GUI.controls.getTool();
+        Object o = getObject(mouseGetX(mouse), mouseGetY(mouse), tool);
+        if (o == null)
+            return false;
+        if (o instanceof Vertex) {
+            removeVertex((Vertex) o);
+            return true;
+        } else if (o instanceof Edge) {
+            removeEdge((Edge) o);
+            return true;
         }
-        ArrayList<Edge> delete = getEdges(mouseGetX(mouse), mouseGetY(mouse));
-        for (Edge edge : delete) {
-
-            removeEdge(edge);
-        }
+        return false;
     }
 
     double mouseGetX(MouseEvent mouse) {
@@ -166,10 +170,17 @@ public class Graph implements Drawable {
         }
     }
 
-    public void createVertex(double x, double y, int ID) {
+    public boolean createVertex(double x, double y, int ID) {
+        double newRadius = CONST.vertexSize;
+        for (Vertex vertex : vertices) {
+            if (vertex.isNearPoint(x, y, newRadius)) {
+                return false;
+            }
+        }
         type = GraphType.any;
         Vertex vertex = new Vertex(x, y, ID);
         vertices.add(vertex);
+        return true;
     }
 
     public void removeVertex(Vertex vertex) {
@@ -220,6 +231,25 @@ public class Graph implements Drawable {
         GUI.gRepaint();
     }
 
+    Object getObject(double x, double y, Tool tool) {
+        if (tool.target == ToolTarget.vertex) {
+            return getVertex(x, y);
+        }
+        if (tool.target == ToolTarget.edge) {
+            return getEdge(x, y);
+        }
+        if (tool.target == ToolTarget.message) {
+            return getMessage(x, y);
+        }
+        Object o = getMessage(x, y);
+        if (o != null)
+            return o;
+        o = getVertex(x, y);
+        if (o != null)
+            return o;
+        return getEdge(x, y);
+    }
+
     Vertex getVertex(double x, double y) {
         for (Vertex vertex : vertices) {
             if (vertex.isOnPoint(x, y)) {
@@ -229,14 +259,13 @@ public class Graph implements Drawable {
         return null;
     }
 
-    ArrayList<Edge> getEdges(double x, double y) {
-        ArrayList<Edge> result = new ArrayList<Edge>();
+    Edge getEdge(double x, double y) {
         for (Edge edge : edges) {
             if (edge.isNear(x, y, canvas.zoom)) {
-                result.add(edge);
+                return edge;
             }
         }
-        return result;
+        return null;
     }
 
     Message getMessage(double x, double y) {

@@ -22,6 +22,8 @@ public interface ControlElement {
     public int place(boolean visible, int x, int y);
 
     public boolean isActive();
+
+    public boolean isVisible();
 }
 
 class ControlBuilder {
@@ -29,21 +31,24 @@ class ControlBuilder {
 
     static public void build(Controls c) {
         try {
+            // netreba sa zlaknut, ze je toto strasne zlozite - neskor sa to bude loadovat z xml-ka
             add("topBox", new ControlBox(c));
             add("bottomBox", new ControlBox(c));
-            add("playButton", new ControlClickButton(c, "s_run", KeyEvent.VK_R));
+            add("runButton", new ControlClickButton(c, "s_run", KeyEvent.VK_R));
             add("stopButton", new ControlClickButton(c, "p_stop", KeyEvent.VK_R));
-            getBox("bottomBox").addElement(get("playButton"));
+            getBox("bottomBox").addElement(get("runButton"));
             getBox("bottomBox").addElement(get("stopButton"));
-            ControlBox box;
+            ControlBox box, box2;
             ControlSwitchButton csb;
-            box = new ControlBox(c, get("playButton"));
+            box = new ControlBox(c, get("runButton"));
+            box.addElement(new ControlSeparator(c, "thin_dark"));
             box.addElement(new ControlClickButton(c, "s_load", null));
             box.addElement(new ControlClickButton(c, "s_settings", null));
             box.addElement(new ControlLabel(c, "program", 8));
             box.addElement(new ControlSwitchButton(c, "v_bubble", KeyEvent.VK_B));
             getBox("bottomBox").addElement(box);
             box = new ControlBox(c, get("stopButton"));
+            box.addElement(new ControlSeparator(c, "thin_dark"));
             box.addElement(new ControlClickButton(c, "p_start", KeyEvent.VK_P));
             box.addElement(new ControlClickButton(c, "p_pause", KeyEvent.VK_P));
             box.addElement(new ControlClickButton(c, "p_slow", KeyEvent.VK_LEFT));
@@ -51,7 +56,7 @@ class ControlBuilder {
             box.addElement(new ControlLabel(c, "running", 8));
             box.addElement(new ControlSwitchButton(c, "v_bubble", KeyEvent.VK_B));
             getBox("bottomBox").addElement(box);
-            box = new ControlBox(c, get("playButton"));
+            box = new ControlBox(c, get("runButton"));
             box.addElement(new ControlClickButton(c, "g_new", null));
             box.addElement(new ControlClickButton(c, "g_open", null));
             box.addElement(new ControlClickButton(c, "g_save", null));
@@ -65,6 +70,34 @@ class ControlBuilder {
             box.addElement(csb = new ControlSwitchButton(c, "gs_message", KeyEvent.VK_M));
             csb.addRadio("selectors", 1);
             getBox("topBox").addElement(box);
+            add("gtoolBox", box = new ControlBox(c, null));
+            getBox("topBox").addElement(box);
+            box.addElement(new ControlSeparator(c, "thin_dark"));
+            box.addElement(csb = new ControlSwitchButton(c, "gt_select", KeyEvent.VK_T));
+            csb.addRadio("tools", -1);
+            box = new ControlBox(c, get("runButton"));
+            box.addElement(csb = new ControlSwitchButton(c, "gt_create", KeyEvent.VK_T));
+            csb.addRadio("tools", -1);
+            box.addElement(csb = new ControlSwitchButton(c, "gt_delete", KeyEvent.VK_T));
+            csb.addRadio("tools", -1);
+            box.addElement(csb = new ControlSwitchButton(c, "gt_move", KeyEvent.VK_T));
+            csb.addRadio("tools", -1);
+            getBox("gtoolBox").addElement(box);
+            box = new ControlBox(c, get("stopButton"));
+            add("speedBox", box2 = new ControlBox(c, null));
+            box2.addElement(new ControlSeparator(c, "thin_dark"));
+            box2.addElement(csb = new ControlSwitchButton(c, "ms_stop", KeyEvent.VK_S));
+            csb.addRadio("tools", -1);
+            box2.addElement(csb = new ControlSwitchButton(c, "ms_slow", KeyEvent.VK_S));
+            csb.addRadio("tools", -1);
+            box2.addElement(csb = new ControlSwitchButton(c, "ms_normal", KeyEvent.VK_S));
+            csb.addRadio("tools", -1);
+            box2.addElement(csb = new ControlSwitchButton(c, "ms_fast", KeyEvent.VK_S));
+            csb.addRadio("tools", -1);
+            box2.addElement(csb = new ControlSwitchButton(c, "ms_solo", KeyEvent.VK_S));
+            csb.addRadio("tools", -1);
+            box.addElement(box2);
+            getBox("gtoolBox").addElement(box);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -119,6 +152,11 @@ class ControlBox implements ControlElement {
     }
 
     @Override
+    public boolean isVisible() {
+        return isActive();
+    }
+
+    @Override
     public int place(boolean visible, int x, int y) {
         visible = visible && isActive();
         for (ControlElement e : elements) {
@@ -137,7 +175,7 @@ class ControlBox implements ControlElement {
 class ControlClickButton extends JButton implements ControlElement, ActionListener, MouseListener {
     private static final long serialVersionUID = 8676998593915111855L;
     Controls controls;
-    String onClick, showName, name;
+    String name;
     Integer key;
 
     ControlClickButton(Controls controls, String name, String imageName, Integer key)
@@ -150,7 +188,7 @@ class ControlClickButton extends JButton implements ControlElement, ActionListen
         this.setPressedIcon(new ImageIcon(ImageIO.read(new File("images/gui-buttons-pressed/"
                 + "b_" + imageName + ".png"))));
         this.controls = controls;
-        this.showName = this.onClick = this.name = name;
+        this.name = name;
         this.key = key;
         this.addActionListener(this);
         this.addMouseListener(this);
@@ -161,6 +199,7 @@ class ControlClickButton extends JButton implements ControlElement, ActionListen
         this.setContentAreaFilled(false);
         this.setFocusable(false);
 
+        controls.set(name, this);
         if (key != null)
             GUI.gkl.addButton(key, this);
     }
@@ -177,7 +216,7 @@ class ControlClickButton extends JButton implements ControlElement, ActionListen
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        controls.onClick(onClick);
+        controls.onClick(name);
     }
 
     @Override
@@ -204,16 +243,18 @@ class ControlClickButton extends JButton implements ControlElement, ActionListen
 
     @Override
     public int place(boolean visible, int x, int y) {
-        visible &= controls.showMe(showName);
+        visible &= controls.showMe(name);
         setVisible(visible);
-        if (visible)
+        if (visible) {
+            controls.set(name, this);
             setLocation(x, y);
+        }
         return (visible ? x + getWidth() : x);
     }
 
     @Override
     public boolean isActive() {
-        return isVisible() && controls.showMe(showName);
+        return isVisible() && controls.showMe(name);
     }
 
     @Override
@@ -227,28 +268,28 @@ class ControlSwitchButton extends ControlClickButton {
     static private Map<String, ArrayList<ControlSwitchButton>> radioGroups = new TreeMap<String, ArrayList<ControlSwitchButton>>();
 
     String bindingToggle;
-    boolean kweak;
     private String radioName = null;
-    int radioLevel;
+    int radioLevel = 0;
+    private int radioPos = 0;
 
-    public ControlSwitchButton(Controls controls, String name, Integer key, boolean kweak)
+    public ControlSwitchButton(Controls controls, String name, String imageName, Integer key)
             throws IOException {
-        super(controls, name, key);
+        super(controls, name, imageName, key);
         this.setIcon(new ImageIcon(ImageIO.read(new File("images/gui-buttons-inactive/" + "b_"
-                + name + ".png"))));
+                + imageName + ".png"))));
         this.setRolloverIcon(new ImageIcon(ImageIO.read(new File(
-                "images/gui-buttons-inactive-hover/" + "b_" + name + ".png"))));
+                "images/gui-buttons-inactive-hover/" + "b_" + imageName + ".png"))));
         this.setPressedIcon(new ImageIcon(ImageIO.read(new File("images/gui-buttons-pressed/"
-                + "b_" + name + ".png"))));
+                + "b_" + imageName + ".png"))));
         this.setSelectedIcon(new ImageIcon(ImageIO.read(new File("images/gui-buttons-active/"
-                + "b_" + name + ".png"))));
+                + "b_" + imageName + ".png"))));
         this.setRolloverSelectedIcon(new ImageIcon(ImageIO.read(new File(
-                "images/gui-buttons-active-hover/" + "b_" + name + ".png"))));
-        this.kweak = kweak;
+                "images/gui-buttons-active-hover/" + "b_" + imageName + ".png"))));
+
     }
 
     public ControlSwitchButton(Controls controls, String name, Integer key) throws IOException {
-        this(controls, name, key, false);
+        this(controls, name, name, key);
     }
 
     public void addRadio(String name, int level) {
@@ -256,7 +297,13 @@ class ControlSwitchButton extends ControlClickButton {
         radioLevel = level;
         if (!radioGroups.containsKey(radioName))
             radioGroups.put(radioName, new ArrayList<ControlSwitchButton>());
+        radioPos = radioGroups.get(radioName).size();
         radioGroups.get(radioName).add(this);
+    }
+
+    public ControlSwitchButton getRadioPrevious() {
+        int s = radioGroups.get(radioName).size();
+        return radioGroups.get(radioName).get((radioPos + s - 1) % s);
     }
 
     @Override
@@ -312,5 +359,37 @@ class ControlLabel extends JLabel implements ControlElement {
     @Override
     public Component getComponent() {
         return this;
+    }
+}
+
+class ControlSeparator extends JLabel implements ControlElement {
+    private static final long serialVersionUID = -4919973923314221708L;
+    Controls controls;
+
+    public ControlSeparator(Controls controls, String style) throws IOException {
+        this.controls = controls;
+        this.setIcon(new ImageIcon(ImageIO
+                .read(new File("images/gui-separator/s_" + style + ".png"))));
+        this.setSize(4, Controls.gridHeight);
+        this.setVisible(false);
+        this.setBorder(BorderFactory.createEmptyBorder());
+    }
+
+    @Override
+    public Component getComponent() {
+        return this;
+    }
+
+    @Override
+    public int place(boolean visible, int x, int y) {
+        setVisible(visible);
+        if (visible)
+            setLocation(x - getWidth() / 2 + 1, y);
+        return x;
+    }
+
+    @Override
+    public boolean isActive() {
+        return isVisible();
     }
 }
