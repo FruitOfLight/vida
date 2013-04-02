@@ -52,8 +52,6 @@ public class Controls implements Drawable {
         if (name.equals("p_start")) {
             GUI.model.start();
         } else if (name.equals("s_run")) {
-            if (!GUI.model.compiled)
-                return;
             GUI.model.start();
         } else if (name.equals("p_pause")) {
             GUI.model.pause();
