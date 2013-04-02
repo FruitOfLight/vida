@@ -130,8 +130,9 @@ public class Controls implements Drawable {
     }
 
     public Tool getTool() {
-        // TODO prerobit
+        // TODO cele getTool by nemal robit controls, ale samotne tlacitka, zatial sa to vsak nemoze prerabat
 
+        // ked nie je nic selecnute, vybera sa automaticky z tychto volieb
         setAutoTarget(ToolTarget.vertex, get("gs_vertex"));
         setAutoTarget(ToolTarget.edge, get("gs_edge"));
         setAutoTarget(ToolTarget.message, get("gs_message"));
@@ -143,6 +144,7 @@ public class Controls implements Drawable {
 
         ToolType type = ToolType.any;
         ToolTarget target = ToolTarget.any;
+        int value = 0;
         if (get("gs_vertex").isActive())
             target = ToolTarget.vertex;
         if (get("gs_edge").isActive())
@@ -158,8 +160,28 @@ public class Controls implements Drawable {
             type = ToolType.delete;
         if (get("gt_move").isActive())
             type = ToolType.move;
+        if (get("ms_stop").isActive()) {
+            type = ToolType.speed;
+            value = -2;
+        }
+        if (get("ms_slow").isActive()) {
+            type = ToolType.speed;
+            value = -1;
+        }
+        if (get("ms_normal").isActive()) {
+            type = ToolType.speed;
+            value = 0;
+        }
+        if (get("ms_fast").isActive()) {
+            type = ToolType.speed;
+            value = 1;
+        }
+        if (get("ms_solo").isActive()) {
+            type = ToolType.speed;
+            value = 2;
+        }
 
-        return new Tool(type, target, 0);
+        return new Tool(type, target, value);
     }
 
     public void draw(Graphics2D g) {
@@ -216,12 +238,12 @@ class Tool {
     }
 
     public boolean compatible(ToolType type) {
-        return type == this.type || this.type == ToolType.any && autoType[type.ordinal()];
+        return type == this.type || (this.type == ToolType.any && autoType[type.ordinal()]);
     }
 
     public boolean compatible(ToolTarget target) {
-        return target == this.target || this.target == ToolTarget.any
-                && autoTarget[target.ordinal()];
+        return target == this.target
+                || (this.target == ToolTarget.any && autoTarget[target.ordinal()]);
     }
 
     public void print(PrintStream out) {

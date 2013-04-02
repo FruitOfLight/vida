@@ -16,8 +16,7 @@ public class Canvas extends JPanel {
     double zoom;
     Color repaintColor;
     //
-    static Stroke boldStroke;
-    static Stroke thinStroke;
+    static Stroke boldStroke, normalStroke, thinStroke;
 
     public Canvas(Drawable element) {
         super();
@@ -35,7 +34,8 @@ public class Canvas extends JPanel {
     protected void paintComponent(Graphics2D g) {
         super.paintComponent(g);
 
-        boldStroke = new BasicStroke((float) Math.max(3.0 / Math.sqrt(zoom), 3.0 / zoom));
+        boldStroke = new BasicStroke((float) Math.max(5.0 / Math.sqrt(zoom), 5.0 / zoom));
+        normalStroke = new BasicStroke((float) (2.0 / Math.sqrt(zoom)));
         thinStroke = new BasicStroke((float) (1.0 / Math.sqrt(zoom)));
 
         g.setStroke(new BasicStroke((float) 1.0));
@@ -62,13 +62,13 @@ public class Canvas extends JPanel {
 
     }
 
-    static void realDrawRect(Graphics g, double x, double y, double w, double h) {
+    /*static void realDrawRect(Graphics g, double x, double y, double w, double h) {
         g.drawRect((int) (x), (int) (y), (int) (x + w) - (int) (x), (int) (y + h) - (int) (y));
     }
 
     static void realFillRect(Graphics g, double x, double y, double w, double h) {
         g.fillRect((int) (x), (int) (y), (int) (x + w) - (int) (x), (int) (y + h) - (int) (y));
-    }
+    }*/
 
     public static Color contrastColor(Color color, Constrast type) {
         if (type == Constrast.invert) {

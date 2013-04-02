@@ -193,25 +193,33 @@ class Message {
         }
 
         if ((prevM != null) && (prevM.position - position < defDist)) {
-            /*if (prevM.position - position < defDist * 0.1) {
-                force -= Math.pow(2 * 0.9, 2);
-            } else {*/
             force -= Math.pow(2 * (defDist - prevM.position + position) / defDist, 2);
-            //}
         }
         if ((nextM != null) && (position - nextM.position < defDist)) {
-            /*if (position - nextM.position < defDist * 0.1) {
-                force += Math.pow(1.0 * 0.9, 2);
-            } else {*/
             force += Math.pow(1.0 * (defDist - position + nextM.position) / defDist, 2);
-            //}
         }
     }
 
     public void move(long time) {
         if (state == DeliverState.delivered)
             return;
-        double speed = GUI.model.getSendSpeed() * time * 0.001 * force / mass;
+        double turbo = 1.0;
+        switch (edge.getSpeed()) {
+        case -2:
+            turbo = 0;
+            break;
+        case -1:
+            turbo = 0.3;
+            break;
+        case 1:
+            turbo = 3.0;
+            break;
+        case 2:
+            turbo = 50.0;
+            break;
+        }
+
+        double speed = turbo * GUI.model.getSendSpeed() * time * 0.001 * force / mass;
         position += speed;
         if (position >= 1.0) {
             position = 1.0;
