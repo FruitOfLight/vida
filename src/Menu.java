@@ -8,7 +8,7 @@ public class Menu {
 
     static final String[] menuItems = { "App", "Graph", "Program", "Algorithm" };
     static final String[][] allMenuItems = { { "Configure", "Quit" }, { "New", "Open", "Save" },
-            { "Open", "Settings" }, { "None", "LE on clique" } };
+            { "Open", "Settings" }, { "None", "LE on clique", "BFS" } };
 
     static void performAction(int r, int c) {
         switch (r) {
@@ -86,6 +86,8 @@ public class Menu {
             case 1:
                 GUI.model.algorithm = new CliqueLEAlgorithm();
                 break;
+            case 2:
+                GUI.model.algorithm = new BFSAlgorithm();
             default:
                 Dialog.showError("Not implemented");
             }
