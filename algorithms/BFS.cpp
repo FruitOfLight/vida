@@ -36,7 +36,7 @@ void recieve(int port, string message) {
 }
 
 void init() {
-   int initValue = getInitValue();
+   int initValue = initvalue;
    setSValue("information","unknown");
    if(initValue == 0) return;
    setSValue("information","known");

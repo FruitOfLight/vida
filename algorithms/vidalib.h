@@ -104,11 +104,6 @@ namespace Messager {
         details::iFunc = func;
     }
 
-    // provizorna funkcia na ziskavanie pripadnej inicializacnej hodnoty
-    int getInitValue(){
-        return Property::initvalue;
-    }
-
     // posli spravu po porte 'port' s textom 'str'
     // 'str' moze obsahovat len alfanumericke znaky a medzery
     //   s vyjnimkou ze viete, co robite
