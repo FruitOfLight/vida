@@ -88,6 +88,7 @@ public class Menu {
                 break;
             case 2:
                 GUI.model.algorithm = new BFSAlgorithm();
+                break;
             default:
                 Dialog.showError("Not implemented");
             }
