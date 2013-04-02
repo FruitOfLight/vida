@@ -19,7 +19,7 @@ enum GraphType {
 }
 
 enum ModelType {
-    LE
+    LE, BC
 }
 
 public class ModelSettings {
