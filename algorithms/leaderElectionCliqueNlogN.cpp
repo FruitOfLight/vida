@@ -30,6 +30,7 @@ void recieveCapture(int port, pair<int,int> strength) {
         char up[100];
         sprintf(up,"capture-active:%d:%d:%d:%d",getIValue("level"),id,strength.first,strength.second);
         algorithmUpdate(string(up));
+        exitProgram("false");
         sendMessage(port, "{accept}");
     }
     else if(getSValue("state")=="captured") {
@@ -63,6 +64,7 @@ void recieveAccept(int port) {
         setSValue("_vertex_color","0,0,255");
         setSValue("leader","yes");
         sendInformation("I'm the leader");
+        exitProgram("true");
         return;
     }
     char buff[100];
@@ -88,6 +90,7 @@ void recieveHelp(int port, pair<int,int> strength, int port1) {
     char up[100];
     sprintf(up,"help-defeat:%d:%d:%d:%d",getIValue("level"),id,strength.first,strength.second);
     algorithmUpdate(string(up));
+    exitProgram("false");
     sprintf(buff,"{defeat} %d,%d",port1,strength.second);
     sendMessage(port,string(buff));
 }

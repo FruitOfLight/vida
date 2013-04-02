@@ -220,7 +220,9 @@ public class GUI {
         gkl = new GlobalKeyListener();
         informationBubbleList = new ArrayList<InformationBubble>();
         graph = new Graph();
-        model = new Model();
+        //FIXME len na testovanie
+        //model = new Model();
+        model = new LeaderElectionModel();
         controls = new Controls();
         graph.listener.setControls(controls);
 

@@ -133,6 +133,11 @@ namespace Messager {
         fflush(stdout);
     }
 
+    void exitProgram(string exitValue) {
+        printf("& %s\n",exitValue.c_str());
+        fflush(stdout);
+    }
+
     /*
     void sendVertexColorChange(const string &str) {
         printf("+ %s\n",str.c_str());

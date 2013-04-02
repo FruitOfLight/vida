@@ -6,4 +6,6 @@ public interface Algorithm extends Drawable {
 
     public void defaultSettings();
 
+    public void finishAlgorithm(Vertex leader);
+
 }

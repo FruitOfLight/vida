@@ -25,11 +25,14 @@ public class Program extends Thread {
     OutputStream input;
     PrintWriter in;
 
+    boolean exited;
+
     public Program(Vertex v, Model m) {
         super();
         vertex = v;
         vertex.program = this;
         running = false;
+        exited = false;
         this.id = vertex.getID();
         ports = new ArrayList<Integer>();
         for (int i = 0; i < v.edges.size(); ++i) {
@@ -63,6 +66,10 @@ public class Program extends Thread {
                 }
                 if (line.charAt(0) == '*' && GUI.model.algorithm != null) {
                     GUI.model.algorithm.recieveUpdate(vertex, line.substring(1).trim());
+                }
+                if (line.charAt(0) == '&' && !exited) {
+                    exited = true;
+                    GUI.model.processExit(line.substring(1).trim(), vertex);
                 }
             }
             out.close();
@@ -123,6 +130,7 @@ public class Program extends Thread {
     }
 
     public void receive(Message message) {
+        GUI.model.statisticMessage();
         in.println("@ " + ports.get(message.toPort) + " : " + message.rawContent);
         in.flush();
     }

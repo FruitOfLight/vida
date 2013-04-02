@@ -141,7 +141,7 @@ class Message {
         polygon.lineTo(x + vx - vy * 0.5, y + vy + vx * 0.5);
         polygon.lineTo(x, y);
         g.fill(polygon);
-        informationBubble.setTransparency(true);
+        informationBubble.setTransparency(0.8f);
         informationBubble.draw(g);
         // g.drawString(((Integer) edge.to.getID()).toString(), x, y);
     }

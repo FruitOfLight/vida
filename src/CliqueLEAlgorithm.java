@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class CliqueLEAlgorithm implements Algorithm {
 
-    public InformationBubble generalInfo, levelInfo;
+    public InformationBubble generalInfo, levelInfo, lastLevelInfo;
     public ArrayList<Integer> levelCounter;
 
     public CliqueLEAlgorithm() {
@@ -11,8 +11,17 @@ public class CliqueLEAlgorithm implements Algorithm {
     }
 
     public void defaultSettings() {
-        generalInfo = new InformationBubble(10, 10, true);
-        levelInfo = new InformationBubble(10, 200, true);
+        generalInfo = new InformationBubble(10, 10);
+        generalInfo.setLockedPosition(true);
+        generalInfo.setPositionY(PositionY.up);
+        generalInfo.setWidth(300);
+        levelInfo = new InformationBubble(10, 200);
+        levelInfo.setLockedPosition(true);
+        levelInfo.setPositionY(PositionY.up);
+        lastLevelInfo = new InformationBubble(10, 200);
+        lastLevelInfo.setLockedPosition(true);
+        lastLevelInfo.setPositionY(PositionY.up);
+        lastLevelInfo.setWidth(150);
         levelCounter = new ArrayList<Integer>();
         captureActive = false;
         captureCapture = false;
@@ -22,18 +31,41 @@ public class CliqueLEAlgorithm implements Algorithm {
         defeat = false;
     }
 
-    String[] start = { "When algorithm begins, all processes will try",
-            "to capture all other processes. Each process has own ID",
-            "and current level. Process is stronger than other, if it has bigger level",
-            "or when levels are equal, bigger ID." };
-
     public void startAlgorithm() {
         for (int i = 0; i < GUI.graph.vertices.size(); i++)
             levelCounter.add(0);
         levelCounter.set(0, GUI.graph.vertices.size());
-        for (int i = 0; i < start.length; i++)
-            generalInfo.addInformation(start[i], -2);
+        generalInfo
+                .addInformation(
+                        "When algorithm begins, all processes will try to capture all other processes. Each process has own ID and current level. Process is stronger than other, if it has bigger level or when levels are equal, bigger ID.",
+                        -2);
         GUI.model.pause();
+    }
+
+    public void finishAlgorithm(Vertex leader) {
+        generalInfo
+                .addInformation(
+                        "Leader is process with ID "
+                                + leader.getID()
+                                + ". Total number of send messages is "
+                                + GUI.model.overallMessageCount
+                                + ". Algorithm should send O(N logN) messages, where N is number of vertices."
+                                + "If we want verify effectivity of our algorithm notice this thing. On each level L,"
+                                + "the number of active processes on that level is at most N/(L+1), because"
+                                + " each vertex needs own unique set of L subordinates. And for each vertex, we"
+                                + "need only constant number of messages to get to another level, or get killed."
+                                + "This means, that total number of send message is equal (in O-notation) to sum N/(L+1) for L from 1 to"
+                                + +GUI.graph.vertices.size()
+                                + ". So thats N times harmonic number. Whats in roughly logN. So complexity is really O(N logN). "
+                                + "Press key 'R' to finish algorithm.", -1);
+        levelInfo.setTransparency(0f);
+        lastLevelInfo.addInformation(
+                "Number of process / maximal possible number of process on level:", -1);
+        for (int i = 0; i < levelCounter.size(); i++) {
+            lastLevelInfo.addInformation(
+                    i + ": " + levelCounter.get(i) + " / "
+                            + (int) Math.ceil(levelCounter.size() / (double) (i + 1)), -1);
+        }
     }
 
     boolean captureActive;
@@ -53,11 +85,9 @@ public class CliqueLEAlgorithm implements Algorithm {
             GUI.globalTimer.schedule(new Model.AuraEvent(vertex, 7), 0);
             String values[] = s.split(":");
             generalInfo.addInformation("Process with level " + values[3] + " and id " + values[4]
-                    + " is trying", -2);
-            generalInfo.addInformation("to capture active process with level " + values[1]
-                    + " and id " + values[2] + ".", -2);
-            generalInfo.addInformation(
-                    "Defender is defeated so it sends acceptance message to attacker.", -2);
+                    + " is trying to capture active process with level " + values[1] + " and id "
+                    + values[2]
+                    + ". Defender is defeated so it sends acceptance message to attacker.", -2);
             captureActive = true;
             GUI.model.pause();
         }
@@ -66,37 +96,45 @@ public class CliqueLEAlgorithm implements Algorithm {
             String values[] = s.split(":");
             generalInfo.addInformation("Process with id " + values[3]
                     + " is attacked by process with level " + values[1] + " and id " + values[2]
-                    + ".", -2);
-            generalInfo.addInformation(
-                    "But this process is already captured by another process with id " + values[4]
-                            + ".", -2);
-            generalInfo.addInformation("So it sends message to its leader for help.", -2);
+                    + ". But this process is already captured by another process with id "
+                    + values[4] + ". So it sends message to its leader for help.", -2);
             captureCapture = true;
             GUI.model.pause();
         }
         if (s.contains("help-win") && !helpWin) {
             GUI.globalTimer.schedule(new Model.AuraEvent(vertex, 7), 0);
             String values[] = s.split(":");
-            generalInfo.addInformation("Process with level " + values[1] + " and id " + values[2]
-                    + " recieve help message from its subordinate.", -2);
-            generalInfo.addInformation("Subordinate is attacked by process with level " + values[3]
-                    + " and id " + values[4] + ".", -2);
-            generalInfo.addInformation("However, process " + values[2]
-                    + " is stronger, so it sends message to subordinate, that it can ignore "
-                    + values[4] + ".", -2);
+            generalInfo
+                    .addInformation(
+                            "Process with level "
+                                    + values[1]
+                                    + " and id "
+                                    + values[2]
+                                    + " recieve help message from its subordinate. Subordinate is attacked by process with level "
+                                    + values[3]
+                                    + " and id "
+                                    + values[4]
+                                    + ". However, process "
+                                    + values[2]
+                                    + " is stronger, so it sends message to subordinate, that it can ignore "
+                                    + values[4] + ".", -2);
             helpWin = true;
             GUI.model.pause();
         }
         if (s.contains("help-defeat") && !helpDefeat) {
             GUI.globalTimer.schedule(new Model.AuraEvent(vertex, 7), 0);
             String values[] = s.split(":");
-            generalInfo.addInformation("Process with level " + values[1] + " and id " + values[2]
-                    + " recieve help message from its subordinate.", -2);
-            generalInfo.addInformation("Subordinate is attacked by process with level " + values[3]
-                    + " and id " + values[4] + ".", -2);
             generalInfo
                     .addInformation(
-                            "However, process "
+                            "Process with level "
+                                    + values[1]
+                                    + " and id "
+                                    + values[2]
+                                    + " recieve help message from its subordinate. Subordinate is attacked by process with level "
+                                    + values[3]
+                                    + " and id "
+                                    + values[4]
+                                    + ". However, process "
                                     + values[2]
                                     + " is weaker, so it is killed and it sends message to subordinate to surrender.",
                             -2);
@@ -135,5 +173,6 @@ public class CliqueLEAlgorithm implements Algorithm {
             }
         }
         levelInfo.draw(g);
+        lastLevelInfo.draw(g);
     }
 }

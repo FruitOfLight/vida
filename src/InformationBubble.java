@@ -27,39 +27,134 @@ public class InformationBubble implements Drawable {
 
     }
 
-    public double x, y;
+    private double x, y;
+    private float transparency;
+    private PositionY posY;
+    private PositionX posX;
+    private double width;
     public ArrayList<Information> informations;
-    public boolean transparency;
-    public boolean lockedPosition;
-    private int padding = 3;
+    private final int padding = 3;
+    private int fontSize;
+    private boolean lockedPosition;
 
     // @formatter:off
-    public double getX() {return x;}
-    public double getY() {return y;}
     public void setX(double x) {this.x = x;}
+    public double getX() {return x;}
     public void setY(double y) {this.y = y;}
-    public boolean getTransparency() {return transparency;}
-    public void setTransparency(boolean transparency) {this.transparency = transparency;}
+    public double getY() {return y;}
+    public void setTransparency(float transparency) {this.transparency = transparency;}
+    public float getTransparency() {return transparency;}
+    public void setWidth(double width) {this.width = width;}
+    public double getWidth() {return width;}
+    public void setFontSize(int fontSize) {this.fontSize = fontSize;}
+    public int getFontSize() {return fontSize;}
+    public void setPositionX(PositionX posX) {this.posX = posX;}
+    public void setPositionY(PositionY posY) {this.posY = posY;}
+    public PositionX getPositionX() {return posX;}
+    public PositionY getPositionY() {return posY;}
+    public void setLockedPosition(boolean lockedPosition) {this.lockedPosition = lockedPosition;}
+    public boolean getLockedPosition() {return lockedPosition;}
     // @formatter:on
 
     public InformationBubble(double x, double y) {
         this.x = x;
         this.y = y;
+        posX = PositionX.left;
+        posY = PositionY.down;
+        width = 500;
+        informations = new ArrayList<Information>();
+        fontSize = 11;
         lockedPosition = false;
-        informations = new ArrayList<Information>();
+        transparency = 1f;
+        //TODO: cele zle
         GUI.informationBubbleList.add(this);
     }
 
-    public InformationBubble(double x, double y, boolean locked) {
-        this.x = x;
-        this.y = y;
-        lockedPosition = locked;
+    public void defaultSettings() {
         informations = new ArrayList<Information>();
-        GUI.informationBubbleList.add(this);
     }
 
-    public void addInformation(String info, int expiration) {
-        informations.add(new Information(info, expiration));
+    private AlphaComposite transparentComposite(float alpha) {
+        int type = AlphaComposite.SRC_OVER;
+        return (AlphaComposite.getInstance(type, alpha));
+    }
+
+    public void addInformation(String s, int expiration) {
+        informations.add(new Information(s, expiration));
+    }
+
+    public double getBubbleWidth(Graphics2D g, ArrayList<String> inf) {
+        double w = 0;
+        for (String s : inf) {
+            w = Math.max(w, g.getFontMetrics().stringWidth(s));
+        }
+        return w;
+    }
+
+    public double getBubbleHeight(Graphics2D g, ArrayList<String> inf) {
+        return inf.size() * g.getFontMetrics().getAscent();
+    }
+
+    public double getBubbleX(double w) {
+        double x1 = x;
+        if (posX == PositionX.right)
+            x1 -= w;
+        if (lockedPosition)
+            x1 = (x1 - GUI.graph.canvas.offX) / GUI.graph.canvas.zoom;
+        return x1;
+    }
+
+    public double getBubbleY(double h) {
+        double y1 = y;
+        if (posY == PositionY.down)
+            y1 -= h;
+        if (lockedPosition)
+            y1 = (y1 - GUI.graph.canvas.offY) / GUI.graph.canvas.zoom;
+        return y1;
+    }
+
+    public ArrayList<String> parseInformations(Graphics2D g) {
+        ArrayList<String> res = new ArrayList<String>();
+        for (Information i : informations) {
+            String[] sentence = i.info.split(" ");
+            String p = "";
+            for (int j = 0; j < sentence.length; j++) {
+                if (g.getFontMetrics().stringWidth(p) >= width) {
+                    res.add(p);
+                    p = "";
+                }
+                p += " ";
+                p += sentence[j];
+            }
+            res.add(p);
+        }
+        return res;
+    }
+
+    public void draw(Graphics2D g) {
+        Composite originalComposite = g.getComposite();
+        g.setComposite(transparentComposite(transparency));
+        if (informations.size() == 0)
+            return;
+        g.setFont(new Font(Font.DIALOG, Font.PLAIN, fontSize));
+        ArrayList<String> printStrings = parseInformations(g);
+        double w = getBubbleWidth(g, printStrings);
+        double h = getBubbleHeight(g, printStrings);
+        double x1 = getBubbleX(w);
+        double y1 = getBubbleY(h);
+        g.setColor(new Color(150, 214, 250));
+        g.fillRoundRect((int) (x1 - padding), (int) (y1 - padding), (int) (w + 2 * padding),
+                (int) (h + 2 * padding), 10, 10);
+        g.setColor(new Color(0, 0, 250));
+        g.drawRoundRect((int) (x1 - padding), (int) (y1 - padding), (int) (w + 2 * padding),
+                (int) (h + 2 * padding), 10, 10);
+        g.setColor(Canvas.contrastColor(new Color(150, 214, 250), Constrast.textbw));
+        int j = 0;
+        for (String s : printStrings) {
+            j++;
+            g.drawString(s, (float) x1, (float) (y1 + j * g.getFontMetrics().getAscent() - padding));
+        }
+        g.setComposite(originalComposite);
     }
 
     public void updateExpiration() {
@@ -73,79 +168,6 @@ public class InformationBubble implements Drawable {
                 help.add(i);
         }
         informations = help;
-    }
-
-    public void defaultSettings() {
-        informations = new ArrayList<Information>();
-    }
-
-    private AlphaComposite makeComposite(float alpha) {
-        int type = AlphaComposite.SRC_OVER;
-        return (AlphaComposite.getInstance(type, alpha));
-    }
-
-    public void draw(Graphics2D g) {
-        if (lockedPosition) {
-            drawLocked(g);
-            return;
-        }
-        Composite originalComposite = g.getComposite();
-        if (transparency)
-            g.setComposite(makeComposite(0.8f));
-        if (informations.size() == 0)
-            return;
-        g.setColor(Canvas.contrastColor(new Color(255, 255, 255), Constrast.textbw));
-        g.setFont(new Font(Font.DIALOG, Font.PLAIN, 10));
-        double w = 0;
-        for (Information i : informations) {
-            w = Math.max(w, g.getFontMetrics().stringWidth(i.getInfo()));
-        }
-        double h = g.getFontMetrics().getAscent();
-        int n = informations.size();
-        g.setColor(new Color(150, 214, 250));
-        g.fillRoundRect((int) (x - padding), (int) (y - n * h - 2 * padding),
-                (int) w + 2 * padding, (int) (n * h) + 2 * padding, 10, 10);
-        g.setColor(new Color(0, 0, 250));
-        g.drawRoundRect((int) (x - padding), (int) (y - n * h - 2 * padding),
-                (int) w + 2 * padding, (int) (n * h) + 2 * padding, 10, 10);
-        g.setColor(Canvas.contrastColor(new Color(255, 255, 255), Constrast.textbw));
-        int j = 0;
-        for (Information i : informations) {
-            j++;
-            g.drawString(i.getInfo(), (float) x, (float) (y - (n - j) * h - padding));
-        }
-        g.setComposite(originalComposite);
-    }
-
-    public void drawLocked(Graphics2D g) {
-        Composite originalComposite = g.getComposite();
-        if (transparency)
-            g.setComposite(makeComposite(0.8f));
-        if (informations.size() == 0)
-            return;
-        g.setColor(Canvas.contrastColor(new Color(255, 255, 255), Constrast.textbw));
-        g.setFont(new Font(Font.DIALOG, Font.PLAIN, 11));
-        double w = 0;
-        for (Information i : informations) {
-            w = Math.max(w, g.getFontMetrics().stringWidth(i.getInfo()));
-        }
-        double h = g.getFontMetrics().getAscent();
-        int n = informations.size();
-        double x1 = (x - GUI.graph.canvas.offX) / GUI.graph.canvas.zoom, y1 = (y - GUI.graph.canvas.offY)
-                / GUI.graph.canvas.zoom;
-        g.setColor(new Color(150, 214, 250));
-        g.fillRoundRect((int) (x1 - padding), (int) (y1 - padding), (int) w + 2 * padding,
-                (int) (n * h) + 2 * padding, 10, 10);
-        g.setColor(new Color(0, 0, 250));
-        g.drawRoundRect((int) (x1 - padding), (int) (y1 - padding), (int) w + 2 * padding,
-                (int) (n * h) + 2 * padding, 10, 10);
-        g.setColor(Canvas.contrastColor(new Color(255, 255, 255), Constrast.textbw));
-        int j = 0;
-        for (Information i : informations) {
-            j++;
-            g.drawString(i.getInfo(), (float) x1, (float) (y1 + j * h - padding));
-        }
-        g.setComposite(originalComposite);
     }
 
     static class ExpirationEvent extends TimerTask {
