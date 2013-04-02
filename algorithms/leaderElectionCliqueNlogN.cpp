@@ -158,7 +158,7 @@ void recieve(int port, string message) {
     return;
 }
 
-void init(){
+void init(int initValue){
     setIValue("level",0);
     setIValue("parent",-1);
     setSValue("leader","maybe");

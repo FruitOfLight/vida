@@ -19,7 +19,7 @@ typedef long long ll;
 typedef pair<int, int> pii;
 typedef vector<int> vi;
 typedef void (MFunc)(int, string);
-typedef void (IFunc)();
+typedef void (IFunc)(int);
 
 namespace Property {
     vi ports;
@@ -177,7 +177,9 @@ void Messager::run(){
                 scanf(" : %d",&_id);
                 Property::id = _id;
             } else if (!strcmp(str,"start")){
-                iFunc();
+                int initValue;
+                scanf(" %d",&initValue);
+                iFunc(initValue);
             }
             readline();
         }

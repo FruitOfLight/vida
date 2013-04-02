@@ -116,7 +116,7 @@ public class Program extends Thread {
         // id
         // TODO skontrolovat anonymitu
         in.println("* id : " + id);
-        in.println("* start");
+        in.println("* start " + initValue);
         in.flush();
     }
 
