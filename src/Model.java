@@ -25,6 +25,7 @@ public class Model {
     int overallMessageCount;
 
     Model() {
+
         running = RunState.stopped;
         settings = new ModelSettings();
         programLoader = new JFileChooser("./algorithms/");
@@ -48,6 +49,7 @@ public class Model {
 
     public void openProgram() {
         try {
+            graph = GUI.graph;
             int value = programLoader.showOpenDialog(null);
             if (value == JFileChooser.APPROVE_OPTION) {
                 File file = programLoader.getSelectedFile();
@@ -66,6 +68,7 @@ public class Model {
 
             GUI.controls.refresh();
         } catch (Exception e) {
+            e.printStackTrace();
             Dialog.showError("Something went horribly wrong");
         }
     }

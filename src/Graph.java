@@ -134,11 +134,8 @@ public class Graph implements Drawable {
 
     public boolean applySpeedTool(MouseEvent mouse, Tool tool) {
         Object o = getObject(mouseGetX(mouse), mouseGetY(mouse), tool);
-        System.out.println("speed: " + " " + tool.value);
-        tool.print(System.out);
         if (o == null)
             return false;
-        System.out.println("speed: " + o.toString() + " ");
         if (o instanceof Vertex) {
             for (Edge edge : ((Vertex) o).edges)
                 edge.setSpeed(tool.value);
