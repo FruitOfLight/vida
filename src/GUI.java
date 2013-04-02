@@ -222,6 +222,7 @@ public class GUI {
         graph = new Graph();
         model = new Model();
         controls = new Controls();
+        graph.listener.setControls(controls);
 
         zoomWindow = new ZoomWindow();
         informationPanel = new InformationPanel();
