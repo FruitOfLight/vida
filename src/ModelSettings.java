@@ -11,11 +11,15 @@ import javax.swing.JOptionPane;
  */
 
 enum Property {
-    anonym, synchroned, graphType
+    anonym, synchroned, graphType, model
 }
 
 enum GraphType {
     any, clique, cycle, grid, wheel
+}
+
+enum ModelType {
+    LE
 }
 
 public class ModelSettings {
@@ -67,6 +71,14 @@ public class ModelSettings {
 
     public GraphType getGraphType() {
         return GraphType.values()[getProperty(Property.graphType)];
+    }
+
+    public void setModel(ModelType type) {
+        setProperty(Property.model, type.ordinal());
+    }
+
+    public ModelType getModel() {
+        return ModelType.values()[getProperty(Property.model)];
     }
 
     //// Zvysok

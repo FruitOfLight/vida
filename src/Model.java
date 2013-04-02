@@ -11,7 +11,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Model {
     private String programPath = "";
-    private String binaryPath = "./box/program";
+    protected String binaryPath = "./box/program";
     String programName = "";
 
     Graph graph;
@@ -20,6 +20,7 @@ public class Model {
     JFileChooser programLoader;
     long startingTime;
     Algorithm algorithm;
+    boolean compiled;
 
     //statistics
     int overallMessageCount;
@@ -30,12 +31,17 @@ public class Model {
         programLoader = new JFileChooser("./algorithms/");
         programLoader.setFileFilter(new FileNameExtensionFilter("Algorihms", "cpp"));
         //FIXME pridany riadok na testovanie
-        algorithm = new CliqueLEAlgorithm();
+        //algorithm = new CliqueLEAlgorithm();
+        algorithm = null;
         overallMessageCount = 0;
+        compiled = false;
     }
 
     public void statisticMessage() {
         overallMessageCount++;
+    }
+
+    public void defaultSettings() {
     }
 
     public RunState getRunState() {
@@ -57,6 +63,7 @@ public class Model {
                 programPath = file.getPath();
                 programName = programPath.substring(programPath.lastIndexOf('/') + 1,
                         programPath.lastIndexOf('.'));
+                compiled = false;
                 compile();
             }
 
@@ -84,6 +91,7 @@ public class Model {
                 }
             }
             err.close();
+            compiled = true;
             System.out.println("Compiling: done.");
 
         } catch (Exception e) {
@@ -92,14 +100,7 @@ public class Model {
         compiling = false;
     }
 
-    private void load() {
-        if (running != RunState.stopped)
-            stop();
-        graph = GUI.graph;
-        for (Vertex v : graph.vertices) {
-            v.program = new Program(v, this);
-            v.program.load(binaryPath + ".bin");
-        }
+    public void load() {
     }
 
     //Timer timer;
@@ -169,6 +170,10 @@ public class Model {
         out.println(version);
         out.println(programPath);
         out.println(programName);
+        if (algorithm == null)
+            out.println("null");
+        else
+            algorithm.print(out);
     }
 
     public void read(Scanner in) {
@@ -177,9 +182,15 @@ public class Model {
             System.err.println("Exception while loading program");
             programName = "";
             programPath = "";
+            algorithm = null;
         } else {
             programPath = in.nextLine();
             programName = in.nextLine();
+            String alg = in.nextLine();
+            if (alg.equals("null"))
+                algorithm = null;
+            else if (alg.equals("LECNlogN"))
+                algorithm = new CliqueLEAlgorithm();
         }
     }
 

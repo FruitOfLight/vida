@@ -78,7 +78,7 @@ public class Program extends Thread {
         }
     }
 
-    public void load(String path) {
+    public void load(String path, int initValue) {
         try {
             System.err.println("Loading... " + path);
             process = Runtime.getRuntime().exec(path);
@@ -88,7 +88,7 @@ public class Program extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.init();
+        this.init(initValue);
         this.start();
     }
 
@@ -100,7 +100,7 @@ public class Program extends Thread {
     }
 
     // program sa dozvie pociatocne hodnoty, ako napriklad pocet portov
-    public void init() {
+    public void init(int initValue) {
         // pocet portov a ich hodnoty
         in.print("* ports : " + ports.size());
         ArrayList<Integer> portsz = new ArrayList<Integer>();
@@ -116,7 +116,7 @@ public class Program extends Thread {
         // id
         // TODO skontrolovat anonymitu
         in.println("* id : " + id);
-        in.println("* start");
+        in.println("* start " + initValue);
         in.flush();
     }
 

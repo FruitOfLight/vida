@@ -1,4 +1,5 @@
 import java.awt.Graphics2D;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 public class CliqueLEAlgorithm implements Algorithm {
@@ -8,6 +9,10 @@ public class CliqueLEAlgorithm implements Algorithm {
 
     public CliqueLEAlgorithm() {
         this.defaultSettings();
+    }
+
+    public void print(PrintStream out) {
+        out.println("LECNlogN");
     }
 
     public void defaultSettings() {
@@ -64,7 +69,7 @@ public class CliqueLEAlgorithm implements Algorithm {
         for (int i = 0; i < levelCounter.size(); i++) {
             lastLevelInfo.addInformation(
                     i + ": " + levelCounter.get(i) + " / "
-                            + (int) Math.ceil(levelCounter.size() / (double) (i + 1)), -1);
+                            + (int) Math.floor(levelCounter.size() / (double) (i + 1)), -1);
         }
     }
 
@@ -159,6 +164,7 @@ public class CliqueLEAlgorithm implements Algorithm {
             defeat = true;
             GUI.model.pause();
         }
+        GUI.controls.refresh();
         GUI.gRepaint();
     }
 
