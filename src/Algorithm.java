@@ -1,3 +1,5 @@
+import java.io.PrintStream;
+
 public interface Algorithm extends Drawable {
 
     public void startAlgorithm();
@@ -7,5 +9,7 @@ public interface Algorithm extends Drawable {
     public void defaultSettings();
 
     public void finishAlgorithm(Vertex leader);
+
+    public void print(PrintStream out);
 
 }

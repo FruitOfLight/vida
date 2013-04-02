@@ -6,9 +6,9 @@ import javax.swing.JFileChooser;
 
 public class Menu {
 
-    static final String[] menuItems = { "App", "Graph", "Program" };
+    static final String[] menuItems = { "App", "Graph", "Program", "Algorithm" };
     static final String[][] allMenuItems = { { "Configure", "Quit" }, { "New", "Open", "Save" },
-            { "Open", "Settings" } };
+            { "Open", "Settings" }, { "None", "LE on clique" } };
 
     static void performAction(int r, int c) {
         switch (r) {
@@ -76,9 +76,22 @@ public class Menu {
                 Dialog.showError("Not implemented");
             }
             break;
+        case 3:
+            if (GUI.model.running != RunState.stopped)
+                break;
+            switch (c) {
+            case 0:
+                GUI.model.algorithm = null;
+                break;
+            case 1:
+                GUI.model.algorithm = new CliqueLEAlgorithm();
+                break;
+            default:
+                Dialog.showError("Not implemented");
+            }
+            break;
         default:
             System.out.println("Invalid entry!");
         }
     }
-
 }

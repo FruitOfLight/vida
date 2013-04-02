@@ -105,17 +105,19 @@ public class Dialog {
         private JPanel panel = new JPanel();
 
         String[] graphTypes = { "Any", "Clique", "Cycle", "Grid", "Wheel" };
+        String[] modelTypes = { "Leader Election" };
 
-        private JComboBox<String> chooseGraphType;
+        private JComboBox<String> chooseGraphType, chooseModelType;
         private JComponent[] setters = new JComponent[Property.values().length];
-        private String[] captions = { "Anonym", "Synchroned", "Graph type" };
+        private String[] captions = { "Anonym", "Synchroned", "Graph type", "Model type" };
 
         public DialogProgramSettings(ModelSettings settings) {
-            panel.setLayout(new GridLayout(3, 2, 5, 5));
+            panel.setLayout(new GridLayout(4, 2, 5, 5));
             // TODO zautomatizovat
             setters[0] = new JCheckBox("", settings.isProperty(Property.anonym));
             setters[1] = new JCheckBox("", settings.isProperty(Property.synchroned));
             setters[2] = chooseGraphType = new JComboBox<String>(graphTypes);
+            setters[3] = chooseModelType = new JComboBox<String>(modelTypes);
 
             for (int i = 0; i < setters.length; ++i) {
                 panel.add(new JLabel(captions[i]));
@@ -138,6 +140,7 @@ public class Dialog {
             settings.setProperty(Property.anonym, ((JCheckBox) setters[0]).isSelected());
             settings.setProperty(Property.synchroned, ((JCheckBox) setters[1]).isSelected());
             settings.setProperty(Property.graphType, chooseGraphType.getSelectedIndex());
+            settings.setProperty(Property.model, chooseModelType.getSelectedIndex());
         }
 
         public JComponent getPanel() {

@@ -10,6 +10,24 @@ public class LeaderElectionModel extends Model {
     }
 
     @Override
+    public void defaultSettings() {
+        leader = null;
+        deadProcessCount = 0;
+    }
+
+    @Override
+    public void load() {
+        this.defaultSettings();
+        if (running != RunState.stopped)
+            stop();
+        graph = GUI.graph;
+        for (Vertex v : graph.vertices) {
+            v.program = new Program(v, this);
+            v.program.load(binaryPath + ".bin", 1);
+        }
+    }
+
+    @Override
     void processExit(String exitValue, Vertex vertex) {
         if (exitValue.equals("false"))
             deadProcessCount++;
