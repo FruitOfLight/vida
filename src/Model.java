@@ -20,7 +20,6 @@ public class Model {
     JFileChooser programLoader;
     long startingTime;
     Algorithm algorithm;
-    boolean compiled;
 
     //statistics
     int overallMessageCount;
@@ -34,7 +33,6 @@ public class Model {
         //algorithm = new CliqueLEAlgorithm();
         algorithm = null;
         overallMessageCount = 0;
-        compiled = false;
     }
 
     public void statisticMessage() {
@@ -63,7 +61,6 @@ public class Model {
                 programPath = file.getPath();
                 programName = programPath.substring(programPath.lastIndexOf('/') + 1,
                         programPath.lastIndexOf('.'));
-                compiled = false;
                 compile();
             }
 
@@ -92,7 +89,6 @@ public class Model {
                 }
             }
             err.close();
-            compiled = true;
             System.out.println("Compiling: done.");
 
         } catch (Exception e) {

@@ -60,10 +60,16 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
                 if (graph.deleteWithMouse(mouse))
                     return;
             }
-            if (GUI.model.running == RunState.running) {
-                GUI.controls.onClick("p_pause");
-            } else if (GUI.model.running == RunState.paused) {
-                GUI.controls.onClick("p_start");
+            if (tool.compatible(ToolType.speed)) {
+                if (graph.applySpeedTool(mouse, tool))
+                    return;
+            }
+            if (tool.target == ToolTarget.any) {
+                if (GUI.model.running == RunState.running) {
+                    GUI.controls.onClick("p_pause");
+                } else if (GUI.model.running == RunState.paused) {
+                    GUI.controls.onClick("p_start");
+                }
             }
         } finally {
             GUI.gRepaint();

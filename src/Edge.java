@@ -8,6 +8,7 @@ public class Edge {
     Vertex from, to;
     Edge oppositeEdge; // hrana z to do from
     boolean selected, removed;
+    private int speed;
     MessageQueue queue;
 
     static void connectOpposite(Edge e1, Edge e2) {
@@ -21,6 +22,7 @@ public class Edge {
         this.to = to;
         removed = false;
         selected = false;
+        speed = 0; // -2 .. 2
         from.edges.add(this);
     }
 
@@ -35,17 +37,18 @@ public class Edge {
     }
 
     public void draw(Graphics2D g) {
-        g.setColor(new Color(0, 0, 0));
+        g.setColor(new Color((speed >= 0) ? 0 : (speed == -1) ? 160 : 240, (speed <= 0) ? 0
+                : (speed == 1) ? 120 : 160, 0));
         Line2D line = new Line2D.Double(from.getX(), from.getY(), to.getX(), to.getY());
         if (selected)
             g.setStroke(Canvas.boldStroke);
         g.draw(line);
-        g.setStroke(Canvas.thinStroke);
+        g.setStroke(Canvas.normalStroke);
     }
 
     public boolean isNear(double x, double y, double zoom) {
         double distance = dist(x, y);
-        if (distance > 10.0 / zoom)
+        if (distance > 20.0 / zoom)
             return false;
         double d = (from.getX() - to.getX()) * (from.getX() - to.getX())
                 + (from.getY() - to.getY()) * (from.getY() - to.getY());
@@ -79,6 +82,16 @@ public class Edge {
         removed = true;
         from.removeEdge(this);
         oppositeEdge.removeFromVertex();
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = Math.max(-2, Math.min(2, speed));
+        if (oppositeEdge.speed != this.speed)
+            oppositeEdge.speed = this.speed;
+    }
+
+    public int getSpeed() {
+        return speed;
     }
 
     @Override

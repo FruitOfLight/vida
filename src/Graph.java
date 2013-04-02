@@ -78,6 +78,7 @@ public class Graph implements Drawable {
         for (Edge edge : edges) {
             edge.draw(g);
         }
+        g.setStroke(Canvas.thinStroke);
         listener.draw(g);
         for (Vertex vertex : vertices) {
             vertex.draw(g);
@@ -126,6 +127,26 @@ public class Graph implements Drawable {
             return true;
         } else if (o instanceof Edge) {
             removeEdge((Edge) o);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean applySpeedTool(MouseEvent mouse, Tool tool) {
+        Object o = getObject(mouseGetX(mouse), mouseGetY(mouse), tool);
+        System.out.println("speed: " + " " + tool.value);
+        tool.print(System.out);
+        if (o == null)
+            return false;
+        System.out.println("speed: " + o.toString() + " ");
+        if (o instanceof Vertex) {
+            for (Edge edge : ((Vertex) o).edges)
+                edge.setSpeed(tool.value);
+            return true;
+        } else if (o instanceof Edge) {
+            ((Edge) o).setSpeed(tool.value);
+            return true;
+        } else if (o instanceof Message) {
             return true;
         }
         return false;
@@ -232,22 +253,17 @@ public class Graph implements Drawable {
     }
 
     Object getObject(double x, double y, Tool tool) {
-        if (tool.target == ToolTarget.vertex) {
-            return getVertex(x, y);
-        }
-        if (tool.target == ToolTarget.edge) {
-            return getEdge(x, y);
-        }
-        if (tool.target == ToolTarget.message) {
-            return getMessage(x, y);
-        }
-        Object o = getMessage(x, y);
-        if (o != null)
+        Object o = null;
+        if (tool.compatible(ToolTarget.message) && (o = getMessage(x, y)) != null) {
             return o;
-        o = getVertex(x, y);
-        if (o != null)
+        }
+        if (tool.compatible(ToolTarget.vertex) && (o = getVertex(x, y)) != null) {
             return o;
-        return getEdge(x, y);
+        }
+        if (tool.compatible(ToolTarget.edge) && (o = getEdge(x, y)) != null) {
+            return o;
+        }
+        return null;
     }
 
     Vertex getVertex(double x, double y) {

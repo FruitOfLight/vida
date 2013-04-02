@@ -19,11 +19,12 @@ typedef long long ll;
 typedef pair<int, int> pii;
 typedef vector<int> vi;
 typedef void (MFunc)(int, string);
-typedef void (IFunc)(int);
+typedef void (IFunc)();
 
 namespace Property {
     vi ports;
     int id;
+    int initvalue = 0;
 }
 
 namespace WatchVariables {
@@ -103,6 +104,11 @@ namespace Messager {
         details::iFunc = func;
     }
 
+    // provizorna funkcia na ziskavanie pripadnej inicializacnej hodnoty
+    int getInitValue(){
+        return Property::initvalue;
+    }
+
     // posli spravu po porte 'port' s textom 'str'
     // 'str' moze obsahovat len alfanumericke znaky a medzery
     //   s vyjnimkou ze viete, co robite
@@ -176,10 +182,12 @@ void Messager::run(){
                 int _id;
                 scanf(" : %d",&_id);
                 Property::id = _id;
+            } else if(!strcmp(str,"initvalue")) {
+                int _initvalue;
+                scanf(" : %d",&_initvalue);
+                Property::initvalue = _initvalue;
             } else if (!strcmp(str,"start")){
-                int initValue;
-                scanf(" %d",&initValue);
-                iFunc(initValue);
+                iFunc();
             }
             readline();
         }
