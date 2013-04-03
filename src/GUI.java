@@ -176,6 +176,19 @@ public class GUI {
             GUI.layeredPane.repaint();
     }
 
+    public static void acceptSettings(ModelSettings settings) {
+        graph.acceptSettings(settings);
+        setModel(settings.getModel());
+    }
+
+    public static void setModel(ModelType modelTyp) {
+        if (modelTyp == ModelType.LE)
+            model = new LeaderElectionModel();
+        else if (modelTyp == ModelType.BC)
+            model = new BroadcastModel();
+        controls.setModel(model);
+    }
+
     public static void saveApp() {
         try {
             File file = new File("backup/graf.in");

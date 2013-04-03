@@ -15,6 +15,10 @@ public class Controls implements Drawable {
     Canvas canvas;
     Model model;
 
+    public void setModel(Model model) {
+        this.model = model;
+    }
+
     static final int gridWidth = 30;
     static final int gridSpace = 10;
     static final int gridHeight = 30;

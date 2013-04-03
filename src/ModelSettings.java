@@ -88,7 +88,8 @@ public class ModelSettings {
                 "Program settings", JOptionPane.OK_CANCEL_OPTION);
         if (ok == JOptionPane.OK_OPTION) {
             newProgramSettings.apply(this);
-            GUI.graph.acceptSettings(this);
+            GUI.acceptSettings(this);
+            //GUI.graph.acceptSettings(this);
         }
     }
 
