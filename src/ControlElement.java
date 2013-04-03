@@ -45,7 +45,6 @@ class ControlBuilder {
             box.addElement(new ControlClickButton(c, "s_load", null));
             box.addElement(new ControlClickButton(c, "s_settings", null));
             box.addElement(new ControlLabel(c, "program", 8));
-            box.addElement(new ControlSwitchButton(c, "v_bubble", KeyEvent.VK_B));
             getBox("bottomBox").addElement(box);
             box = new ControlBox(c, get("stopButton"));
             box.addElement(new ControlSeparator(c, "thin_dark"));
@@ -54,7 +53,11 @@ class ControlBuilder {
             box.addElement(new ControlClickButton(c, "p_slow", KeyEvent.VK_LEFT));
             box.addElement(new ControlClickButton(c, "p_fast", KeyEvent.VK_RIGHT));
             box.addElement(new ControlLabel(c, "running", 8));
-            box.addElement(new ControlSwitchButton(c, "v_bubble", KeyEvent.VK_B));
+            box.addElement(csb = new ControlSwitchButton(c, "v_bubble-messages", KeyEvent.VK_1));
+            box.addElement(csb = new ControlSwitchButton(c, "v_bubble-all-vertices", KeyEvent.VK_2));
+            csb.addRadio("bubble", 1);
+            box.addElement(csb = new ControlSwitchButton(c, "v_bubble-important", KeyEvent.VK_3));
+            csb.addRadio("bubble", 2);
             getBox("bottomBox").addElement(box);
             box = new ControlBox(c, get("runButton"));
             box.addElement(new ControlClickButton(c, "g_new", null));
