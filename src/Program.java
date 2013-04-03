@@ -122,8 +122,6 @@ public class Program extends Thread {
     }
 
     public void send(int port, String content) {
-        // System.err.println("send " + id + " " + port + " " + content);
-
         // svoj port zmenim na port vrchola
         // TODO spravit efektivnejsie nez cez indexOf
         port = ports.indexOf(port);

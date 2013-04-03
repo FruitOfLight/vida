@@ -44,13 +44,6 @@ public class GUI {
     static Timer globalTimer;
     static ArrayList<InformationBubble> informationBubbleList;
 
-    /*static void addElement(Container to, Component what, int x, int y, int w, int h) {
-        what.setLocation(x, y);
-        what.setSize(w, h);
-        to.add(what);
-
-    }*/
-
     static class Window implements Runnable {
         @Override
         public void run() {
@@ -140,11 +133,6 @@ public class GUI {
     }
 
     public static void refreshLayout() {
-        /*int dw = frame.getWidth() - frame.getContentPane().getWidth();
-        int dh = frame.getHeight() - frame.getContentPane().getHeight();
-        System.out.println("frame " + dw + " " + dh);
-        //frame.setMinimumSize(new Dimension(CONST.minWindowWidth + dw, CONST.minWindowHeight + dh));
-         */
         int gw = frame.getContentPane().getWidth() - CONST.popupwidth;
         int gh = frame.getContentPane().getHeight() - CONST.menuHeight - CONST.controlsHeight;
         System.out.println("refreshLayout " + gw + " " + gh);
@@ -171,7 +159,6 @@ public class GUI {
             GUI.controls.canvas.repaint();
         if (graph != null)
             GUI.graph.canvas.repaint();
-        //GUI.informationPanel.scrollPanel.repaint();
         if (layeredPane != null)
             GUI.layeredPane.repaint();
     }
@@ -234,8 +221,7 @@ public class GUI {
         informationBubbleList = new ArrayList<InformationBubble>();
         graph = new Graph();
         //FIXME len na testovanie
-        //model = new Model();
-        model = new BroadcastModel();
+        model = new LeaderElectionModel();
         controls = new Controls();
         graph.listener.setControls(controls);
 

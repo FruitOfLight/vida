@@ -48,11 +48,7 @@ public class Canvas extends JPanel {
         // TODO bug report, pri starte je canvas nejak divne posunuty netusim preco
         // TODO bug report, ked sa odzmaze vrchol a spusti sa to, tak si to mysli, ze tam vrchol stale je
 
-        /*System.out.println("off " + element.toString() + " " + offX + " " + offY + " "
-                + getLocation().y);*/
-
         if (element != null) {
-            //g.setTransform(new AffineTransform(zoom, 0, 0, zoom, offX, offY));
             AffineTransform oldTransform = g.getTransform();
             g.translate(offX, offY);
             g.scale(zoom, zoom);
@@ -61,14 +57,6 @@ public class Canvas extends JPanel {
         }
 
     }
-
-    /*static void realDrawRect(Graphics g, double x, double y, double w, double h) {
-        g.drawRect((int) (x), (int) (y), (int) (x + w) - (int) (x), (int) (y + h) - (int) (y));
-    }
-
-    static void realFillRect(Graphics g, double x, double y, double w, double h) {
-        g.fillRect((int) (x), (int) (y), (int) (x + w) - (int) (x), (int) (y + h) - (int) (y));
-    }*/
 
     public static Color contrastColor(Color color, Constrast type) {
         if (type == Constrast.invert) {

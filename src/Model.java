@@ -30,8 +30,6 @@ public class Model {
         settings = new ModelSettings();
         programLoader = new JFileChooser("./algorithms/");
         programLoader.setFileFilter(new FileNameExtensionFilter("Algorihms", "cpp"));
-        //FIXME pridany riadok na testovanie
-        //algorithm = new CliqueLEAlgorithm();
         algorithm = null;
         overallMessageCount = 0;
     }
@@ -104,7 +102,6 @@ public class Model {
     public void load() {
     }
 
-    //Timer timer;
     int timerid = 0;
 
     void start() {
@@ -159,10 +156,6 @@ public class Model {
         GUI.model.running = RunState.paused;
         GUI.globalTimer.schedule(new AuraEvent(vertex, 7), 0);
         GUI.model.pause();
-        /*GUI.graph.pauseTime = System.currentTimeMillis();
-        GUI.graph.waitTime = wait;
-        GUI.model.running = RunState.paused;
-        GUI.model.pause();*/
     }
 
     private static final String version = "Version 1.00";
@@ -266,8 +259,6 @@ public class Model {
             GUI.gRepaint();
             if (count == 0) {
                 vertex.setAuraColor(new Color(255, 255, 255, 0));
-                //GUI.model.running = RunState.running;
-                //GUI.model.start();
             } else
                 GUI.globalTimer.schedule(new AuraEvent(vertex, count - 1), 200);
         }
