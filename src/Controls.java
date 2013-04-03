@@ -15,6 +15,10 @@ public class Controls implements Drawable {
     Canvas canvas;
     Model model;
 
+    public void setModel(Model model) {
+        this.model = model;
+    }
+
     static final int gridWidth = 30;
     static final int gridSpace = 10;
     static final int gridHeight = 30;
@@ -201,7 +205,6 @@ public class Controls implements Drawable {
         hintLabel.setLocation(Math.max(2, c.getX() + (c.getWidth() - hintLabel.getWidth()) / 2),
                 Controls.gridHeight - 2);
         hintLabel.setVisible(true);
-        //System.out.println("label " + hintLabel.getX() + " " + hintLabel.getY());
     }
 
     public void hintOff(Component c) {

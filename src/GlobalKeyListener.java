@@ -19,7 +19,6 @@ public class GlobalKeyListener implements KeyEventDispatcher {
 
     public boolean dispatchKeyEvent(KeyEvent e) {
         if (e.getID() == KeyEvent.KEY_PRESSED) {
-            //System.out.println("pressed " + e.getKeyCode());
             pressed.add(e.getKeyCode());
             MouseListener mlis;
 
@@ -51,18 +50,7 @@ public class GlobalKeyListener implements KeyEventDispatcher {
 
         }
         if (e.getID() == KeyEvent.KEY_RELEASED) {
-            //System.out.println("released " + e.getKeyCode());
             pressed.remove(e.getKeyCode());
-            /*if (buttons.containsKey(e.getKeyCode())) {
-                for (JButton button : buttons.get(e.getKeyCode())) {
-                    if (button != null && button.isVisible()
-                            && (button instanceof ControlSwitchButton)
-                            && ((ControlSwitchButton) button).kweak) {
-                        button.doClick();
-                        break;
-                    }
-                }
-            }*/
         }
         return false;
     }

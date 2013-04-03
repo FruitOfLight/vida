@@ -37,7 +37,6 @@ class Message {
             if (to != -1)
                 informationBubble.addInformation(content.substring(from, to), -1);
         }
-        //informationBubble.addInformation(rawContent, -1);
     }
 
     void processContent() {
@@ -143,7 +142,6 @@ class Message {
         g.fill(polygon);
         informationBubble.setTransparency(0.8f);
         informationBubble.draw(g);
-        // g.drawString(((Integer) edge.to.getID()).toString(), x, y);
     }
 
     double side(double x, double y, double x1, double y1, double x2, double y2) {
@@ -189,7 +187,6 @@ class Message {
             double y2 = (edge.to.getY() - edge.from.getY());
             double prod = (x1 * x2 + y1 * y2) / Math.sqrt(x2 * x2 + y2 * y2);
             force = Math.min(100.0, Math.max(prod / 10, -100.0)) * factor;
-            //System.out.println("force " + force + " " + position);
         }
 
         if ((prevM != null) && (prevM.position - position < defDist)) {
@@ -253,16 +250,4 @@ class Message {
         }
     }
 
-    /*public void edgeStep(long time) {
-        if (state == DeliverState.inbox)
-            return;
-        position += GUI.model.getSendSpeed() * eSpeed * time * 0.001;
-        if (position >= 1.0) {
-            position = 1.0;
-            state = DeliverState.inbox;
-        }
-        if (position <= 0.0) {
-            position = 0.0;
-        }
-    }*/
 }

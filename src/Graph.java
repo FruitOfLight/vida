@@ -41,7 +41,6 @@ public class Graph implements Drawable {
         this.canvas.addMouseListener(listener);
         this.canvas.addMouseMotionListener(listener);
         this.canvas.addMouseWheelListener(listener);
-        // this.canvas.setFocusable(true);
     }
 
     static long ticks, totalTime, longest;
@@ -389,7 +388,6 @@ public class Graph implements Drawable {
                 JOptionPane.OK_CANCEL_OPTION);
         if (ok == JOptionPane.OK_OPTION) {
             createNew(newGraphDialog);
-            // { "Empty", "Clique", "Circle", "Grid", "Wheel", "Random" };
         }
     }
 

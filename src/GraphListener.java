@@ -174,19 +174,6 @@ class GraphListener implements MouseListener, MouseMotionListener, MouseWheelLis
                 selectedMessage.selected = 5;
             }
         }
-        //vrcholy
-        //TODO
-        /*for (Vertex vertex : graph.vertices) {
-            if (vertex.isNearPoint(mouseGetX(mouse), mouseGetY(mouse), graph.canvas.zoom)) {
-                if (vertex.informationBubble.getTransparency())
-                    continue;
-                vertex.informationBubble.setTransparency(true);
-            } else {
-                if (!vertex.informationBubble.getTransparency())
-                    continue;
-                vertex.informationBubble.setTransparency(false);
-            }
-        }*/
         GUI.gRepaint();
     }
 

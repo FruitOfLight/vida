@@ -93,7 +93,7 @@ public class Vertex {
             watchVariables.remove(name);
             watchVariables.put(name, value);
         }
-        GUI.gRepaint();//zoomWindow.repaint();
+        GUI.gRepaint();
     }
 
     public void draw(Graphics2D g) {
