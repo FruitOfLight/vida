@@ -30,7 +30,7 @@ public class Controls implements Drawable {
         hintLabel.setSize(100, 15);
         panel.add(hintLabel);
 
-        canvas.setSize(300, CONST.controlsHeight);
+        canvas.setSize(150, CONST.controlsHeight);
         panel.add(canvas);
         ControlBuilder.build(this);
 
@@ -187,7 +187,7 @@ public class Controls implements Drawable {
     public void draw(Graphics2D g) {
         g.setColor(new Color(0, 0, 0));
         g.drawString("fps: " + Model.afps + ":" + Model.sfps + ":" + (int) Model.fps + " mc:"
-                + MessageQueue.messageCount, 150, 20);
+                + MessageQueue.messageCount, 10, 20);
     }
 
     Component hintElement;

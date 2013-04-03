@@ -5,15 +5,15 @@ import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 
 class Message {
-    static double getRandomMessageMass() {
-        return GUI.random.nextDouble() * 9 + 1;
+    static double getRandomMessageFactor() {
+        return GUI.random.nextDouble() * 0.45 + 0.05;
     }
 
     int fromPort;
     int toPort;
     Edge edge;
     String rawContent;
-    double position, mass, force, defDist;
+    double position, factor, force, defDist;
     Message prevM, nextM;
     int selected;
     InformationBubble informationBubble;
@@ -27,7 +27,7 @@ class Message {
         this.fromPort = port;
         this.rawContent = content;
         gColor = Color.red;
-        mass = getRandomMessageMass();
+        factor = getRandomMessageFactor();
         processContent();
         informationBubble = new InformationBubble(0.0, 0.0);
         int from = 0, to;
@@ -188,7 +188,7 @@ class Message {
             double x2 = (edge.to.getX() - edge.from.getX());
             double y2 = (edge.to.getY() - edge.from.getY());
             double prod = (x1 * x2 + y1 * y2) / Math.sqrt(x2 * x2 + y2 * y2);
-            force = Math.min(100.0, Math.max(prod / 10, -100.0)) * mass;
+            force = Math.min(100.0, Math.max(prod / 10, -100.0)) * factor;
             //System.out.println("force " + force + " " + position);
         }
 
@@ -219,7 +219,7 @@ class Message {
             break;
         }
 
-        double speed = turbo * GUI.model.getSendSpeed() * time * 0.001 * force / mass;
+        double speed = turbo * GUI.model.getSendSpeed() * time * 0.001 * force * factor;
         position += speed;
         if (position >= 1.0) {
             position = 1.0;
@@ -231,6 +231,28 @@ class Message {
             position = 0.0;
         }
     }
+
+    void setSpeed(int speed) {
+        switch (speed) {
+        case -2:
+            factor = 0;
+            break;
+        case -1:
+            factor = 0.5;
+            break;
+        case 0:
+            factor = 1.2;
+            break;
+        case 1:
+            factor = 2.5;
+            break;
+        case 2:
+            factor = 5.0;
+            break;
+
+        }
+    }
+
     /*public void edgeStep(long time) {
         if (state == DeliverState.inbox)
             return;
