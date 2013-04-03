@@ -84,6 +84,8 @@ class ControlBuilder {
             csb.addRadio("tools", -1);
             getBox("gtoolBox").addElement(box);
             box = new ControlBox(c, get("stopButton"));
+            box.addElement(csb = new ControlSwitchButton(c, "gt_move", KeyEvent.VK_T));
+            csb.addRadio("tools", -1);
             add("speedBox", box2 = new ControlBox(c, null));
             box2.addElement(new ControlSeparator(c, "thin_dark"));
             box2.addElement(csb = new ControlSwitchButton(c, "ms_stop", KeyEvent.VK_S));
@@ -295,10 +297,13 @@ class ControlSwitchButton extends ControlClickButton {
     public void addRadio(String name, int level) {
         radioName = name;
         radioLevel = level;
+        if (radioLevel == -1)
+            GUI.gkl.addBid(key);
         if (!radioGroups.containsKey(radioName))
             radioGroups.put(radioName, new ArrayList<ControlSwitchButton>());
         radioPos = radioGroups.get(radioName).size();
         radioGroups.get(radioName).add(this);
+
     }
 
     public ControlSwitchButton getRadioPrevious() {
