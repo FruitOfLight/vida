@@ -51,7 +51,8 @@ public class Program extends Thread {
             while ((line = out.readLine()) != null) {
                 if (line.charAt(0) == '@') {
                     String[] parts = line.substring(1).split(":", 2);
-                    send(Integer.parseInt(parts[0].trim()), parts[1].trim());
+                    if (GUI.model.canSendMessage(vertex, Integer.parseInt(parts[0].trim())))
+                        send(Integer.parseInt(parts[0].trim()), parts[1].trim());
                 }
                 if (line.charAt(0) == '#') {
                     int p = 1;
