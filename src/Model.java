@@ -208,6 +208,10 @@ public class Model {
         return result;
     }
 
+    boolean canSendMessage(Vertex vertex, int port) {
+        return true;
+    }
+
     static class StepEvent extends TimerTask {
         static long time = 0;
         Model model;
