@@ -137,8 +137,6 @@ public class Model {
         graph.setDefaultValues();
         MessageQueue.messageCount = 0;
         GUI.informationPanel.erase();
-        for (InformationBubble i : GUI.informationBubbleList)
-            i.defaultSettings();
         GUI.gRepaint();
     }
 

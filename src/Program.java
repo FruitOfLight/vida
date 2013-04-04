@@ -54,8 +54,11 @@ public class Program extends Thread {
                     send(Integer.parseInt(parts[0].trim()), parts[1].trim());
                 }
                 if (line.charAt(0) == '#') {
+                    int p = 1;
+                    while (line.charAt(p) == '#')
+                        p++;
                     GUI.informationPanel.printInformation(vertex, line.substring(1).trim());
-                    vertex.informationBubble.addInformation(line.substring(1).trim(), 20);
+                    vertex.shout(line.substring(1).trim(), p);
                 }
                 if (line.charAt(0) == '$') {
                     String parts[] = line.substring(1).split(":", 2);

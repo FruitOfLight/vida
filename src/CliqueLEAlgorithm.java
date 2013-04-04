@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class CliqueLEAlgorithm implements Algorithm {
 
-    public InformationBubble generalInfo, levelInfo, lastLevelInfo;
+    public Bubble generalInfo, levelInfo, lastLevelInfo;
     public ArrayList<Integer> levelCounter;
 
     public CliqueLEAlgorithm() {
@@ -16,17 +16,17 @@ public class CliqueLEAlgorithm implements Algorithm {
     }
 
     public void defaultSettings() {
-        generalInfo = new InformationBubble(10, 10);
+        generalInfo = new Bubble(10, 10);
         generalInfo.setLockedPosition(true);
-        generalInfo.setPositionY(PositionY.up);
-        generalInfo.setWidth(300);
-        levelInfo = new InformationBubble(10, 200);
+        generalInfo.setMaxWidth(300);
+        generalInfo.position = BubblePosition.SE;
+        levelInfo = new Bubble(10, 200);
         levelInfo.setLockedPosition(true);
-        levelInfo.setPositionY(PositionY.up);
-        lastLevelInfo = new InformationBubble(10, 200);
+        levelInfo.position = BubblePosition.SE;
+        lastLevelInfo = new Bubble(10, 200);
         lastLevelInfo.setLockedPosition(true);
-        lastLevelInfo.setPositionY(PositionY.up);
-        lastLevelInfo.setWidth(150);
+        lastLevelInfo.position = BubblePosition.SE;
+        lastLevelInfo.setMaxWidth(150);
         levelCounter = new ArrayList<Integer>();
         captureActive = false;
         captureCapture = false;
@@ -63,7 +63,7 @@ public class CliqueLEAlgorithm implements Algorithm {
                                 + +GUI.graph.vertices.size()
                                 + ". So thats N times harmonic number. Whats in roughly logN. So complexity is really O(N logN). "
                                 + "Press key 'R' to finish algorithm.", -1);
-        levelInfo.setTransparency(0f);
+        levelInfo.transparency = 0f;
         lastLevelInfo.addInformation(
                 "Number of process / maximal possible number of process on level:", -1);
         for (int i = 0; i < levelCounter.size(); i++) {
@@ -171,7 +171,7 @@ public class CliqueLEAlgorithm implements Algorithm {
     public void draw(Graphics2D g) {
         generalInfo.draw(g);
         if (GUI.model.running != RunState.stopped) {
-            levelInfo.informations = new ArrayList<InformationBubble.Information>();
+            levelInfo.defaultSettings();
             levelInfo.addInformation("Number of process on", -1);
             for (int i = 0; i < GUI.graph.vertices.size(); i++) {
                 levelInfo.addInformation("level " + ((Integer) i).toString() + ": "

@@ -1,4 +1,4 @@
-import java.awt.AlphaComposite;
+/*import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Font;
@@ -8,23 +8,14 @@ import java.util.TimerTask;
 
 public class InformationBubble implements Drawable {
 
-    class Information {
-
-        int expiration;
+    static class Information {
+        int endTime;
         String info;
 
-        // @formatter:off
-        public int getExpiration() {return expiration;}
-        public void setExpiration(int expiration) {this.expiration = expiration;}
-        public String getInfo() {return info;}
-        public void setInfo(String info) {this.info = info;}
-        // @formatter:on
-
-        public Information(String info, int expiration) {
-            this.info = info;
-            this.expiration = expiration;
+        Information(String s, int e) {
+            info = s;
+            endTime = e;
         }
-
     }
 
     private double x, y;
@@ -185,4 +176,4 @@ public class InformationBubble implements Drawable {
         }
     }
 
-}
+}*/

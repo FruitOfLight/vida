@@ -22,11 +22,13 @@ public class Vertex {
     public int getID() { return ID; }
     public void setID(int ID) { this.ID = ID; }
     public double getX() { return x; }
-    public void setX(double x) {this.x = x;}
     public double getY() { return y; }
-    public void setY(double y) {this.y = y;}
     public double getRadius() { return radius; }
-    public void move(double x, double y) { this.x = x; this.y = y; }
+    public void move(double x, double y) { 
+        this.x = x; 
+        this.y = y;
+        bubble.move(this.x, this.y-this.radius);
+    }
     public Color getColor() { return color; }
     public void setColor(Color color) { this.color = color;}
     public Color getAuraColor() { return auraColor; }
@@ -34,13 +36,13 @@ public class Vertex {
     public void setRadius(double radius) {
         this.radius = radius;
         GUI.graph.pushAway(this);
-        informationBubble.setY(this.y-this.radius);
+        bubble.move(this.x, this.y-this.radius);
     }
     // @formatter:on
 
     ArrayList<Edge> edges;
     Program program;
-    InformationBubble informationBubble;
+    Bubble bubble;
 
     public Vertex(double x, double y) {
         this(x, y, 0);
@@ -54,14 +56,14 @@ public class Vertex {
         radius = CONST.vertexSize;
         watchVariables = new HashMap<String, String>();
         color = new Color(0, 255, 0);
-        informationBubble = new InformationBubble(this.x, this.y - this.radius);
+        bubble = new Bubble(this.x, this.y - this.radius);
         auraColor = new Color(255, 255, 255, 0);
     }
 
     public void defaultSettings() {
         color = new Color(0, 255, 0);
         radius = CONST.vertexSize;
-        informationBubble.defaultSettings();
+        bubble.defaultSettings();
     }
 
     void send(Message message) {
@@ -74,6 +76,11 @@ public class Vertex {
         if (message.selected != 0) {
             message.selected = 0;
         }
+    }
+
+    void shout(String s, int strength) {
+        long duration = strength * 20;
+        bubble.addInformation(s, BubbleSet.time + duration);
     }
 
     public Map<String, String> watchVariables;

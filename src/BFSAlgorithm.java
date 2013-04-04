@@ -3,17 +3,17 @@ import java.io.PrintStream;
 
 public class BFSAlgorithm implements Algorithm {
 
-    InformationBubble generalInfo;
+    Bubble generalInfo;
 
     public BFSAlgorithm() {
         this.defaultSettings();
     }
 
     public void defaultSettings() {
-        generalInfo = new InformationBubble(10, 10);
+        generalInfo = new Bubble(10, 10);
         generalInfo.setLockedPosition(true);
-        generalInfo.setPositionY(PositionY.up);
-        generalInfo.setWidth(300);
+        generalInfo.position = BubblePosition.SE;
+        generalInfo.setMaxWidth(300);
         old = false;
         recieve = false;
     }

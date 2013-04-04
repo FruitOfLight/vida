@@ -9,7 +9,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Timer;
@@ -42,7 +41,6 @@ public class GUI {
     static JMenuBar menu;
     static JLayeredPane layeredPane;
     static Timer globalTimer;
-    static ArrayList<InformationBubble> informationBubbleList;
 
     static class Window implements Runnable {
         @Override
@@ -218,7 +216,6 @@ public class GUI {
     public static void main(String[] args) {
         // TODO spravit krajsie
         gkl = new GlobalKeyListener();
-        informationBubbleList = new ArrayList<InformationBubble>();
         graph = new Graph();
         //FIXME len na testovanie
         model = new LeaderElectionModel();
@@ -228,7 +225,6 @@ public class GUI {
         zoomWindow = new ZoomWindow();
         informationPanel = new InformationPanel();
         globalTimer = new Timer();
-        globalTimer.schedule(new InformationBubble.ExpirationEvent(), 0);
         final Window window = new Window();
         SwingUtilities.invokeLater(window);
         loadApp();

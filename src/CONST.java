@@ -42,11 +42,3 @@ enum DeliverState {
 enum Constrast {
     textbw, borderbw, invert
 }
-
-enum PositionX {
-    left, right
-}
-
-enum PositionY {
-    up, down
-}

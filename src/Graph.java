@@ -85,8 +85,9 @@ public class Graph implements Drawable {
         for (Edge edge : edges) {
             edge.queue.draw(g);
         }
+        g.setFont(new Font(Font.DIALOG, Font.PLAIN, 11));
         for (Vertex vertex : vertices) {
-            vertex.informationBubble.draw(g);
+            vertex.bubble.draw(g);
         }
         if (GUI.model.algorithm != null)
             GUI.model.algorithm.draw(g);
@@ -370,8 +371,7 @@ public class Graph implements Drawable {
                 }
                 if (!t)
                     continue;
-                neig.setX(neig.getX() + dx);
-                neig.setY(neig.getY() + dy);
+                neig.move(neig.getX() + dx, neig.getY() + dy);
                 break;
             }
         }
