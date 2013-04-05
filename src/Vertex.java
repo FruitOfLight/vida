@@ -79,7 +79,7 @@ public class Vertex {
     }
 
     void shout(String s, int strength) {
-        long duration = strength * 20;
+        long duration = strength * 4000;
         bubble.addInformation(s, BubbleSet.time + duration);
     }
 

@@ -135,7 +135,8 @@ class Bubble implements Drawable {
     }
 
     @Override
-    public synchronized void draw(Graphics2D g) {
+    public void draw(Graphics2D g) {
+        updateInformation();
         if (list.size() == 0)
             return;
         float alpha = transparency * (isOnPoint(GUI.graph.mousex, GUI.graph.mousey) ? 0.5f : 1.0f);
@@ -165,7 +166,7 @@ class Bubble implements Drawable {
         }
     }
 
-    public void preDraw(Graphics2D g) {
+    public synchronized void preDraw(Graphics2D g) {
         if (!updated) {
             dw = dh = 0;
             lines.clear();
@@ -217,18 +218,18 @@ class Bubble implements Drawable {
 
     public boolean isOnPoint(double mx, double my) {
         if (locked) {
-            mx = mx * GUI.graph.canvas.zoom + GUI.graph.canvas.offX;
-            my = my * GUI.graph.canvas.zoom + GUI.graph.canvas.offY;
-            mx = (mx - GUI.graph.canvas.offX) / GUI.graph.canvas.zoom;
-            my = (my - GUI.graph.canvas.offY) / GUI.graph.canvas.zoom;
-            return dx <= mx && mx <= dx + dw && dy <= my && my <= dy + dh;
-
+            mx = (mx - (x - GUI.graph.canvas.offX) / GUI.graph.canvas.zoom)
+                    * Math.sqrt(GUI.graph.canvas.zoom) + (x - GUI.graph.canvas.offX)
+                    / GUI.graph.canvas.zoom;
+            my = (my - (y - GUI.graph.canvas.offY) / GUI.graph.canvas.zoom)
+                    * Math.sqrt(GUI.graph.canvas.zoom) + (y - GUI.graph.canvas.offY)
+                    / GUI.graph.canvas.zoom;
         } else {
-            mx = (mx - x) * 1.0 / Math.sqrt(GUI.graph.canvas.zoom) + x;
-            my = (my - y) * 1.0 / Math.sqrt(GUI.graph.canvas.zoom) + y;
-            return dx <= mx && mx <= dx + dw && dy <= my && my <= dy + dh;
-        }
+            mx = (mx - x) / Math.sqrt(GUI.graph.canvas.zoom) + x;
+            my = (my - y) / Math.sqrt(GUI.graph.canvas.zoom) + y;
 
+        }
+        return dx <= mx && mx <= dx + dw && dy <= my && my <= dy + dh;
     }
 
     public synchronized void defaultSettings() {
