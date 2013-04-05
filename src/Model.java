@@ -116,6 +116,7 @@ public class Model {
             load();
             start = true;
         }
+        timerid++;
         running = RunState.running;
         StepEvent.time = System.currentTimeMillis();
         GUI.globalTimer.schedule(new StepEvent(this, timerid), 0);
@@ -235,11 +236,11 @@ public class Model {
             if (model.running != RunState.stopped) {
                 for (Edge edge : model.graph.edges)
                     edge.queue.step(delay);
-
             }
+            BubbleSet.step(delay);
 
             GUI.gRepaint();
-            GUI.globalTimer.schedule(new StepEvent(model, id), 20);
+            GUI.globalTimer.schedule(new StepEvent(model, id), 30);
         }
     }
 

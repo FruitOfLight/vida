@@ -14,6 +14,7 @@ public class Graph implements Drawable {
     public ArrayList<Edge> edges;
     // premenne pre vykreslovanie
     public Canvas canvas;
+    double mousex, mousey;
     GraphListener listener;
 
     //
@@ -86,6 +87,9 @@ public class Graph implements Drawable {
             edge.queue.draw(g);
         }
         g.setFont(new Font(Font.DIALOG, Font.PLAIN, 11));
+        mousex = cursorGetX();
+        mousey = cursorGetY();
+        //System.out.println("mxy " + mousex + " " + mousey);
         for (Vertex vertex : vertices) {
             vertex.bubble.draw(g);
         }
@@ -155,6 +159,16 @@ public class Graph implements Drawable {
 
     double mouseGetY(MouseEvent mouse) {
         return (mouse.getY() - canvas.offY) / canvas.zoom;
+    }
+
+    double cursorGetX() {
+        return ((canvas.getMousePosition() != null ? canvas.getMousePosition().x : -1e10) - canvas.offX)
+                / canvas.zoom;
+    }
+
+    double cursorGetY() {
+        return ((canvas.getMousePosition() != null ? canvas.getMousePosition().y : -1e10) - canvas.offY)
+                / canvas.zoom;
     }
 
     public int getNewVertexID() {

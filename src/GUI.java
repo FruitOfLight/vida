@@ -40,6 +40,7 @@ public class GUI {
     static PopupPanel popupZoomWindow;
     static JMenuBar menu;
     static JLayeredPane layeredPane;
+
     static Timer globalTimer;
 
     static class Window implements Runnable {

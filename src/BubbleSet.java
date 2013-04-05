@@ -17,7 +17,7 @@ public class BubbleSet {
     //private LinkedList<Bubble> bornlist = new LinkedList<Bubble>();
     static long time = 1;
 
-    public void step(long delay) {
+    static public void step(long delay) {
         time += (long) (delay * Math.sqrt(GUI.model.getSendSpeed()));
     }
 
@@ -136,11 +136,15 @@ class Bubble implements Drawable {
 
     @Override
     public synchronized void draw(Graphics2D g) {
-        float alpha = transparency;
-        Composite originalComposite = g.getComposite();
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
         if (list.size() == 0)
             return;
+        float alpha = transparency * (isOnPoint(GUI.graph.mousex, GUI.graph.mousey) ? 0.5f : 1.0f);
+        if (alpha < 0.01)
+            return;
+        Composite originalComposite = g.getComposite();
+        if (alpha < 0.99) {
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        }
         AffineTransform at = g.getTransform();
         preDraw(g);
 
@@ -156,10 +160,12 @@ class Bubble implements Drawable {
             g.drawString(s, (float) (dx + dr / 2), (float) (dy + j));
         }
         g.setTransform(at);
-        g.setComposite(originalComposite);
+        if (alpha < 0.99) {
+            g.setComposite(originalComposite);
+        }
     }
 
-    public synchronized void preDraw(Graphics2D g) {
+    public void preDraw(Graphics2D g) {
         if (!updated) {
             dw = dh = 0;
             lines.clear();
@@ -207,6 +213,19 @@ class Bubble implements Drawable {
                 updated = false;
             }
         }
+    }
+
+    public boolean isOnPoint(double mx, double my) {
+        if (locked) {
+            mx = (mx - GUI.graph.canvas.offX) / GUI.graph.canvas.zoom;
+            my = (my - GUI.graph.canvas.offY) / GUI.graph.canvas.zoom;
+        }
+        mx = (mx - (x - GUI.graph.canvas.offX)) * 1.0 / Math.sqrt(GUI.graph.canvas.zoom)
+                + (x - GUI.graph.canvas.offX);
+        my = (my - (y - GUI.graph.canvas.offY)) * 1.0 / Math.sqrt(GUI.graph.canvas.zoom)
+                + (y - GUI.graph.canvas.offY);
+
+        return dx <= mx && mx <= dx + dw && dy <= my && my <= dy + dh;
     }
 
     public synchronized void defaultSettings() {
