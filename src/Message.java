@@ -2,7 +2,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
+import java.awt.geom.RoundRectangle2D;
 
 class Message {
     static double getRandomMessageFactor() {
@@ -16,7 +18,7 @@ class Message {
     double position, factor, force, defDist;
     Message prevM, nextM;
     int selected;
-    Bubble bubble;
+    String info;
 
     DeliverState state;
     Color gColor;
@@ -29,14 +31,12 @@ class Message {
         gColor = Color.red;
         factor = getRandomMessageFactor();
         processContent();
-        bubble = new Bubble(0.0, 0.0);
-        bubble.transparency = 0.8f;
         int from = 0, to;
         while ((from = content.indexOf("{", from)) != -1) {
             from++;
             to = content.indexOf("}", from);
             if (to != -1)
-                bubble.addInformation(content.substring(from, to), -1);
+                info = content.substring(from, to);
         }
     }
 
@@ -122,7 +122,6 @@ class Message {
         g.setColor(gColor);
         double x = edge.from.getX() * (1.0 - position) + edge.to.getX() * position;
         double y = edge.from.getY() * (1.0 - position) + edge.to.getY() * position;
-        bubble.move(x, y);
         // Tu sa da nastavovat velkost trojuholnika
         double rR;
         if (selected != 5)
@@ -140,7 +139,44 @@ class Message {
         polygon.lineTo(x + vx - vy * 0.5, y + vy + vx * 0.5);
         polygon.lineTo(x, y);
         g.fill(polygon);
-        bubble.draw(g);
+        bubbleDraw(g);
+    }
+
+    public void bubbleDraw(Graphics2D g) {
+        double x = edge.from.getX() * (1.0 - position) + edge.to.getX() * position;
+        double y = edge.from.getY() * (1.0 - position) + edge.to.getY() * position;
+
+        double fx = edge.from.getX() - edge.to.getX();
+        double fy = edge.from.getY() - edge.to.getY();
+        //float alpha = 0.8 * (isOnPoint(GUI.graph.mousex, GUI.graph.mousey) ? 0.5f : 1.0f);
+        //if (alpha < 0.01)
+        //    return;
+        //Composite originalComposite = g.getComposite();
+        //if (alpha < 0.99) {
+        //    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        //}
+        AffineTransform at = g.getTransform();
+        double dx, dy, dw, dh, dr = 4, desc = g.getFontMetrics().getDescent();
+        dw = g.getFontMetrics().stringWidth(info) + dr;
+        dh = g.getFontMetrics().getAscent() + g.getFontMetrics().getDescent();
+        dx = x - dw / 2;
+        dy = y - dh;
+        g.translate(x, y);
+        g.rotate(Math.atan2(fy, fx));
+        g.scale(1.0 / Math.sqrt(GUI.graph.canvas.zoom), 1.0 / Math.sqrt(GUI.graph.canvas.zoom));
+        g.translate(-x, -y);
+
+        g.setColor(gColor);
+        g.fill(new RoundRectangle2D.Double(dx, dy, dw, dh, dr, dr));
+        g.setColor(Canvas.contrastColor(gColor, Constrast.borderbw));
+        g.draw(new RoundRectangle2D.Double(dx, dy, dw, dh, dr, dr));
+        g.setColor(Canvas.contrastColor(gColor, Constrast.textbw));
+        g.drawString(info, (float) (dx + dr / 2), (float) (y - desc));
+
+        g.setTransform(at);
+        /*if (alpha < 0.99) {
+            g.setComposite(originalComposite);
+        }*/
     }
 
     double side(double x, double y, double x1, double y1, double x2, double y2) {
