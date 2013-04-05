@@ -1,5 +1,6 @@
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -162,13 +163,13 @@ public class Graph implements Drawable {
     }
 
     double cursorGetX() {
-        return ((canvas.getMousePosition() != null ? canvas.getMousePosition().x : -1e10) - canvas.offX)
-                / canvas.zoom;
+        Point p = canvas.getMousePosition();
+        return ((p == null ? -1e10 : p.x) - canvas.offX) / canvas.zoom;
     }
 
     double cursorGetY() {
-        return ((canvas.getMousePosition() != null ? canvas.getMousePosition().y : -1e10) - canvas.offY)
-                / canvas.zoom;
+        Point p = canvas.getMousePosition();
+        return ((p == null ? -1e10 : p.y) - canvas.offY) / canvas.zoom;
     }
 
     public int getNewVertexID() {

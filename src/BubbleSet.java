@@ -217,15 +217,18 @@ class Bubble implements Drawable {
 
     public boolean isOnPoint(double mx, double my) {
         if (locked) {
+            mx = mx * GUI.graph.canvas.zoom + GUI.graph.canvas.offX;
+            my = my * GUI.graph.canvas.zoom + GUI.graph.canvas.offY;
             mx = (mx - GUI.graph.canvas.offX) / GUI.graph.canvas.zoom;
             my = (my - GUI.graph.canvas.offY) / GUI.graph.canvas.zoom;
-        }
-        mx = (mx - (x - GUI.graph.canvas.offX)) * 1.0 / Math.sqrt(GUI.graph.canvas.zoom)
-                + (x - GUI.graph.canvas.offX);
-        my = (my - (y - GUI.graph.canvas.offY)) * 1.0 / Math.sqrt(GUI.graph.canvas.zoom)
-                + (y - GUI.graph.canvas.offY);
+            return dx <= mx && mx <= dx + dw && dy <= my && my <= dy + dh;
 
-        return dx <= mx && mx <= dx + dw && dy <= my && my <= dy + dh;
+        } else {
+            mx = (mx - x) * 1.0 / Math.sqrt(GUI.graph.canvas.zoom) + x;
+            my = (my - y) * 1.0 / Math.sqrt(GUI.graph.canvas.zoom) + y;
+            return dx <= mx && mx <= dx + dw && dy <= my && my <= dy + dh;
+        }
+
     }
 
     public synchronized void defaultSettings() {
