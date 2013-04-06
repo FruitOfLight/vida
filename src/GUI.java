@@ -43,6 +43,8 @@ public class GUI {
 
     static Timer globalTimer;
 
+    static Language language;
+
     static class Window implements Runnable {
         @Override
         public void run() {
@@ -215,6 +217,7 @@ public class GUI {
     }
 
     public static void main(String[] args) {
+        language = Language.english;
         // TODO spravit krajsie
         gkl = new GlobalKeyListener();
         graph = new Graph();

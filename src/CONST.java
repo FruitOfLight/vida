@@ -42,3 +42,7 @@ enum DeliverState {
 enum Constrast {
     textbw, borderbw, invert
 }
+
+enum Language {
+    english, slovak
+}

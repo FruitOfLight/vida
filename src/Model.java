@@ -237,7 +237,8 @@ public class Model {
                 for (Edge edge : model.graph.edges)
                     edge.queue.step(delay);
             }
-            BubbleSet.step(delay);
+            if (model.running == RunState.running)
+                BubbleSet.step(delay);
 
             GUI.gRepaint();
             GUI.globalTimer.schedule(new StepEvent(model, id), 30);
