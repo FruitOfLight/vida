@@ -119,27 +119,30 @@ class Message {
     public void edgeDraw(Graphics2D g) {
         if (state == DeliverState.delivered)
             return;
-        g.setColor(gColor);
-        double x = edge.from.getX() * (1.0 - position) + edge.to.getX() * position;
-        double y = edge.from.getY() * (1.0 - position) + edge.to.getY() * position;
-        // Tu sa da nastavovat velkost trojuholnika
-        double rR;
-        if (selected != 5)
-            rR = 12.0 + selected * 5.0;
-        else
-            rR = 17.0;
-        double ux = edge.from.getY() - edge.to.getY(), uy = edge.to.getX() - edge.from.getX();
+        if (GUI.controls.get("v_bubble-messages").isActive()) {
+            bubbleDraw(g);
+        } else {
+            g.setColor(gColor);
+            double x = edge.from.getX() * (1.0 - position) + edge.to.getX() * position;
+            double y = edge.from.getY() * (1.0 - position) + edge.to.getY() * position;
+            // Tu sa da nastavovat velkost trojuholnika
+            double rR;
+            if (selected != 5)
+                rR = 12.0 + selected * 5.0;
+            else
+                rR = 17.0;
+            double ux = edge.from.getY() - edge.to.getY(), uy = edge.to.getX() - edge.from.getX();
 
-        double k = rR / Math.sqrt(ux * ux + uy * uy);
-        double vx = ux * k;
-        double vy = uy * k;
-        Path2D polygon = new Path2D.Double();
-        polygon.moveTo(x, y);
-        polygon.lineTo(x + vx + vy * 0.5, y + vy - vx * 0.5);
-        polygon.lineTo(x + vx - vy * 0.5, y + vy + vx * 0.5);
-        polygon.lineTo(x, y);
-        g.fill(polygon);
-        bubbleDraw(g);
+            double k = rR / Math.sqrt(ux * ux + uy * uy);
+            double vx = ux * k;
+            double vy = uy * k;
+            Path2D polygon = new Path2D.Double();
+            polygon.moveTo(x, y);
+            polygon.lineTo(x + vx + vy * 0.5, y + vy - vx * 0.5);
+            polygon.lineTo(x + vx - vy * 0.5, y + vy + vx * 0.5);
+            polygon.lineTo(x, y);
+            g.fill(polygon);
+        }
     }
 
     public void bubbleDraw(Graphics2D g) {

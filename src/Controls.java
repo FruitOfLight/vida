@@ -180,7 +180,7 @@ public class Controls implements Drawable {
             type = ToolType.speed;
             value = 1;
         }
-        if (get("ms_solo").isActive()) {
+        if (get("ms_turbo").isActive()) {
             type = ToolType.speed;
             value = 2;
         }

@@ -84,6 +84,7 @@ public class Graph implements Drawable {
         for (Vertex vertex : vertices) {
             vertex.draw(g);
         }
+        g.setFont(new Font(Font.DIALOG, Font.PLAIN, 10));
         for (Edge edge : edges) {
             edge.queue.draw(g);
         }

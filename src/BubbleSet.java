@@ -139,6 +139,8 @@ class Bubble implements Drawable {
         updateInformation();
         if (list.size() == 0)
             return;
+        if (!GUI.controls.get("v_bubble-all-vertices").isActive())
+            return;
         float alpha = transparency * (isOnPoint(GUI.graph.mousex, GUI.graph.mousey) ? 0.5f : 1.0f);
         if (alpha < 0.01)
             return;

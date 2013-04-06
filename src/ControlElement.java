@@ -54,10 +54,13 @@ class ControlBuilder {
             box.addElement(new ControlClickButton(c, "p_fast", KeyEvent.VK_RIGHT));
             box.addElement(new ControlLabel(c, "running", 8));
             box.addElement(csb = new ControlSwitchButton(c, "v_bubble-messages", KeyEvent.VK_1));
+            csb.setSelected(true);
             box.addElement(csb = new ControlSwitchButton(c, "v_bubble-all-vertices", KeyEvent.VK_2));
             csb.addRadio("bubble", 1);
+            csb.setSelected(true);
             box.addElement(csb = new ControlSwitchButton(c, "v_bubble-important", KeyEvent.VK_3));
             csb.addRadio("bubble", 2);
+            csb.setSelected(true);
             getBox("bottomBox").addElement(box);
             box = new ControlBox(c, get("runButton"));
             box.addElement(new ControlClickButton(c, "g_new", null));
@@ -99,7 +102,7 @@ class ControlBuilder {
             csb.addRadio("tools", -1);
             box2.addElement(csb = new ControlSwitchButton(c, "ms_fast", KeyEvent.VK_S));
             csb.addRadio("tools", -1);
-            box2.addElement(csb = new ControlSwitchButton(c, "ms_solo", KeyEvent.VK_S));
+            box2.addElement(csb = new ControlSwitchButton(c, "ms_turbo", KeyEvent.VK_S));
             csb.addRadio("tools", -1);
             box.addElement(box2);
             getBox("gtoolBox").addElement(box);
