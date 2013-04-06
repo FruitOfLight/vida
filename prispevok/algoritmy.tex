@@ -1,4 +1,5 @@
 \section{Vybrané distribuované algoritmy}
+TODO citacie a odkazy
 
 Aby sme lepšie pochopili, čím sa naša vizualizácia zaoberá, ujasníme si najskôr pojmy a problematiku.
 
@@ -76,16 +77,24 @@ Dôkaz, že sa pošle najviac $O(n\log n)$ správ sa dá skonštruovať jednoduc
 Ak ste náhodou fungovanie algoritmu z tohoto popisu nepochopili, tak je to dôvod na to, aby ste si vyskúšali našu
 čarovnú aplikáciu. Na to je predsa určená.
 
-\section{blabla}
+\subsection{Traverzal}
 
-Pri vývoji aplikácie sme sa zamerali na to, aby sa dali jednoduchým spôsobom pridávať nové
-algoritmy. Dokonca pridávať nové algoritmy si môže aj užívateľ bez toho, aby musel upravovať 
-zdrojový kód aplikácie. 
+Traverzovací algoritmus, sa zaoberá prieskumom grafu so špeciálnym obmedzením na posielanie správ.
+Namiesto správ existuje jeden token. Počítač, ktorý má v danej chívli token, ho môže poslať ľubovoľnému
+susedovi, čím token stratí. Žiadne iné správy sa posielať nemôžu. 
+
+TODO pozriet ako je to vlastne definovane.
+V týchto algoritmoch sa zaujímame o to, koľko správ musíme poslať aby sme navštívili $x$ vrcholov.
+
+Takéto traverzovacie algoritmy sa majú aj tú výhodu, že ľahko usledujeme celkový počet odoslaných
+správ čo vieme využiť pri návrhu zložitejších algoritmov (napríklad KKM).
+
+My sme naimplementovali jednoduchý traverzovací algoritmus pre všeobecné grafy, fungujúci ako 
+prehľadávanie do hĺbky. Pre ilustráciu sa snaží jeden vrchol zistiť súčet identifikátorov ostatných
+vrcholov (v tokene môžu byť zabalené aj nejaké informácie, v tomto prípade doterajší súčet).
 
 
 
-Pre pridanie nového vlastného algoritmu stačí napísať program, ktorý následne bude príjmat 
 
-Momentálne sú podporované programy v programovacom jazyku C++, pričom
-programátor
+
 
