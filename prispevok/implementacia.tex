@@ -38,7 +38,7 @@ Pri distribuovaných algoritmoch nás zaujíma hlavne to, ako sa algoritmus pres
 druhého na základe doručenej správy. Pod pojmom stav rozumiem naplnenie niektorých dôležitých
 premenných. Je teda zjavné, že je dôležité, aby úživateľ videl (alebo aspoň tušil), akú hodnotu majú
 tieto dôležité premenné. Dôležité premenné sú napríklad ID vrchola, či je živý alebo nie, jeho
-level \dots Vypisovať tieto premenné v bublinkách pri vrchole, by však bolo zavadzajúce, keďže je to
+level \dots Vypisovať tieto premenné v bublinkách pri vrchole, by však zavadzalo, keďže je to
 informácia, ktorá je potrebná stále. Preto sme zvolili taký prístup, aby výzor vrcholu reprezentoval
 dané premenné.
 
@@ -50,3 +50,36 @@ svoju farbu na červenú, alebo zväčšujúci sa level zväčšuje veľkosť vr
 
 Samozrejme, občas je dôležité aby sa užívateľ mohol pozrieť na skutočnú hodnotu danej premennej.
 Preto si vie označiť vrchol, ktorý mu vo vedľajšom okienku ukáže premenné daného procesu.
+
+\subsection{Knižnica vidalib}
+
+Dôležitou súčasťou sú samozrejme jednotlivé algoritmy, ktoré chceme vizualizovať. Aj na toto bolo
+treba vymyslieť vhodný spôsob na písanie daných algoritmov. Jednou možnosťou ich bolo priamo zahrnúť
+do aplikácie. Táto možnosť sa nám však videla príliš obmedzujúca pre užívateľa. Naším cieľom je aj
+to, aby užívateľ mohol sám vytvoriť program, ktorý si vie spustiť a odvizualizovať vďaka našej
+aplikácii. Za týmto účelom vznikla C++ knižnica \verb!vidalib.h!. Rozhodli sme sa, že samotné
+algoritmy sa budú implementovať v C++ jednak kvôli rýchlosti a zároveň kvôli rozšírenosti a našej
+osobnej obľuby.
+
+Keď chce užívateľ naprogramovať musí naimplementovať dve funckie: \verb!init()! a
+\verb!recieve(port, message)!. Prvá sa zavolá na začiatku algoritmu a slúži na nastavenie premenných
+a v prípade broadcastu alebo traversalu aj na zistenie, či proces vlastní správu poprípade token.
+Druhá volá naša knižnica vždy keď príde nová správu, pričom ako parametre sa jej nastavia číslo
+portu, po ktorej správa prišla a jej obsah. Následne môže proces posielať správy pomocou knižničnej
+funkcie \verb!sendMessage(port, message)!.
+
+Toto je už postačujúce k tomu, aby užívateľ mohol napísať program, ktorý by vedel spustiť našou
+aplikáciou a ktorý by fungoval. Nebol by však schopný ovplyvňovať vizualizáciu. Aby sme mu umožnili
+aj toto, pridali sme do našej knižnice ďalšie funkcie. Konkrétne vie užívateľ meniť veľkosť a farbu
+vrcholu grafu, prinútiť pozastaviť vykonávanie programu, aby upozornil na dôležitú udalosť a
+taktiež posielať texty, ktoré sa majú vypisovať pri vrchole.
+
+Takisto sme zaviedli takzvané \verb!WatchVariables!. Sú to premenné, ktoré si užívateľ určí, že sú
+dôležité a chce, aby sa zobrazovali pri podrobnostiach vrcholu. K týmto premenným nemá priamy
+prístup, ale pomocou našej knižnice. Výnimkou je ID vrchola, ktoré je dané explicitne, nemožno ho
+meniť a je zobrazované vždy. Samozrejme môže užívateľ používať ľubovoľné ďalšie premenné.
+
+Týmto dávame užívateľ skoro taký istý arzenál na vizualizáciu, aký používame my. Dávame mu teda
+možnosť tešiť sa z úspešného programu, ktorý sa pekne vizualizuje rovnako, ako sme sa tešili my, keď
+nám začali behať naše prvé algoritmy. A o tom, čo máme oproti užívateľovi naviac si povieme v
+nasledujúcej podsekcii.
