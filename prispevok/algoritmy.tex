@@ -1,0 +1,72 @@
+\section{Vybraté distribuované algoritmy}
+
+V našom ponímaní sú distribuované algoritmy výpočtový model, pracujúci nasledovne.
+Máme niekoľko počítačov, z ktorých sú niektoré dvojice spojené obojsmernou komunikačnou linkou.
+Inak povedané, počítače tvoria neorientovaný graf. 
+
+Do každého z týchto počítačov sa nahrá ten istý program a všetky sa naraz spustia. Programy si môžu
+interne čokoľvek počítať a zároveň dokážu poslať správu po ľubovoľnej linke. O správach na linkách
+vieme len to, že v konečnom čase dorazia na druhý koniec a keď jedne počítač pošle po jednej linke
+viac správ, tak dorazia v tom poradí, v akom boli poslané. O poradí doručenia správ na rôznych
+liniek nevieme nič a každá správa sa môže doručovať ľubovoľne dlho. Nemáme teda žiadne garancie, či
+správa dorazí do 10 minút a kľudne sa môže stať, že niektoré správy prejdú tísícky hrán, zatiaľ čo
+iné len jednu.
+
+Úlohou distribuovaných algoritmov je následne riešiť rôzne problémy, napríklad ako medzi sebou
+zvoliť jedného šéfa, poslať nejakú správu ostatným počítačom (nie len susedom) alebo prehľadať
+graf.
+
+Snaha je používať také algoritmy, ktoré dokopy pošlú čo najmenší počet správ.
+
+Momentálne sú v aplikácii naimplementované vizualizácie troch algoritmov.
+
+\subsection{Voľba šéfa na úplnom grafe s počtom správ $O{n\log n}$}
+
+Ako názov naznačuje, v tejto sekcii máme $n$ počítačov a všetky dvojice počítačov sú spojené linkou. 
+Navyše, má každý počítač svoj jednoznačný identifikátor (ľubovoľné celé číslo, nazvime ho $ID$), bez identifikátorov
+by sa totiž problém nedal riešiť, kvôli symetrii.
+
+Počítače na začiatku poznajú len svoje $ID$ a vidia $n-1$ portov očíslovaných číslami $1$ až $n-1$ v
+ľubovoľnom poradí. Programy sú spustené v rovnakom čase a môžu začať posielať správy.
+Chceme nájsť algoritmus, ktorý pre ľubovoľné identifikátory, časovanie správ a poradie portov skončí
+tak, že práve jeden počítač bude vedieť o sebe, že je šéf a ostatné budú vedieť, že nie sú šefovia.
+
+Dá sa dokázať, že každý takýto algoritmus musí poslať aspoň $O(n\log n)$ správ a my si povieme o
+jednom z takých, ktoré to dokážu.
+
+Algoritmus funguje tak, že na to, aby sa stal počítač šéfom, musí mať $n-1$ \verb!vazalov! a sám nesmie byť
+nikomu \verb!vazalom!. Každý počítač je \verb!vazalom! najviac jedného počítača. Z tohto vyplýva, že šéf bude
+najviac jeden. Navyše si označme $level = počet vazalov$.
+
+Na začiatku sa chce každý počítač stať šéfom a teda snaží sa získať nejakých \verb!vazalov!. To robí tak,
+že pošle nejakému susedovi správu \verb!"Mám level x, id y a chcem ťa zajať."! 
+
+Ak sused už nie je \verb!vazalom! niekoho iného, lexikograficky porovná svoju dvojicu $(level, id)$ s dvojicou so správy. 
+Ak je jeho dvojica väčšia, správu ignoruje a teda pôvodný počítač nikdy \verb!nezajme! všetkých, čím zahynie jeho šanca sa šéfom. 
+Inak mu odpovie \verb!"Som tvojim vazalom"!. Pôvodný počítač si zvýši level a snaží sa zajať niekoho
+ďalšieho. Takto pokračuje, až kým sa nestane, že mu niekto neodpovie, alebo sa nestane šéfom.
+
+Druhá možnosť je, že sused už je vazalom nejakého počítača, vtedy požiada o pomoc svojho panovníka.
+Podľa $levelu$ a $id$ panovníka sa rovnakým spôsobom rozhodne, či sa správa ignoruje, alebo 
+sa sused stane vazalom vyzívaťeľa a panovník sa stane porazeným (nebude nikoho vazalom, kým sa
+ho niekto priamo nepokúsi zajať, ale už nebude zajímať ďalších vazalov).
+
+Ak ste to náhodou z tohoto popisu nepochopili, tak je to dôvod na to, aby ste si vyskúšali našu
+čarovnú aplikáciu. 
+
+
+
+
+\section{blabla}
+
+Pri vývoji aplikácie sme sa zamerali na to, aby sa dali jednoduchým spôsobom pridávať nové
+algoritmy. Dokonca pridávať nové algoritmy si môže aj užívateľ bez toho, aby musel upravovať 
+zdrojový kód aplikácie. 
+
+
+
+Pre pridanie nového vlastného algoritmu stačí napísať program, ktorý následne bude príjmat 
+
+Momentálne sú podporované programy v programovacom jazyku C++, pričom
+programátor
+
