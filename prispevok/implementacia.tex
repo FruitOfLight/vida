@@ -47,9 +47,15 @@ spustený a teda často slúži na prelomenie určitej symetrie, táto hodnota s
 vrchola. Ďalšie atribúty vrcholu sú jeho farba, alebo veľkosť. Preto naše vizualizácie často
 využívajú tieto vlastnosti a intuitívne ich spájajú s nejakou premenou. Napríklad mŕtvy proces zmení
 svoju farbu na červenú, alebo zväčšujúci sa level zväčšuje veľkosť vrchola.
-
 Samozrejme, občas je dôležité aby sa užívateľ mohol pozrieť na skutočnú hodnotu danej premennej.
 Preto si vie označiť vrchol, ktorý mu vo vedľajšom okienku ukáže premenné daného procesu.
+
+Poslednou dôležitou vlastnosťou, ktorú bolo treba užívateľovi poskytnúť je možnosť časovať si
+správy. Časovanie a poradie doručovania pošty do značnej formy ovplyňuje priebeh a je dôležité aby
+mal užívateľ možnosť ovplyvňovať toto dianie. Tak si vie sám vyrábať rôzne obskurné prípady,
+poprípade svoj vlastný "worstcase".
+
+Počas vývoja aplikácie aj táto funckia prešla viacerími zmenami. Tak ako u všeobecných informácii
 
 \subsection{Knižnica vidalib}
 
@@ -83,3 +89,36 @@ Týmto dávame užívateľ skoro taký istý arzenál na vizualizáciu, aký pou
 možnosť tešiť sa z úspešného programu, ktorý sa pekne vizualizuje rovnako, ako sme sa tešili my, keď
 nám začali behať naše prvé algoritmy. A o tom, čo máme oproti užívateľovi naviac si povieme v
 nasledujúcej podsekcii.
+
+\subsection{Popis algoritmov}
+
+Na jednej strane je dôležitá samotná vizualizácia -- jej prehľadnosť a názornosť. Na druhej strane
+je však potrebné všetko vysvetliť aj pomocou popisu. Toto je zároveň jediná vec, ktorú užívateľ
+nevie robiť a je dostupná len pre nami robené programy.
+
+Dôležité bolo zamyslieť sa nad tým ako čo najnázorenejšie popísať, čo sa práve v algoritme deje.
+Predstavovali sme akoby sme dané algoritmy vysvetľovali niekomu inému, dokonca sme si to priamo
+vyskúšali na sústredení KSP. Zhodnotili sme, že vysvetľovanie prebieha náčrtom hlavnej myšlienky,
+teda čo je cieľ, ktorý sa každý snaží dosiahnuť. Následne sme vysvetľovali jednotlivé prípady, ktoré
+môžu nastať a ako sa riešia.
+
+Rozhodli sme sa použiť túto ideu a pre každý algoritmus sme si vytvorili množinu rôznych prípadov,
+ktoré môžu nastať. Náš program v C++ posiela informácie o tom, či nastala niektorá z týchto udalostí
+a náš program na ňu patrične reaguje. Väčšinou, ak sa tento prípad vyskytol prvýkrát, program sa
+zastaví a v bublinke sa vypíše text, ktorý upozorňuje na danú udalosť a tiež hovorí, čo sa bude
+diať ďalej. Toto umožňuje užívateľovi sa pripraviť na to čo sa bude diať a následne sa vie pozrieť
+či sa to skutočne stalo a aké to malo dôsledky. Takto si užívateľ môže prezrieť všetky zaujímavé
+prípady, ktoré môžu nastať a pochopiť aj zvyšné detaily algoritmu.
+
+Taktiež sme rozmýšľali, či vieme nejak znázorniť, že algoritmus naozaj pošle očakávaný počet správ.
+Jedna vec je totiž povedať, že to bude $O(n\log n)$, na druhej strane máme však reálny počet správ,
+ktoré sa pošlú. A keď pošle algoritmus $100$ správ nedá sa veľmi dobre ukázať, že to patrí do $O(n
+\log n)$ a nie do $O(n)$ s vysokou konštantou.
+
+Tento konkrétny problém sme riešili hlavne v algoritme na hľadanie šéfa v úplnom grafe. Namiesto
+zložitého rozpisovania dôkazu sme zobrali jeho hlavnú myšlienku a pokúsili sa ju názorne ukázať.
+Hlavná myšlienka spočíva v tom, že vrcholov na nejakom stupni je najviac niekoľko. Preto počas behu
+algoritmu počítame počet vrcholov na danom leveli. Následne ukážeme, že ich je menej ako očakávaný
+počet z čoho vyplýva daná zložitosť. Samozrejme nie je to exaktný dôkaz, ale dáva to užívateľovi
+hlbšie pochopenie na príkladoch. Môže sa napríklad snažiť vytvoriť čo najhorší prípad aby sa
+presvedčil, že aj na ňom to funguje.
