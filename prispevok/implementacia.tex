@@ -1,7 +1,7 @@
 \section{Implementácia}
 
 Projekt ViDA vznikol ako ročníkový projekt a nevychádzal zo žiadnych predošlých prác alebo
-projektov. Celý výzor sme navrhli sami po konzultácii s našim vedúcim. Ako to vyzerá, môžete vidieť
+projektov. Ako to vyzerá, môžete vidieť
 na prvom obrázku. Naším prvoradým cieľom, bolo zabezpečiť prehľadnú vizualizáciu a tiež jednoduché
 používanie aplikácie.
 
@@ -37,12 +37,12 @@ nezavadzá, keďže je decentne skrytý a ukáže sa až na užívateľov príka
 Pri distribuovaných algoritmoch nás zaujíma hlavne to, ako sa algoritmus presúva z jedného stavu do
 druhého na základe doručenej správy. Pod pojmom stav rozumiem naplnenie niektorých dôležitých
 premenných. Je teda zjavné, že je dôležité, aby úživateľ videl (alebo aspoň tušil), akú hodnotu majú
-tieto dôležité premenné. Dôležité premenné sú napríklad ID vrchola, či je živý alebo nie, jeho
+tieto dôležité premenné. Dôležité premenné sú napríklad $id$ vrchola, či je živý alebo nie, jeho
 level \dots Vypisovať tieto premenné v bublinkách pri vrchole, by však zavadzalo, keďže je to
 informácia, ktorá je potrebná stále. Preto sme zvolili taký prístup, aby výzor vrcholu reprezentoval
 dané premenné.
 
-Keďže ID vrchola je jedna z najdôležitejších informácii, lebo je nezávislá od algoritmu, ktorý je
+Keďže $id$ vrchola je jedna z najdôležitejších informácii, lebo je nezávislá od algoritmu, ktorý je
 spustený a teda často slúži na prelomenie určitej symetrie, táto hodnota sa vypisuje priamo vnútri
 vrchola. Ďalšie atribúty vrcholu sú jeho farba, alebo veľkosť. Preto naše vizualizácie často
 využívajú tieto vlastnosti a intuitívne ich spájajú s nejakou premenou. Napríklad mŕtvy proces zmení
@@ -64,19 +64,21 @@ nemožné aby sa správy na jednej linke predbiehali.
 
 \subsection{Knižnica vidalib}
 
-Dôležitou súčasťou sú samozrejme jednotlivé algoritmy, ktoré chceme vizualizovať. Aj na toto bolo
+Dôležitou súčasťou sú samozrejme jednotlivé algoritmy, ktoré chceme vizualizovať. Aj kvôli tomuto bolo
 treba vymyslieť vhodný spôsob na písanie daných algoritmov. Jednou možnosťou ich bolo priamo zahrnúť
 do aplikácie. Táto možnosť sa nám však videla príliš obmedzujúca pre užívateľa. Naším cieľom je aj
 to, aby užívateľ mohol sám vytvoriť program, ktorý si vie spustiť a odvizualizovať vďaka našej
-aplikácii. Za týmto účelom vznikla C++ knižnica \verb!vidalib.h!. Rozhodli sme sa, že samotné
-algoritmy sa budú implementovať v C++ jednak kvôli rýchlosti a zároveň kvôli rozšírenosti a našej
-osobnej obľuby.
+aplikácii. Za týmto účelom vznikla C++ knižnica \verb!vidalib.h!. Rozhodli sme sa, že zatiaľ sa samotné
+algoritmy budú implementovať v C++, jednak kvôli rýchlosti a zároveň kvôli rozšírenosti a našej
+osobnej obľuby. Vďaka návrhu aplikácie však nie je problém v budúcnosti pridať podporu pre viaceré
+programovacie jazyky alebo ľubovoľné spustiteľné binárky.
 
-Keď chce užívateľ naprogramovať musí naimplementovať dve funckie: \verb!init()! a
-\verb!recieve(port, message)!. Prvá sa zavolá na začiatku algoritmu a slúži na nastavenie premenných
-a v prípade broadcastu alebo traversalu aj na zistenie, či proces vlastní správu poprípade token.
-Druhá volá naša knižnica vždy keď príde nová správu, pričom ako parametre sa jej nastavia číslo
-portu, po ktorej správa prišla a jej obsah. Následne môže proces posielať správy pomocou knižničnej
+V súčastnosti, keď chce užívateľ naprogramovať vlastný algoritmus, musí naimplementovať dve funckie: \verb!init()! a
+\verb!recieve(port, message)!. Prvá sa zavolá na začiatku algoritmu a slúži na nastavenie
+inicializačných premenných. V prípade broadcastu alebo traversalu sa program dozvie, či vlastní správu poprípade token.
+Do tejto funkcie sa zvykne písať to, čo má program spraviť po naštartovaní.
+Druhú volá naša knižnica vždy, keď príde nová správu, pričom ako parametre sa jej nastavia číslo
+portu, po ktorej správa prišla a jej obsah. Proces môže posielať správy pomocou knižničnej
 funkcie \verb!sendMessage(port, message)!.
 
 Toto je už postačujúce k tomu, aby užívateľ mohol napísať program, ktorý by vedel spustiť našou
@@ -86,11 +88,11 @@ vrcholu grafu, prinútiť pozastaviť vykonávanie programu, aby upozornil na d�
 taktiež posielať texty, ktoré sa majú vypisovať pri vrchole.
 
 Takisto sme zaviedli takzvané \verb!WatchVariables!. Sú to premenné, ktoré si užívateľ určí, že sú
-dôležité a chce, aby sa zobrazovali pri podrobnostiach vrcholu. K týmto premenným nemá priamy
-prístup, ale pomocou našej knižnice. Výnimkou je ID vrchola, ktoré je dané explicitne, nemožno ho
-meniť a je zobrazované vždy. Samozrejme môže užívateľ používať ľubovoľné ďalšie premenné.
+dôležité a chce, aby sa zobrazovali pri podrobnostiach vrcholu. K týmto premenným má
+prístup, cez našu knižnicu. Výnimkou je $id$ vrchola, ktoré je dané explicitne, nemožno ho
+meniť a je zobrazované vždy. Samozrejme užívateľ môže používať ľubovoľné ďalšie premenné.
 
-Týmto dávame užívateľ skoro taký istý arzenál na vizualizáciu, aký používame my. Dávame mu teda
+Týmto dávame užívateľovi skoro taký istý arzenál na vizualizáciu, aký používame my. Dávame mu teda
 možnosť tešiť sa z úspešného programu, ktorý sa pekne vizualizuje rovnako, ako sme sa tešili my, keď
 nám začali behať naše prvé algoritmy. A o tom, čo máme oproti užívateľovi naviac si povieme v
 nasledujúcej podsekcii.
@@ -99,21 +101,25 @@ nasledujúcej podsekcii.
 
 Na jednej strane je dôležitá samotná vizualizácia -- jej prehľadnosť a názornosť. Na druhej strane
 je však potrebné všetko vysvetliť aj pomocou popisu. Toto je zároveň jediná vec, ktorú užívateľ
-nevie robiť a je dostupná len pre nami robené programy.
+zatiaľ nevie robiť a je dostupná len pre nami robené programy. Uvažujeme však aj o tom, že v budúcnosti
+ju tiež umožníme ovplyvňovať užívateľom.
 
-Dôležité bolo zamyslieť sa nad tým ako čo najnázorenejšie popísať, čo sa práve v algoritme deje.
-Predstavovali sme akoby sme dané algoritmy vysvetľovali niekomu inému, dokonca sme si to priamo
+Dôležité bolo zamyslieť sa nad tým, ako čo najnázorenejšie popísať, čo sa práve v algoritme deje.
+V tejto fáze sme si predstavovali, ako by sme dané algoritmy vysvetľovali niekomu inému, dokonca sme si to priamo
 vyskúšali na sústredení KSP. Zhodnotili sme, že vysvetľovanie prebieha náčrtom hlavnej myšlienky,
-teda čo je cieľ, ktorý sa každý snaží dosiahnuť. Následne sme vysvetľovali jednotlivé prípady, ktoré
+teda čo je cieľ, ktorý sa každý program snaží dosiahnuť. Následne sme vysvetľovali jednotlivé prípady, ktoré
 môžu nastať a ako sa riešia.
 
 Rozhodli sme sa použiť túto ideu a pre každý algoritmus sme si vytvorili množinu rôznych prípadov,
 ktoré môžu nastať. Náš program v C++ posiela informácie o tom, či nastala niektorá z týchto udalostí
-a náš program na ňu patrične reaguje. Väčšinou, ak sa tento prípad vyskytol prvýkrát, program sa
+a aplikácia na ňu patrične reaguje. Väčšinou, ak sa tento prípad vyskytol prvýkrát, program sa
 zastaví a v bublinke sa vypíše text, ktorý upozorňuje na danú udalosť a tiež hovorí, čo sa bude
-diať ďalej. Toto umožňuje užívateľovi sa pripraviť na to čo sa bude diať a následne sa vie pozrieť
+diať ďalej. Toto umožňuje užívateľovi sa pripraviť na to, čo sa bude diať a následne sa vie pozrieť
 či sa to skutočne stalo a aké to malo dôsledky. Takto si užívateľ môže prezrieť všetky zaujímavé
 prípady, ktoré môžu nastať a pochopiť aj zvyšné detaily algoritmu.
+
+Dokonca úžívateľ vie jednoducho ovplyvňovať to, ktoré prípady nastanú, nastavovaním rýchlostí
+jednotlivých správ.
 
 Taktiež sme rozmýšľali, či vieme nejak znázorniť, že algoritmus naozaj pošle očakávaný počet správ.
 Jedna vec je totiž povedať, že to bude $O(n\log n)$, na druhej strane máme však reálny počet správ,
