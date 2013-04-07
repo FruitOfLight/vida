@@ -3,7 +3,7 @@ Aby sme lepšie pochopili, čím sa naša vizualizácia zaoberá, ujasníme si n
 
 V našom ponímaní distribuovaných algoritmov, máme nasledovný výpočtový model.
 Uvažujme niekoľko počítačov, z ktorých sú niektoré dvojice spojené obojsmernou komunikačnou linkou.
-Inak povedané, počítače tvoria neorientovaný graf. Nayše kvôli povahe samotných algoritmov zväčša vyžadujeme,
+Inak povedané, počítače tvoria neorientovaný graf. Navyše kvôli povahe samotných algoritmov zväčša vyžadujeme,
 aby bol graf súvislý. Počet počítačov budeme označovať $n$ a počet liniek $m$.
 
 Do každého z týchto počítačov sa nahrá ten istý program a všetky sa naraz spustia. Programy si môžu
@@ -11,7 +11,7 @@ interne čokoľvek počítať a zároveň dokážu poslať správu po ľubovoľn
 vieme len to, že v konečnom čase dorazia na druhý koniec, a keď jeden počítač pošle po jednej linke
 viac správ, tak dorazia v tom istom poradí, v akom boli poslané. O poradí doručenia správ na rôznych
 linkách nevieme povedať nič a každá správa sa môže doručovať ľubovoľne dlho. Nemáme teda žiadne garancie, či
-správa dorazí do desať minút a kľudne sa môže stať, že niektoré správy prejdú tísícky hrán, zatiaľ čo
+správa dorazí do desať minút a kľudne sa môže stať, že niektoré správy prejdú tisícky hrán, zatiaľ čo
 iné len jednu.
 \footnote{G. Tel: Introduction to distributed algorithms, ( Chapter 2: Model ), Cambridge University
 Press, 1994,2000}
@@ -30,7 +30,7 @@ jeden z nich má nejakú informáciu a ostatné by sa ju tiež radi dozvedeli.
 
 Problém sa rieši pomerne priamočiaro, prvý počítač pošle správu všetkým susedom, a každý
 počítač, ktorý dostane správu, najprv skontroluje, či už niekedy správu posielal. 
-Ak ju ešte neposielal, pošle ju všetkým susedom s výjnimkou toho, od ktorého správa prišla.
+Ak ju ešte neposielal, pošle ju všetkým susedom s výnimkou toho, od ktorého správa prišla.
 
 Takto po každej linke prejde najviac jedna správa, čím dosiahneme optimálny výsledok $O(m)$ správ.
 
@@ -43,14 +43,14 @@ by sa totiž problém nedal riešiť kvôli symetrii.
 Počítače na začiatku poznajú len svoje $id$ a vidia $n-1$ portov očíslovaných číslami $1$ až $n-1$ v
 ľubovoľnom poradí (nevedia teda za akým portom je aký počítač). Následne sú programy spustené a môžu začať posielať správy.
 Chceme nájsť taký algoritmus, ktorý pre ľubovoľné identifikátory, časovanie správ a poradie
-portov, vždy skončí tak, že práve jeden počítač bude vedieť o sebe, že je šéf a ostatné budú vedieť, že nie sú šefovia.
+portov, vždy skončí tak, že práve jeden počítač bude vedieť o sebe, že je šéf a ostatné budú vedieť, že nie sú šéfovia.
 
 Dá sa dokázať, že každý takýto algoritmus musí poslať aspoň $O(n\log n)$ správ a my si povieme o
 jednom z takých, ktoré to dokážu.
 
 Tematika algoritmu je umiestnená do stredoveku, pretože počítače medzi sebou obrazne bojujú a snažia
 sa stať panovníkom čo najväčšieho počtu iných počítačov -- tí sa im stanú vazalmi. 
-Počítače môžu vyzvať iný počítač na súboj, a ak vyzívateľ vyhrá, porazený sa stáva jeho vazalom.
+Počítače môžu vyzvať iný počítač na súboj, a ak vyzývateľ vyhrá, porazený sa stáva jeho vazalom.
 
 Algoritmus teda funguje tak, že na to, aby sa stal počítač šéfom, musí mať $n-1$ vazalov (teda musí
 poraziť všetky ostatné počítače) a sám nesmie byť nikomu vazalom. Každý počítač je vazalom najviac 
@@ -68,11 +68,11 @@ Inak mu odpovie \verb!"Som tvojim vazalom"!. Pôvodný počítač si zvýši lev
 
 Druhá možnosť je, že sused už je vazalom nejakého počítača, vtedy požiada o pomoc svojho panovníka.
 Podľa levelu a $id$ panovníka sa rovnakým spôsobom rozhodne, či sa správa ignoruje, alebo 
-sa sused stane vazalom vyzívateľa a panovník sa stane porazeným (síce nebude nikoho vazalom, kým sa
+sa sused stane vazalom vyzývateľa a panovník sa stane porazeným (síce nebude nikoho vazalom, kým sa
 ho niekto priamo nepokúsi zajať, ale už nebude zajímať ďalších vazalov).
 
 Dôkaz, že sa pošle najviac $O(n\log n)$ správ sa dá skonštruovať jednoducho, keď si všimneme, 
-že počítačov s levelom $i$ može byť najviac $n/i$.
+že počítačov s levelom $i$ môže byť najviac $n/i$.
 \footnote{E. Korach, S. Moran, S. Zaks: Tight Lower and Upper Bounds for Some Distributed Algorithms
 for a Complete Network of Processors Proceedings of the third annual ACM symposium on Principles of
 distributed computing, August 1984, pp. 199-207}
@@ -84,7 +84,7 @@ slúži naša aplikácia.
 
 Traverzovanie sa podobá na broadcast, tiež je na začiatku jeden iniciátor -- proces, ktorý má token.
 Hlavný rozdiel je  v tom, že jediná správa, ktorú je možné poslať je token a ten može v každom
-okamihu existovať len jeden. Teda počítač, ktorý má v danej chívli token, ho môže poslať ľubovoľnému
+okamihu existovať len jeden. Teda počítač, ktorý má v danej chvíli token, ho môže poslať ľubovoľnému
 susedovi, čím token stratí.
 
 Na odhad toho, ktorý traverzovací algoritmus je ako dobrý, používame pojem $f(x)$-traverzovací
@@ -93,7 +93,7 @@ navštívených $min(n, x+1)$ procesov.\footnote{G. Tel: Introduction to distrib
 ), Cambridge University Press, 1994,2000}
 
 Takéto traverzovacie algoritmy majú aj tú výhodu, že ľahko usledujeme dianie algoritmu, tiež aj celkový počet odoslaných
-správi, čo vieme využiť pri návrhu zložitejších algoritmov (napríklad algoritmus
+správ, čo vieme využiť pri návrhu zložitejších algoritmov (napríklad algoritmus
 KKM\footnote{E.Korach, S.Kutten, S.Moran: A modular technique for the design of efficient
 distributed leader finding algoritmhs ACM Transactions on Programming Languages and Systems, 12(1),
 January 1990, pp. 84-101}).

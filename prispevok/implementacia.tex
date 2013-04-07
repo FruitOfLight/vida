@@ -17,7 +17,7 @@ treba umožniť užívateľovi si pohodlným spôsobom vytvárať a editovať gr
 plocha, kde v dobe keď nebeží žiaden algoritmus, môže pomocou myši meniť výzor grafu. Na spodnej
 lište je niekoľko tlačidiel, ktoré umožňujú užívateľovi prepínať si medzi možnosťami pridávanie,
 odstraňovanie alebo pohybovanie. S vybratým módom, môže užívateľ vykonávať danú operáciu na grafe.
-Takisto, existuje pár známych a často používaných typov grafov, ktoré si úživateľ môže zvoliť priamo
+Takisto, existuje pár známych a často používaných typov grafov, ktoré si užívateľ môže zvoliť priamo
 aj s danou veľkosťou grafu.
 
 Samozrejme najdôležitejšia časť je vizualizácia samotného algoritmu. Bolo dôležité aby to bolo čo
@@ -30,13 +30,13 @@ deje. Zo začiatku sme tieto informácie zobrazovali v okienku napravo, aby sme 
 grafu zbytočnými textami. Toto všeobecné okienko bolo však mimo grafu a bolo skoro nemožné sledovať
 čo sa deje vnútri grafu (kde ide aká správa) a zároveň si dávať pozor, čo vraví ktorý vrchol. Preto
 sme sa rozhodli, že informácie vrchola sa budú zobrazovať priamo pri vrchole vnútri grafu, čo sa
-nakoniec ukázalo, že nie je až tak zavadzajúce, hlavne ak tieto správy časom miznú. Ponechali sme aj
+nakoniec ukázalo, že až tak nezavadzá, hlavne ak tieto správy časom miznú. Ponechali sme aj
 panel naboku, ktorý má slúžiť, keď si chce užívateľ pozrieť, čo sa dialo v histórii. A tento panel
 nezavadzá, keďže je decentne skrytý a ukáže sa až na užívateľov príkaz.
 
 Pri distribuovaných algoritmoch nás zaujíma hlavne to, ako sa algoritmus presúva z jedného stavu do
 druhého na základe doručenej správy. Pod pojmom stav rozumiem naplnenie niektorých dôležitých
-premenných. Je teda zjavné, že je dôležité, aby úživateľ videl (alebo aspoň tušil), akú hodnotu majú
+premenných. Je teda zjavné, že je dôležité, aby užívateľ videl (alebo aspoň tušil), akú hodnotu majú
 tieto dôležité premenné. Dôležité premenné sú napríklad $id$ vrchola, či je živý alebo nie, jeho
 level \dots Vypisovať tieto premenné v bublinkách pri vrchole, by však zavadzalo, keďže je to
 informácia, ktorá je potrebná stále. Preto sme zvolili taký prístup, aby výzor vrcholu reprezentoval
@@ -51,12 +51,12 @@ Samozrejme, občas je dôležité aby sa užívateľ mohol pozrieť na skutočn�
 Preto si vie označiť vrchol, ktorý mu vo vedľajšom okienku ukáže premenné daného procesu.
 
 Poslednou dôležitou vlastnosťou, ktorú bolo treba užívateľovi poskytnúť je možnosť časovať si
-správy. Časovanie a poradie doručovania pošty do značnej formy ovplyňuje priebeh a je dôležité aby
+správy. Časovanie a poradie doručovania pošty do značnej formy ovplyvňuje priebeh a je dôležité aby
 mal užívateľ možnosť ovplyvňovať toto dianie. Tak si vie sám vyrábať rôzne obskurné prípady,
 poprípade svoj vlastný "worstcase".
 
-Počas vývoja aplikácie aj táto funckia prešla viacerími zmenami. Tak ako u všeobecných informácii
-začínala odelene od hlavného okna, v paneli kde sa zhromažďovali všetky správy. Avšak takisto sme sa
+Počas vývoja aplikácie aj táto funkcia prešla viacerými zmenami. Tak ako u všeobecných informácii
+začínala oddelene od hlavného okna, v paneli kde sa zhromažďovali všetky správy. Avšak takisto sme sa
 nakoniec rozhodli (vďaka Kuko), že bude lepšie to odtiaľ odstrániť, keďže sa to nedalo sledovať
 simultánne. Preto sme to vložili priamo do plochy, takže stačí vybrať správu, chytiť ju myškou a
 posunúť ju smerom, ktorým chceme. Samozrejme, že s ohľadom na výpočtový model kde pracujeme je
@@ -104,7 +104,7 @@ je však potrebné všetko vysvetliť aj pomocou popisu. Toto je zároveň jedin
 zatiaľ nevie robiť a je dostupná len pre nami robené programy. Uvažujeme však aj o tom, že v budúcnosti
 ju tiež umožníme ovplyvňovať užívateľom.
 
-Dôležité bolo zamyslieť sa nad tým, ako čo najnázorenejšie popísať, čo sa práve v algoritme deje.
+Dôležité bolo zamyslieť sa nad tým, ako čo najnázornejšie popísať, čo sa práve v algoritme deje.
 V tejto fáze sme si predstavovali, ako by sme dané algoritmy vysvetľovali niekomu inému, dokonca sme si to priamo
 vyskúšali na sústredení KSP. Zhodnotili sme, že vysvetľovanie prebieha náčrtom hlavnej myšlienky,
 teda čo je cieľ, ktorý sa každý program snaží dosiahnuť. Následne sme vysvetľovali jednotlivé prípady, ktoré
@@ -118,7 +118,7 @@ diať ďalej. Toto umožňuje užívateľovi sa pripraviť na to, čo sa bude di
 či sa to skutočne stalo a aké to malo dôsledky. Takto si užívateľ môže prezrieť všetky zaujímavé
 prípady, ktoré môžu nastať a pochopiť aj zvyšné detaily algoritmu.
 
-Dokonca úžívateľ vie jednoducho ovplyvňovať to, ktoré prípady nastanú, nastavovaním rýchlostí
+Dokonca užívateľ vie jednoducho ovplyvňovať to, ktoré prípady nastanú, nastavovaním rýchlostí
 jednotlivých správ.
 
 Taktiež sme rozmýšľali, či vieme nejak znázorniť, že algoritmus naozaj pošle očakávaný počet správ.
@@ -128,8 +128,8 @@ ktoré sa pošlú. A keď pošle algoritmus $100$ správ nedá sa veľmi dobre u
 
 Tento konkrétny problém sme riešili hlavne v algoritme na hľadanie šéfa v úplnom grafe. Namiesto
 zložitého rozpisovania dôkazu sme zobrali jeho hlavnú myšlienku a pokúsili sa ju názorne ukázať.
-Hlavná myšlienka spočíva v tom, že vrcholov na nejakom stupni je najviac niekoľko. Preto počas behu
+Hlavná myšlienka spočíva v tom, že vrcholov na nejakom leveli je najviac niekoľko. Preto počas behu
 algoritmu počítame počet vrcholov na danom leveli. Následne ukážeme, že ich je menej ako očakávaný
 počet z čoho vyplýva daná zložitosť. Samozrejme nie je to exaktný dôkaz, ale dáva to užívateľovi
-hlbšie pochopenie na príkladoch. Môže sa napríklad snažiť vytvoriť čo najhorší prípad aby sa
+hlbšie pochopenie na príkladoch. Môže sa napríklad snažiť pomocou časovania správ, vytvoriť čo najhorší prípad aby sa
 presvedčil, že aj na ňom to funguje.
