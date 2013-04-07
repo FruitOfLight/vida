@@ -174,6 +174,8 @@ public class GUI {
             model = new LeaderElectionModel();
         else if (modelTyp == ModelType.BC)
             model = new BroadcastModel();
+        else if (modelTyp == ModelType.TR)
+            model = new TraversalModel();
         controls.setModel(model);
     }
 
