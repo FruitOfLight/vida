@@ -12,9 +12,7 @@ vieme len to, že v konečnom čase dorazia na druhý koniec, a keď jeden poč�
 viac správ, tak dorazia v tom istom poradí, v akom boli poslané. O poradí doručenia správ na rôznych
 linkách nevieme povedať nič a každá správa sa môže doručovať ľubovoľne dlho. Nemáme teda žiadne garancie, či
 správa dorazí do desať minút a kľudne sa môže stať, že niektoré správy prejdú tisícky hrán, zatiaľ čo
-iné len jednu.
-\footnote{G. Tel: Introduction to distributed algorithms, ( Chapter 2: Model ), Cambridge University
-Press, 1994,2000}
+iné len jednu \cite{tel2000}.
 
 Dôležitý parameter pri návrhu algoritmu pracujúcom v tomto modeli, je počet správ, ktoré sa dokopy
 pošlú počase jeho behu. Pochopiteľne sa snažíme aby sa v najhoršom prípade poslalo čo najmenej
@@ -92,14 +90,11 @@ susedovi, čím token stratí.
 
 Na odhad toho, ktorý traverzovací algoritmus je ako dobrý, používame pojem $f(x)$-traverzovací
 algoritmus, čo znamená, že je to traverzovací algoritmus a $f(x)$ pohyboch tokenu sa bolo
-navštívených $min(n, x+1)$ procesov.\footnote{G. Tel: Introduction to distributed algorithms, ( Section 6.3, 6.4: Traversal, DFS
-), Cambridge University Press, 1994,2000}
+navštívených $min(n, x+1)$ procesov \cite{tel2000}.
 
 Takéto traverzovacie algoritmy majú aj tú výhodu, že ľahko usledujeme dianie algoritmu, tiež aj celkový počet odoslaných
 správ, čo vieme využiť pri návrhu zložitejších algoritmov (napríklad algoritmus
-KKM\footnote{E.Korach, S.Kutten, S.Moran: A modular technique for the design of efficient
-distributed leader finding algoritmhs ACM Transactions on Programming Languages and Systems, 12(1),
-January 1990, pp. 84-101}).
+KKM \cite{korach1990}.
 
 My sme implementovali jednoduchý traverzovací algoritmus pre všeobecné grafy, fungujúci ako 
 prehľadávanie do hĺbky. Pre ilustráciu sa snaží jeden vrchol zistiť súčet identifikátorov ostatných
