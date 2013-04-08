@@ -64,14 +64,14 @@ poraziť všetky ostatné počítače) a sám nesmie byť nikomu vazalom. Každ�
 jedného počítača. Z tohto vyplyva, že šéf bude najviac jeden. Navyše si označme level $=$ počet vazalov.
 
 Na začiatku sa chce každý počítač stať šéfom a teda snaží sa postupne získať vazalov. Pri každom
-pokuse o získanie vazala, pošle nejakému z tých susedov, ktorých ešte nevyzýval, správu \verb!"Mám level x, id y a chcem ťa zajať."! 
+pokuse o získanie vazala pošle nejakému z tých susedov, ktorých ešte nevyzýval, správu \verb!"Mám level x, id y a chcem ťa zajať."! 
 
 Ak sused už nie je vazalom niekoho iného, lexikograficky porovná svoju dvojicu $(level, id)$ s
 dvojicou zo správy. 
 Ak je jeho dvojica väčšia, správu ignoruje a teda pôvodný počítač nikdy nezajme všetkých, čím
 zahynie jeho šanca stať sa šéfom. 
 Inak mu odpovie \verb!"Som tvojim vazalom"!. Pôvodný počítač si zvýši level a snaží sa zajať niekoho
-ďalšieho. Takto pokračuje, až kým sa nestane, že mu niekto neodpovie, alebo sa nestane šéfom.
+ďalšieho. Takto pokračuje, až kým mu niekto neodpovie, alebo sa nestane šéfom.
 
 Druhá možnosť je, že sused už je vazalom nejakého počítača, vtedy požiada o pomoc svojho panovníka.
 Podľa levelu a $id$ panovníka sa rovnakým spôsobom rozhodne, či sa správa ignoruje, alebo 
@@ -84,21 +84,18 @@ Dôkaz, že sa pošle najviac $O(n\log n)$ správ sa dá skonštruovať jednoduc
 for a Complete Network of Processors Proceedings of the third annual ACM symposium on Principles of
 distributed computing, August 1984, pp. 199-207}
  
-Neočakávame, že z tohoto popisu bude každému jasné, ako algoritmus funguje. Na tento účel predsa
-slúži naša aplikácia.
-
 \subsection{Traverzovanie}
 
 Traverzovanie sa podobá na broadcast, tiež je na začiatku jeden iniciátor -- proces, ktorý má token.
-Hlavný rozdiel je  v tom, že jediná správa, ktorú je možné poslať je token a ten može v každom
-okamihu existovať len jeden. Teda počítač, ktorý má v danej chvíli token, ho môže poslať ľubovoľnému
+Hlavný rozdiel je  v tom, že jediná správa, ktorú je možné poslať, je token, a ten može v každom
+okamihu existovať len jeden. Počítač, ktorý má v danej chvíli token, ho môže poslať ľubovoľnému
 susedovi, čím token stratí.
 
 Na odhad toho, ktorý traverzovací algoritmus je ako dobrý, používame pojem $f(x)$-traverzovací
-algoritmus, čo znamená, že je to traverzovací algoritmus a $f(x)$ pohyboch tokenu sa bolo
-navštívených $min(n, x+1)$ procesov \cite{tel2000}.
+algoritmus, čo znamená, že je to traverzovací algoritmus a po $f(x)$ pohyboch tokenu sa navštívilo
+$min(n, x+1)$ procesov \cite{tel2000}.
 
-Takéto traverzovacie algoritmy majú aj tú výhodu, že ľahko usledujeme dianie algoritmu, tiež aj celkový počet odoslaných
+Takéto traverzovacie algoritmy majú aj tú výhodu, že ľahko usledujeme dianie algoritmu a celkový počet odoslaných
 správ, čo vieme využiť pri návrhu zložitejších algoritmov (napríklad algoritmus
 KKM \cite{korach1990}.
 

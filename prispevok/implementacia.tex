@@ -1,7 +1,5 @@
 \section{Implementácia}
 
-Projekt ViDA vznikol ako ročníkový projekt a nevychádzal zo žiadnych predošlých prác alebo
-projektov. Ako to vyzerá, môžete vidieť na obrázkoch.
 Naším prvoradým cieľom, bolo zabezpečiť prehľadnú vizualizáciu a tiež jednoduché
 používanie aplikácie.
 
@@ -22,56 +20,56 @@ okienko s dodatkovými informáciami o vrchole, teraz len s hodnotou id.}
 Pri distribuovaných algoritmoch sa bavíme o sieti počítačov, ktoré medzi sebou komunikujú --
 posielajú si medzi sebou správy. Preto bolo prirodzené, aby sme si reprezentovali počítače a ich
 vzájomné zapojenie do siete ako graf. Každý vrchol je jeden počítač (proces) a správy sa presúvajú
-medzi počítačmi, len po hranách v danom grafe.
+medzi počítačmi, len po hranách.
 
 Keďže samotná sieť počítačov má veľký vplyv na vykonávanie daného algoritmu, v prvej fáze, bolo
-treba umožniť užívateľovi si pohodlným spôsobom vytvárať a editovať graf. Na to je určená hlavná
-plocha, kde v dobe keď nebeží žiaden algoritmus, môže pomocou myši meniť výzor grafu. Na spodnej
+treba umožniť užívateľovi si pohodlne vytvárať a editovať graf. Na to je určená hlavná
+plocha, kde v dobe, keď nebeží žiaden algoritmus, môže pomocou myši meniť výzor grafu. Na spodnej
 lište je niekoľko tlačidiel, ktoré umožňujú užívateľovi prepínať si medzi možnosťami pridávanie,
-odstraňovanie alebo pohybovanie. S vybratým módom, môže užívateľ vykonávať danú operáciu na grafe.
-Takisto, existuje pár známych a často používaných typov grafov, ktoré si užívateľ môže zvoliť priamo
+odstraňovanie alebo pohybovanie. S vybratým módom môže užívateľ vykonávať danú operáciu na grafe.
+Existuje tiež pár známych a často používaných typov grafov (napr. klika, cyklus, mriežka), ktoré si užívateľ môže zvoliť priamo
 aj s danou veľkosťou grafu.
 
-Samozrejme najdôležitejšia časť je vizualizácia samotného algoritmu. Bolo dôležité aby to bolo čo
+Samozrejme najdôležitejšia časť je vizualizácia samotného algoritmu. Bolo dôležité, aby bola čo
 najprehľadnejšie a zároveň to dávalo dostatok informácií. Z viacerých možností, ktoré sme skúšali
 sme nakoniec vybrali bublinkový interface, kde všetky podstatné informácie sú zobrazované vo
 vyskakovacích bublinkách.
 
 Počas algoritmu jednotlivé procesy často oznamujú nejakú informáciu, aby dali najavo, čo sa v nich
 deje. Zo začiatku sme tieto informácie zobrazovali v okienku napravo, aby sme nezahltili priestor
-grafu zbytočnými textami. Toto všeobecné okienko bolo však mimo grafu a bolo skoro nemožné sledovať
+grafu zbytočným textom. Toto všeobecné okienko bolo však mimo grafu a bolo skoro nemožné sledovať
 čo sa deje vnútri grafu (kde ide aká správa) a zároveň si dávať pozor, čo vraví ktorý vrchol. Preto
-sme sa rozhodli, že informácie vrchola sa budú zobrazovať priamo pri vrchole vnútri grafu, čo sa
+sme sa rozhodli, že informácie vrcholu sa budú zobrazovať priamo pri vrchole, čo sa
 nakoniec ukázalo, že až tak nezavadzá, hlavne ak tieto správy časom miznú. Ponechali sme aj
 panel naboku, ktorý má slúžiť, keď si chce užívateľ pozrieť, čo sa dialo v histórii. A tento panel
 nezavadzá, keďže je decentne skrytý a ukáže sa až na užívateľov príkaz.
 
 Pri distribuovaných algoritmoch nás zaujíma hlavne to, ako sa algoritmus presúva z jedného stavu do
-druhého na základe doručenej správy. Pod pojmom stav rozumiem naplnenie niektorých dôležitých
+druhého na základe doručenej správy. Pod pojmom stav rozumieme naplnenie niektorých dôležitých
 premenných. Je teda zjavné, že je dôležité, aby užívateľ videl (alebo aspoň tušil), akú hodnotu majú
-tieto dôležité premenné. Dôležité premenné sú napríklad $id$ vrchola, či je živý alebo nie, jeho
+tieto dôležité premenné. Dôležité premenné sú napríklad $id$ vrcholu, či je živý alebo nie, 
 level \dots Vypisovať tieto premenné v bublinkách pri vrchole, by však zavadzalo, keďže je to
 informácia, ktorá je potrebná stále. Preto sme zvolili taký prístup, aby výzor vrcholu reprezentoval
 dané premenné.
 
-Keďže $id$ vrchola je jedna z najdôležitejších informácii, lebo je nezávislá od algoritmu, ktorý je
+Keďže $id$ vrcholu je jedna z najdôležitejších informácii, lebo je nezávislá od algoritmu, ktorý je
 spustený a teda často slúži na prelomenie určitej symetrie, táto hodnota sa vypisuje priamo vnútri
-vrchola. Ďalšie atribúty vrcholu sú jeho farba, alebo veľkosť. Preto naše vizualizácie často
-využívajú tieto vlastnosti a intuitívne ich spájajú s nejakou premenou. Napríklad mŕtvy proces zmení
-svoju farbu na červenú, alebo zväčšujúci sa level zväčšuje veľkosť vrchola.
+vrcholu. Ďalšie atribúty vrcholu sú jeho farba, alebo veľkosť. Naše vizualizácie často
+využívajú tieto vlastnosti a intuitívne ich spájajú s nejakou premennou. Napríklad mŕtvy proces zmení
+svoju farbu na červenú, alebo zväčšujúci sa level zväčšuje veľkosť vrcholu.
 Samozrejme, občas je dôležité aby sa užívateľ mohol pozrieť na skutočnú hodnotu danej premennej.
 Preto si vie označiť vrchol, ktorý mu vo vedľajšom okienku ukáže premenné daného procesu.
 
 Poslednou dôležitou vlastnosťou, ktorú bolo treba užívateľovi poskytnúť je možnosť časovať si
 správy. Časovanie a poradie doručovania pošty do značnej formy ovplyvňuje priebeh a je dôležité aby
 mal užívateľ možnosť ovplyvňovať toto dianie. Tak si vie sám vyrábať rôzne obskurné prípady,
-poprípade svoj vlastný "worstcase".
+poprípade snažiť sa zostrojiť najhorší prípad pre daný algoritmus.
 
 Počas vývoja aplikácie aj táto funkcia prešla viacerými zmenami. Tak ako u všeobecných informácii
-začínala oddelene od hlavného okna, v paneli kde sa zhromažďovali všetky správy. Avšak takisto sme sa
-nakoniec rozhodli (vďaka Kuko), že bude lepšie to odtiaľ odstrániť, keďže sa to nedalo sledovať
-simultánne. Preto sme to vložili priamo do plochy, takže stačí vybrať správu, chytiť ju myškou a
-posunúť ju smerom, ktorým chceme. Samozrejme, že s ohľadom na výpočtový model kde pracujeme je
+začínala oddelene od hlavného okna, v paneli, kde sa zhromažďovali všetky správy.
+Avšak opäť bol problém sledovať správy v grafe, správy zobrazené vo vedľajšom okne a súvis medzi
+nimi. V súčastnosti sa všetky správy vykresľujú priamo v grafe a dajú sa chytiť myšou a posunúť
+smerom, ktorým chceme. Samozrejme, že s ohľadom na výpočtový model, kde pracujeme, je
 nemožné aby sa správy na jednej linke predbiehali.
 
 \subsection{Knižnica vidalib}
@@ -101,7 +99,7 @@ taktiež posielať texty, ktoré sa majú vypisovať pri vrchole.
 
 Takisto sme zaviedli takzvané \verb!WatchVariables!. Sú to premenné, ktoré si užívateľ určí, že sú
 dôležité a chce, aby sa zobrazovali pri podrobnostiach vrcholu. K týmto premenným má
-prístup, cez našu knižnicu. Výnimkou je $id$ vrchola, ktoré je dané explicitne, nemožno ho
+prístup, cez našu knižnicu. Výnimkou je $id$ vrcholu, ktoré je dané explicitne, nemožno ho
 meniť a je zobrazované vždy. Samozrejme užívateľ môže používať ľubovoľné ďalšie premenné.
 
 Týmto dávame užívateľovi skoro taký istý arzenál na vizualizáciu, aký používame my. Dávame mu teda
