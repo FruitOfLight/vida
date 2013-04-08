@@ -13,9 +13,15 @@ Korach, E., Moran, S., and Zaks, S. (1984).
   complete network of processors.
 \newblock pages 199--207.
 
-\bibitem[Tel, 2000]{tel2000}
-Tel, G. (2000).
+\bibitem[Tel, 2000a]{tel2000}
+Tel, G. (2000a).
 \newblock {\em Introduction to distributed algorithms}.
 \newblock Cambridge university press.
+
+\bibitem[Tel, 2000b]{ghs}
+Tel, G. (2000b).
+\newblock {\em Introduction to distributed algorithms}, chapter Chapter 7 :
+  Election Algorithms.
+\newblock In \cite{tel2000}.
 
 \end{thebibliography}
