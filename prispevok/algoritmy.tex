@@ -1,7 +1,6 @@
 \section{Vybrané distribuované algoritmy}
-Aby sme lepšie pochopili, čím sa naša vizualizácia zaoberá, ujasníme si najskôr pojmy a problematiku.
 
-V našom ponímaní distribuovaných algoritmov, máme nasledovný výpočtový model.
+V našom ponímaní distribuovaných algoritmov, máme nasledovný výpočtový model \cite{tel2000}.
 Uvažujme niekoľko počítačov, z ktorých sú niektoré dvojice spojené obojsmernou komunikačnou linkou.
 Inak povedané, počítače tvoria neorientovaný graf. Navyše kvôli povahe samotných algoritmov zväčša vyžadujeme,
 aby bol graf súvislý. Počet počítačov budeme označovať $n$ a počet liniek $m$.
@@ -12,17 +11,17 @@ vieme len to, že v konečnom čase dorazia na druhý koniec, a keď jeden poč�
 viac správ, tak dorazia v tom istom poradí, v akom boli poslané. O poradí doručenia správ na rôznych
 linkách nevieme povedať nič a každá správa sa môže doručovať ľubovoľne dlho. Nemáme teda žiadne garancie, či
 správa dorazí do desať minút a kľudne sa môže stať, že niektoré správy prejdú tisícky hrán, zatiaľ čo
-iné len jednu \cite{tel2000}.
+iné len jednu.
 
-Dôležitý parameter pri návrhu algoritmu pracujúcom v tomto modeli, je počet správ, ktoré sa dokopy
-pošlú počase jeho behu. Pochopiteľne sa snažíme aby sa v najhoršom prípade poslalo čo najmenej
+Dôležitý parameter pri návrhu algoritmu pracujúcom v tomto modeli, je celkový počet odoslaných
+správ. Pochopiteľne, sa snažíme aby sa v najhoršom prípade poslalo čo najmenej
 správ.
 
 Momentálne sú v aplikácii implementované vizualizácie troch algoritmov.
 
 \subsection{Broadcast}
 
-Jedným z jednoduchších problémov, ktoré treba v distribuovaných algoritmoch riešiť je, ako 
+Jedným z jednoduchších problémov, ktoré treba v distribuovaných algoritmoch riešiť, je, ako 
 oznámiť nejakú správu všetkým počítačom (nielen susedom). Keď všetky počítače naštartujú, 
 jeden z nich má nejakú informáciu a ostatné by sa ju tiež radi dozvedeli.
 
@@ -36,11 +35,8 @@ Takto po každej linke prejde najviac jedna správa, čím dosiahneme optimálny
 \begin{figure*}
 \centering
 \includegraphics[width=2.01\columnwidth]{BFS.png}
-\caption{\emph{Softvér Gnarley Trees.} V ovládacom paneli dole môže užívateľ
-zvoliť operáciu a vstupnú hodnotu a sledovať priebeh algoritmu (monentálne vkladanie
-prvku 47). Užívateľ postupuje vlastným tempom  pomocou tlačidiel \uv{Ďalej}, prípadne
-\uv{Späť}. Vpravo je popis vykonávaných krokov; kliknutím na konkrétny krok v histórií
-sa môže užívateľ vrátiť.}
+\caption{\emph{Softvér ViDA.} Algoritmus BFS. Svetlomodré vrcholy označujú, že už počuli novú správu,
+zelené na ňu zatiaľ čakajú. Vpravo je odkrytý panel, kde si užívateľ môže prezrieť históriu výpisov.}
 \label{img:historia} 
 \end{figure*}
 %\includegraphics[width=8.5cm]{BFS.png}
@@ -63,9 +59,9 @@ V popise použijeme trocha stredovekú terminológiu. Počítače medzi sebou ob
 sa stať panovníkom čo najväčšieho počtu iných počítačov -- tí sa im stanú vazalmi. 
 Počítače môžu vyzvať iný počítač na súboj, a ak vyzývateľ vyhrá, porazený sa stáva jeho vazalom.
 
-Algoritmus teda funguje tak, že na to, aby sa stal počítač šéfom, musí mať $n-1$ vazalov (teda musí
+Na to, aby sa počítač stal šéfom, musí mať $n-1$ vazalov (teda musí
 poraziť všetky ostatné počítače) a sám nesmie byť nikomu vazalom. Každý počítač je vazalom najviac 
-jedného počítača. Z tohto vyplýva, že šéf bude najviac jeden. Navyše si označme level $=$ počet vazalov.
+jedného počítača. Z tohto vyplyva, že šéf bude najviac jeden. Navyše si označme level $=$ počet vazalov.
 
 Na začiatku sa chce každý počítač stať šéfom a teda snaží sa postupne získať vazalov. Pri každom
 pokuse o získanie vazala, pošle nejakému z tých susedov, ktorých ešte nevyzýval, správu \verb!"Mám level x, id y a chcem ťa zajať."! 
