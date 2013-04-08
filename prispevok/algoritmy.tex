@@ -52,7 +52,7 @@ Počítače na začiatku poznajú len svoje $id$ a vidia $n-1$ portov očíslova
 Chceme nájsť taký algoritmus, ktorý pre ľubovoľné identifikátory, časovanie správ a poradie
 portov, vždy skončí tak, že práve jeden počítač bude vedieť o sebe, že je šéf a ostatné budú vedieť, že nie sú šéfovia.
 
-Dá sa dokázať, že každý takýto algoritmus musí poslať aspoň $O(n\log n)$ správ a my si povieme o
+Dá sa dokázať\cite{korach1984}, že každý takýto algoritmus musí poslať aspoň $O(n\log n)$ správ a my si povieme o
 jednom z takých, ktoré to dokážu.
 
 V popise použijeme trocha stredovekú terminológiu. Počítače medzi sebou obrazne bojujú a snažia
@@ -61,7 +61,7 @@ Počítače môžu vyzvať iný počítač na súboj, a ak vyzývateľ vyhrá, p
 
 Na to, aby sa počítač stal šéfom, musí mať $n-1$ vazalov (teda musí
 poraziť všetky ostatné počítače) a sám nesmie byť nikomu vazalom. Každý počítač je vazalom najviac 
-jedného počítača. Z tohto vyplyva, že šéf bude najviac jeden. Navyše si označme level $=$ počet vazalov.
+jedného počítača. Z tohto vyplýva, že šéf bude najviac jeden. Navyše si označme level $=$ počet vazalov.
 
 Na začiatku sa chce každý počítač stať šéfom a teda snaží sa postupne získať vazalov. Pri každom
 pokuse o získanie vazala, pošle nejakému z tých susedov, ktorých ešte nevyzýval, správu \verb!"Mám level x, id y a chcem ťa zajať."! 
@@ -80,9 +80,7 @@ ho niekto priamo nepokúsi zajať, ale už nebude zajímať ďalších vazalov).
 
 Dôkaz, že sa pošle najviac $O(n\log n)$ správ sa dá skonštruovať jednoducho, keď si všimneme, 
 že počítačov s levelom $i$ môže byť najviac $n/i$.
-\footnote{E. Korach, S. Moran, S. Zaks: Tight Lower and Upper Bounds for Some Distributed Algorithms
-for a Complete Network of Processors Proceedings of the third annual ACM symposium on Principles of
-distributed computing, August 1984, pp. 199-207}
+\cite{korach1984}
  
 Neočakávame, že z tohoto popisu bude každému jasné, ako algoritmus funguje. Na tento účel predsa
 slúži naša aplikácia.
