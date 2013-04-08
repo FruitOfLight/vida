@@ -169,11 +169,12 @@ class Message {
         g.scale(1.0 / Math.sqrt(GUI.graph.canvas.zoom), 1.0 / Math.sqrt(GUI.graph.canvas.zoom));
         g.translate(-x, -y);
 
-        g.setColor(gColor);
+        Color c = new Color(255, 180, 100);
+        g.setColor(c);
         g.fill(new RoundRectangle2D.Double(dx, dy, dw, dh, dr, dr));
-        g.setColor(Canvas.contrastColor(gColor, Constrast.borderbw));
+        g.setColor(Canvas.contrastColor(c, Constrast.borderbw));
         g.draw(new RoundRectangle2D.Double(dx, dy, dw, dh, dr, dr));
-        g.setColor(Canvas.contrastColor(gColor, Constrast.textbw));
+        g.setColor(Canvas.contrastColor(c, Constrast.textbw));
         g.drawString(info, (float) (dx + dr / 2), (float) (y - desc));
 
         g.setTransform(at);
