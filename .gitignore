@@ -37,3 +37,14 @@
 Icon?
 ehthumbs.db
 Thumbs.db
+
+# Temporary files #
+###################
+*.swp
+*~
+
+# .in files #
+#############
+settings.in
+graf.in
+program.in

@@ -1,0 +1,61 @@
+% !Mode:: "TeX::UTF-8"
+\documentclass{svk_long_sk}
+
+\begin{document}
+\title{ViDA: Vizualizácia distribuovaných algoritmov}
+
+\author{Michal Anderle\inst{1}
+\email{zaba@ksp.sk}
+\and 
+Ján Hozza\inst{1}
+\email{janoh@ksp.sk}}
+
+\supervisor{Jakub Kováč\inst{2}
+\email{kuko@ksp.sk}}
+
+%% nasleduje kratka verzia nazvu clanku a 
+%% zoznam autorov (bez krstnych mien)
+%% tieto informacie sa zobrazuju v hlavicke
+\titlerunning{ViDA}
+\authorrunning{Hozza and Anderle}
+
+\institute{
+Katedra informatiky,
+FMFI UK,
+Mlynská Dolina
+842~48~Bratislava
+\and
+Katedra informatiky,
+FMFI UK,
+Mlynská Dolina
+842~48~Bratislava}
+
+\maketitle
+
+\input abstract.tex
+
+\input uvod.tex
+
+\input algoritmy.tex
+
+\input implementacia.tex
+
+\input plany.tex
+
+
+\section*{Poďakovanie}
+Neďakujeme FMFI UK za podporu.
+
+\nocite{*}
+\bibliographystyle{apalike}
+\bibliography{references}
+
+%% citacie ulozte do suboru references.bib
+%% na populaciu zoznamu literatury pouzite program
+%%
+%% bibtex references
+%%
+%% po ktorom je potrebne dokument znova zlatexovat
+
+\end{document}
+

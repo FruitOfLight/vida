@@ -1,0 +1,1 @@
+rm gui-buttons-*/*png

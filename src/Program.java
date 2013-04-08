@@ -4,6 +4,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
+
+//TODO bugfix, ked program posle na neexistujuci port
 
 /*
  * Trieda starajuca sa o komunikaciu medzi nasim programom a spustenymi procesmi
@@ -21,12 +25,15 @@ public class Program extends Thread {
     OutputStream input;
     PrintWriter in;
 
+    boolean exited;
+
     public Program(Vertex v, Model m) {
         super();
         vertex = v;
         vertex.program = this;
         running = false;
-        this.id = 0;
+        exited = false;
+        this.id = vertex.getID();
         ports = new ArrayList<Integer>();
         for (int i = 0; i < v.edges.size(); ++i) {
             ports.add(i);
@@ -38,14 +45,35 @@ public class Program extends Thread {
         super.run();
         System.out.println("bezim " + id);
         try {
-            BufferedReader out = new BufferedReader(new InputStreamReader(
-                    output));
+            BufferedReader out = new BufferedReader(new InputStreamReader(output));
             String line;
             running = true;
             while ((line = out.readLine()) != null) {
                 if (line.charAt(0) == '@') {
                     String[] parts = line.substring(1).split(":", 2);
-                    send(Integer.parseInt(parts[0].trim()), parts[1].trim());
+                    if (GUI.model.canSendMessage(vertex, Integer.parseInt(parts[0].trim())))
+                        send(Integer.parseInt(parts[0].trim()), parts[1].trim());
+                }
+                if (line.charAt(0) == '#') {
+                    int p = 1;
+                    while (line.charAt(p) == '#')
+                        p++;
+                    GUI.informationPanel.printInformation(vertex, line.substring(1).trim());
+                    vertex.shout(line.substring(1).trim(), p);
+                }
+                if (line.charAt(0) == '$') {
+                    String parts[] = line.substring(1).split(":", 2);
+                    vertex.setVariable(parts[0].trim(), parts[1].trim());
+                }
+                if (line.charAt(0) == '%') {
+                    GUI.model.pauseFromProcess(vertex);
+                }
+                if (line.charAt(0) == '*' && GUI.model.algorithm != null) {
+                    GUI.model.algorithm.recieveUpdate(vertex, line.substring(1).trim());
+                }
+                if (line.charAt(0) == '&' && !exited) {
+                    exited = true;
+                    GUI.model.processExit(line.substring(1).trim(), vertex);
                 }
             }
             out.close();
@@ -54,7 +82,7 @@ public class Program extends Thread {
         }
     }
 
-    public void load(String path) {
+    public void load(String path, int initValue) {
         try {
             System.err.println("Loading... " + path);
             process = Runtime.getRuntime().exec(path);
@@ -64,7 +92,7 @@ public class Program extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.init();
+        this.init(initValue);
         this.start();
     }
 
@@ -76,37 +104,37 @@ public class Program extends Thread {
     }
 
     // program sa dozvie pociatocne hodnoty, ako napriklad pocet portov
-    public void init() {
+    public void init(int initValue) {
         // pocet portov a ich hodnoty
-        System.out.print("* ports : " + ports.size());
-        for (int p : ports) {
-            System.out.print(" " + p);
-        }
-        System.out.println();
-
         in.print("* ports : " + ports.size());
-        for (int p : ports) {
+        ArrayList<Integer> portsz = new ArrayList<Integer>();
+        for (Integer i : ports)
+            portsz.add(i);
+        long seed = System.nanoTime();
+        Collections.shuffle(portsz, new Random(seed));
+        for (int p : portsz) {
             in.print(" " + p);
         }
         in.println();
 
+        // id
+        // TODO skontrolovat anonymitu
+        in.println("* id : " + id);
+        in.println("* initvalue : " + initValue);
+        in.println("* start");
         in.flush();
     }
 
     public void send(int port, String content) {
-        System.err.println("send " + id + " " + port + " " + content);
-
         // svoj port zmenim na port vrchola
         // TODO spravit efektivnejsie nez cez indexOf
         port = ports.indexOf(port);
         vertex.send(new Message(port, content));
     }
 
-    public void recieve(Message message) {
-        System.err.println("recieve " + id + " " + message.toPort + " "
-                + message.content);
-
-        in.println("@ " + ports.get(message.toPort) + " : " + message.content);
+    public void receive(Message message) {
+        GUI.model.statisticMessage();
+        in.println("@ " + ports.get(message.toPort) + " : " + message.rawContent);
         in.flush();
     }
 }

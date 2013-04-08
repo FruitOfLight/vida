@@ -1,24 +1,35 @@
 import java.io.File;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.JFileChooser;
 
 public class Menu {
 
-    static final String[] menuItems = { "Graph", "Model" };
-    static final String[][] allMenuItems = {
-            { "New", "Open", "Save", "--", "Quit" }, { "Run", "Stop" }, };
+    static final String[] menuItems = { "App", "Graph", "Program", "Algorithm" };
+    static final String[][] allMenuItems = { { "Configure", "Quit" }, { "New", "Open", "Save" },
+            { "Open", "Settings" }, { "None", "LE on clique", "BFS" } };
 
     static void performAction(int r, int c) {
         switch (r) {
         case 0:
             switch (c) {
             case 0:
-                GUI.graph.vertices = new ArrayList<Vertex>();
-                GUI.graph.edges = new ArrayList<Edge>();
-                GUI.graphCanvas.repaint();
+                Dialog.showMessage("Nothing to do");
+                break;
+            case 1:
+                GUI.saveApp();
+                System.exit(0);
+                return;
+            default:
+                System.out.println("Invalid entry!");
+            }
+            break;
+
+        case 1:
+            switch (c) {
+            case 0:
+                GUI.graph.createNew();
                 break;
             case 1:
                 int value = GUI.graphLoader.showOpenDialog(null);
@@ -31,7 +42,7 @@ public class Menu {
                     } catch (Exception e) {
                         System.out.println("Exception during opening\n");
                     }
-                    GUI.graphCanvas.repaint();
+                    GUI.gRepaint();
                 }
                 break;
             case 2:
@@ -47,29 +58,43 @@ public class Menu {
                     }
                 }
                 break;
-            case 4:
-                System.exit(0);
-                return;
             default:
                 System.out.println("Invalid entry!");
             }
             break;
-        case 1:
+        case 2:
+            if (GUI.model.running != RunState.stopped)
+                break;
             switch (c) {
             case 0:
-                GUI.model.graph = GUI.graph;
-                GUI.model.load();
+                GUI.model.openProgram();
                 break;
             case 1:
-                GUI.model.stop();
+                GUI.model.settings.showDialog();
                 break;
             default:
-                System.out.println("Invalid entry!");
+                Dialog.showError("Not implemented");
+            }
+            break;
+        case 3:
+            if (GUI.model.running != RunState.stopped)
+                break;
+            switch (c) {
+            case 0:
+                GUI.model.algorithm = null;
+                break;
+            case 1:
+                GUI.model.algorithm = new CliqueLEAlgorithm();
+                break;
+            case 2:
+                GUI.model.algorithm = new BFSAlgorithm();
+                break;
+            default:
+                Dialog.showError("Not implemented");
             }
             break;
         default:
             System.out.println("Invalid entry!");
         }
     }
-
 }
