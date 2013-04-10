@@ -165,8 +165,11 @@ public class GUI {
     }
 
     public static void acceptSettings(ModelSettings settings) {
+        System.out.println("Gui is accepting new settings");
         graph.acceptSettings(settings);
+        System.out.println("graph accepted new settings");
         setModel(settings.getModel());
+        System.out.println("Gui accepted new settings");
     }
 
     public static void setModel(ModelType modelTyp) {

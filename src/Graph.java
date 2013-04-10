@@ -527,8 +527,9 @@ public class Graph implements Drawable {
     }
 
     public void acceptSettings(ModelSettings settings) {
-        for (int i = 0; i < vertices.size(); i++)
-            vertices.get(i).setID(getNewVertexID(i));
+        // zacykli sa pri odkomentovani        
+        //for (int i = 0; i < vertices.size(); i++)
+        //    vertices.get(i).setID(getNewVertexID(i));
     }
 
 }
