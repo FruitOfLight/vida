@@ -1,0 +1,72 @@
+% !Mode:: "TeX::UTF-8"
+\documentclass[myposter,portrait]{sciposter}
+
+%% uzitocne package
+\usepackage{multicol}
+\usepackage{color}
+\usepackage{graphicx}
+
+%% znaky s diakritikou
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[slovak]{babel} % slovenske delenie slov
+
+%% definicia farieb
+%\definecolor{mainCol}{rgb}{0.91,0.82,0.74} % farba pozadia poseru
+%\definecolor{sectionCol}{rgb}{0,0,0} % farba nadpisu
+%\definecolor{textCol}{rgb}{0.2,0,0} % farba hlavneho textu
+%\definecolor{BoxCol}{rgb}{1,1,0.8} % farba boxu okolo nadpisov
+
+\definecolor{mainCol}{rgb}{0.51,0.92,0.54} % farba pozadia poseru
+\definecolor{sectionCol}{rgb}{0,0,0} % farba nadpisu
+\definecolor{textCol}{rgb}{0.2,0,0} % farba hlavneho textu
+\definecolor{BoxCol}{rgb}{1,1,0.8} % farba boxu okolo nadpisov
+
+\def\mysection#1{
+{\color{sectionCol}\section*{\sc\bfseries #1}}}
+
+\begin{document}
+\setlength{\logowidth}{20cm}
+\setlength{\titlewidth}{\textwidth}
+\addtolength{\titlewidth}{-\logowidth}
+\rightlogo[0.9]{fmfilogo-farebne}
+\useleftlogofalse
+
+\color{textCol}
+
+\title{ViDA: Vizualizácia distribuovaných algoritmov}
+\author{Michal Anderle$^1$, Ján Hozza$^1$\\
+        Supervisor: Jakub Kováč$^1$}
+\institute{%
+$^1$ Katedra informatiky FMFI UK, Mlynská Dolina, 842~48~Bratislava\\
+}
+\maketitle
+
+\begin{multicols*}{3}
+
+\input uvod.tex
+
+\input implementacia.tex
+
+\mysection{Úvod}
+Here we show how easy it is to prepare a poster for ŠVK.
+There are some differences in preparing a poster compared to
+preparing a paper:
+
+\begin{itemize}
+\item use \emph{less text}, since people are not going to stand
+      in front of your poster forever and read all your text,
+\item use \emph{more figures}, because they quickly draw the
+      eye of the reader to the most important points on your poster,
+\item use \emph{simple structure} (no numbered theorems, subsections,
+      or numbered figures)
+\item cite onle \emph{the most important references}
+\end{itemize}
+
+%% zoznam literatury
+\bibliographystyle{apalike}
+\bibliography{references}
+
+\end{multicols*}
+\end{document}
+
