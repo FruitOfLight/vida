@@ -225,7 +225,7 @@ class Message {
             double x2 = (edge.to.getX() - edge.from.getX());
             double y2 = (edge.to.getY() - edge.from.getY());
             double prod = (x1 * x2 + y1 * y2) / Math.sqrt(x2 * x2 + y2 * y2);
-            force = Math.min(100.0, Math.max(prod / 10, -100.0)) * factor;
+            force = Math.min(100.0, Math.max(prod / 10, -100.0)) / factor;
         }
 
         if ((prevM != null) && (prevM.position - position < defDist)) {

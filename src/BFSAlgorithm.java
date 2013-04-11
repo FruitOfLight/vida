@@ -25,14 +25,14 @@ public class BFSAlgorithm implements Algorithm {
     public void startAlgorithm() {
         generalInfo.addInformation(
                 "At the begining of this algorithm, one process know new gossip."
-                        + "He wants to share gossip with everyone else. That means,"
-                        + "he send message to each neighbor.", -2);
+                        + "He wants to share gossip with everyone else. That means, "
+                        + "he sends message to each neighbor.", -2);
         GUI.model.pause();
     }
 
     public void finishAlgorithm(Vertex v) {
         generalInfo.addInformation(
-                "All processes known the new gossip. Total number of send messages is"
+                "All processes know the new gossip. Total number of send messages is"
                         + GUI.model.overallMessageCount, -1);
         generalInfo.addInformation("Press 'R' to continue.", -1);
     }
@@ -47,8 +47,8 @@ public class BFSAlgorithm implements Algorithm {
                     .addInformation(
                             "Process with id "
                                     + values[1]
-                                    + " recieve new gossip. He wants to spread it, so he send gossip to each neighbor"
-                                    + " except one, who send him this gossip.", -2);
+                                    + " recieved new gossip. He wants to spread it, so he sends gossip to each neighbor"
+                                    + " except the one, who sent him this gossip.", -2);
             recieve = true;
             GUI.model.pause();
         }
@@ -59,8 +59,8 @@ public class BFSAlgorithm implements Algorithm {
                     .addInformation(
                             "Process "
                                     + values[1]
-                                    + " recieve gossip. But he seen this gossip before."
-                                    + " He ignore this message, because he send this gossip to his neighbor already.",
+                                    + " recieved gossip. But he seen this gossip before."
+                                    + " He ignores this message, because he has already sent the gossip to his neighbors.",
                             -2);
             old = true;
             GUI.model.pause();

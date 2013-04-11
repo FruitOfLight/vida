@@ -21,7 +21,7 @@ void recieve(int port, string message) {
    setSValue("information","known");
    setSValue("_vertex_color","100,200,255");
    char inf[100];
-   sprintf(inf,"I recieve new gossip, must tell to everyone.");
+   sprintf(inf,"I recieved new gossip, I must tell everyone.");
    sendInformation(string(inf));
    char up[100];
    sprintf(up,"recieve:%d",id);
