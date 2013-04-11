@@ -1,12 +1,19 @@
 \mysection{Distribuované algoritmy}
 
+Vlastnosti modelu:
 \begin{itemize}
     \item niekoľko počítačov zapojených do siete obojsmernými linkami
     \item majú jednoznačné id, komunikujú len správami
     \item správy sa nestrácajú, nemenia poradie, ale môže im to trvať ľubovoľne dlho -- asynchrónna
     komunikácia
-
 \end{itemize}
+
+Ciele:
+\begin{itemize}
+    \item poslať čo najmenej správ
+    \item minimalizovať dobu behu algoritmu
+\end{itemize}
+
 
 \includegraphics[width=\columnwidth]{spravy}
 
@@ -25,7 +32,23 @@
 
 %TODO aplikacia pred spustenim programu
 
-\mysection{B}
+
+\mysection{Spôsob vizualizácie}
+
+\begin{itemize}
+
+    \item 
+    \item informácie priamo v grafe -- intuitívne spojenie vizuálnych a hodnotových
+    vlastností, napr. veľkosť vrchola = level, farba vrchola = stav (napr. červený =
+    mŕtvy/porazený/neaktívny)
+    \item zobrazovanie udalostí priamo v grafe -- netreba vrtieť hlavou a hľadať, čo sa kde deje,
+    informácie sa zobrazujú tam, kde sa ich to týka, všetko pomocou \emph{vyskakovacích bubliniek}
+    \item interaktivita -- \emph{čo by sa stalo, keď\dots?} užívateľ môže priamo ovplyvňovať, čo sa
+    stane
+    \item detekcia a vystevlenie zaujímavých udalostí -- keď sa niečo stane, aplikácia sa pozastaví a vysvetlí
+    \emph{čo sa stalo? prečo sa to stalo? kde sa to stalo? čo sa bude diať ďalej?}
+
+\end{itemize}
 
 %TODO zobrazovanie informacii za behu
 
@@ -35,6 +58,20 @@
 
 %TODO popis konkretnych algoritmov
 
-\mysection{D}
+\mysection{Plány do budúcnosti}
+
+
+\begin{itemize}
+    \item ďalšie algoritmy
+    \begin{itemize}
+        \item GHS -- \emph{voľba šéfa na všeobecnom grafe}
+        \item KKM -- \emph{voľba šéfa s využitím traverzovania}
+        \item routing -- \emph{smerovanie dát v sieti. Kam poslať paket, aby sa dostal do cieľa?}
+        \item problém dohody
+    \end{itemize}
+    \item viac zábavy, viac interaktivity -- \emph{užívateľ sa môže zahrať na zákeráka a snažiť sa
+    donútiť algoritmus, aby poslal čo najviac správ}
+    \item viacero programovacích jazykov, viac nástrojov pre vizualizáciu
+\end{itemize}
 
 %TODO plany do buducnosti
