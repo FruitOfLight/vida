@@ -1,4 +1,4 @@
-\mysection{Navizualizované algoritmy}
+\mysection{Vizualizované algoritmy}
 
 \begin{itemize}
 
@@ -9,9 +9,13 @@
 
 \end{itemize}
 
+\begin{figure}
 \includegraphics[width=\columnwidth]{traverz}
+\vspace{-1cm}
 \caption{Traverzovanie -- graf sa prehľadáva pomocou jedinej správy, \emph{tokenu}. Zelené vrcholy
 sú nenavštívené, oranžové sú navštívené, červené sú úplne vybavené -- už preskúmali všetkých susedov}
+\vspace{-1cm}
+\end{figure}
 
     
 \mysection{Nástroje}
@@ -30,19 +34,12 @@ sú nenavštívené, oranžové sú navštívené, červené sú úplne vybaven�
     \end{itemize}
     \item selekcia -- zobrazovanie dodatočných informácií
     \item plánujú sa mnohé ďalšie
-
-
 \end{itemize}
+\vspace{-0.5cm}
 
 \mysection{Spôsob vizualizácie}
 
-\includegraphics[width=\columnwidth]{le}
-
 \begin{itemize}
-
-    \item informácie priamo v grafe -- intuitívne spojenie vizuálnych a hodnotových
-    vlastností, napr. veľkosť vrcholu = level, farba vrcholu = stav (napr. červený =
-    mŕtvy/porazený/neaktívny)
     \item zobrazovanie udalostí priamo v grafe -- netreba vrtieť hlavou a hľadať, čo sa kde deje,
     informácie sa zobrazujú tam, kde sa ich to týka, všetko pomocou \emph{vyskakovacích bubliniek}
     \item interaktivita -- \emph{čo by sa stalo, keby\dots?} užívateľ môže priamo ovplyvňovať, čo sa
@@ -50,13 +47,24 @@ sú nenavštívené, oranžové sú navštívené, červené sú úplne vybaven�
     \item detekcia a vysvetlenie zaujímavých udalostí -- keď sa niečo stane, aplikácia sa pozastaví
     a vysvetlí, 
     \emph{čo sa stalo? prečo sa to stalo? kde sa to stalo? čo sa bude diať ďalej?}
-
 \end{itemize}
 
-%TODO zobrazovanie informacii za behu
+\begin{figure}
+\includegraphics[width=\columnwidth]{le}
+\vspace{-1cm}
+\caption{Informácie priamo v grafe -- intuitívne spojenie vizuálnych a hodnotových
+vlastností, napr. veľkosť vrcholu = level, farba vrcholu = stav (napr. červený =
+mŕtvy/porazený/neaktívny). Algoritmus na voľbu šéfa}
+\end{figure}
 
+
+\begin{figure}
+\vspace{-1cm}
 \includegraphics[width=\columnwidth]{bfs}
+\vspace{-1cm}
 \caption{Zobrazovanie informácií v bublinkách. Algoritmus broadcast.}
+\vspace{-1cm}
+\end{figure}
 
 \mysection{Vlastné vizualizácie}
 
