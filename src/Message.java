@@ -227,18 +227,6 @@ class Message {
             double prod = (x1 * x2 + y1 * y2) / Math.sqrt(x2 * x2 + y2 * y2);
             force = Math.min(100.0, Math.max(prod / 10, -100.0)) / factor;
         }
-
-        if ((prevM != null) && (prevM.position - position < defDist)) {
-            force -= Math.pow(2 * (defDist - prevM.position + position) / defDist, 2);
-        }
-        if ((nextM != null) && (position - nextM.position < defDist)) {
-            force += Math.pow(1.0 * (defDist - position + nextM.position) / defDist, 2);
-        }
-    }
-
-    public void move(long time) {
-        if (state == DeliverState.delivered)
-            return;
         double turbo = 1.0;
         switch (edge.getSpeed()) {
         case -2:
@@ -254,8 +242,24 @@ class Message {
             turbo = 50.0;
             break;
         }
+        force *= turbo * factor;
+        GUI.model.listenSpeed(force);
 
-        double speed = turbo * GUI.model.getSendSpeed() * time * 0.001 * force * factor;
+        if ((prevM != null) && (prevM.position - position < defDist)) {
+            force -= Math.pow(2 * (defDist - prevM.position + position) / defDist, 2);
+        }
+        if ((nextM != null) && (position - nextM.position < defDist)) {
+            force += Math.pow(1.0 * (defDist - position + nextM.position) / defDist, 2);
+        }
+
+    }
+
+    public void move(long time) {
+        if (state == DeliverState.delivered)
+            return;
+
+        double speed = GUI.model.getSpeedBalance() * GUI.model.getSendSpeed() * time * 0.001
+                * force;
         position += speed;
         if (position >= 1.0) {
             position = 1.0;

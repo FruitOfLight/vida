@@ -190,6 +190,7 @@ public class Model {
     }
 
     private double sendSpeed = 1.2;
+    private double speedBalance = 1.0, stableSpeedBalance = 1.0;
     static int fps, afps, sfps;
 
     void setSendSpeed(double speed) {
@@ -200,8 +201,31 @@ public class Model {
         return sendSpeed;
     }
 
+    void listenSpeed(double speed) {
+        speedBalance = Math.min(speedBalance, 0.5 / speed);
+    }
+
+    void refreshBalance(long time) {
+        if (running == RunState.paused) {
+            stableSpeedBalance *= Math.pow(0.99, time * 0.001);
+            return;
+        }
+        double p = Math.pow(0.1, time * 0.001);
+        stableSpeedBalance = p * stableSpeedBalance + (1 - p) * speedBalance;
+        speedBalance = 10.0;
+    }
+
+    double getSpeedBalance() {
+        return GUI.controls.get("p_auto-speed").isActive() ? stableSpeedBalance : 1;
+    }
+
     String getSendSpeedString(int length) {
-        String result = ((Double) getSendSpeed()).toString();
+        Double d = getSendSpeed();
+        if (length < 0) {
+            length *= -1;
+            d *= getSpeedBalance();
+        }
+        String result = d.toString();
         if (result.length() > length)
             result = result.substring(0, length);
         return result;
@@ -235,7 +259,12 @@ public class Model {
             // Spravy
             if (model.running != RunState.stopped) {
                 for (Edge edge : model.graph.edges)
-                    edge.queue.step(delay);
+                    edge.queue.force(delay);
+            }
+            model.refreshBalance(delay);
+            if (model.running != RunState.stopped) {
+                for (Edge edge : model.graph.edges)
+                    edge.queue.move(delay);
             }
             if (model.running == RunState.running)
                 BubbleSet.step(delay);

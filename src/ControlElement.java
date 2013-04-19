@@ -53,12 +53,16 @@ class ControlBuilder {
             box.addElement(new ControlClickButton(c, "p_slow", KeyEvent.VK_LEFT));
             box.addElement(new ControlClickButton(c, "p_fast", KeyEvent.VK_RIGHT));
             box.addElement(new ControlLabel(c, "running", 8));
-            box.addElement(csb = new ControlSwitchButton(c, "v_bubble-messages", KeyEvent.VK_1));
+            box.addElement(csb = new ControlSwitchButton(c, "p_auto-speed", KeyEvent.VK_1));
             csb.setSelected(true);
-            box.addElement(csb = new ControlSwitchButton(c, "v_bubble-all-vertices", KeyEvent.VK_2));
+            box.addElement(csb = new ControlSwitchButton(c, "v_auto-pause", KeyEvent.VK_2));
+            csb.setSelected(true);
+            box.addElement(csb = new ControlSwitchButton(c, "v_bubble-messages", KeyEvent.VK_3));
+            csb.setSelected(true);
+            box.addElement(csb = new ControlSwitchButton(c, "v_bubble-all-vertices", KeyEvent.VK_4));
             csb.addRadio("bubble", 1);
             csb.setSelected(true);
-            box.addElement(csb = new ControlSwitchButton(c, "v_bubble-important", KeyEvent.VK_3));
+            box.addElement(csb = new ControlSwitchButton(c, "v_bubble-important", KeyEvent.VK_5));
             csb.addRadio("bubble", 2);
             csb.setSelected(true);
             getBox("bottomBox").addElement(box);
@@ -66,6 +70,7 @@ class ControlBuilder {
             box.addElement(new ControlClickButton(c, "g_new", null));
             box.addElement(new ControlClickButton(c, "g_open", null));
             box.addElement(new ControlClickButton(c, "g_save", null));
+            box.addElement(new ControlSwitchButton(c, "g_lock-type", KeyEvent.VK_L));
             box.addElement(new ControlLabel(c, "graph", 8));
             getBox("topBox").addElement(box);
             box = new ControlBox(c, null);
@@ -351,11 +356,12 @@ class ControlLabel extends JLabel implements ControlElement {
         this.setSize(width * Controls.gridWidth, Controls.gridHeight);
         this.setVisible(false);
         this.setBorder(BorderFactory.createEmptyBorder());
+        controls.set(this.name, this);
     }
 
     @Override
     public int place(boolean visible, int x, int y) {
-        setText(controls.getContent(name));
+        refresh();
         setVisible(visible);
         if (visible)
             setLocation(x, y);
@@ -365,6 +371,10 @@ class ControlLabel extends JLabel implements ControlElement {
     @Override
     public boolean isActive() {
         return isVisible();
+    }
+
+    public void refresh() {
+        setText(controls.getContent(name));
     }
 
     @Override

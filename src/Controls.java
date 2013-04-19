@@ -104,12 +104,13 @@ public class Controls implements Drawable {
         } else if (name.equals("l_program")) {
             return model.programName.equals("") ? "none" : model.programName;
         } else if (name.equals("l_running")) {
+            String s = model.getSendSpeedString(5) + " : " + model.getSendSpeedString(-5);
             if (model.running == RunState.running)
-                return "Playing " + model.getSendSpeedString(5);
+                return "Playing " + s;
             else if (model.running == RunState.paused)
-                return "Paused (" + model.getSendSpeedString(5) + ")";
+                return "Paused (" + s + ")";
             else
-                return "Stopped (" + model.getSendSpeedString(5) + ")";
+                return "Stopped (" + s + ")";
         } else {
             return name;
         }
@@ -192,6 +193,14 @@ public class Controls implements Drawable {
         g.setColor(new Color(0, 0, 0));
         g.drawString("fps: " + Model.afps + ":" + Model.sfps + ":" + (int) Model.fps + " mc:"
                 + MessageQueue.messageCount, 10, 20);
+        try {
+            ((ControlLabel) get("l_graph")).refresh();
+            ((ControlLabel) get("l_program")).refresh();
+            ((ControlLabel) get("l_running")).refresh();
+        } catch (NullPointerException e) {
+            System.err.println("refreshing labels error ");
+            //e.printStackTrace();
+        }
     }
 
     Component hintElement;

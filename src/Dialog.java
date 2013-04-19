@@ -53,12 +53,12 @@ public class Dialog {
         private InputField[] inputFields = new InputField[2];
         private JLabel[] labels = new JLabel[2];
 
-        public DialogNewGraph(GraphType graphType) {
+        public DialogNewGraph(GraphType graphType, boolean force) {
             panel.setLayout(new GridLayout(4, 2, 5, 5));
             panel.add(new JLabel("Type "));
             choose.setSelectedIndex(graphType.ordinal());
             choose.addActionListener(this);
-            if (graphType != GraphType.any)
+            if (force && graphType != GraphType.any)
                 choose.setEnabled(false);
             panel.add(choose);
             for (int i = 0; i < 2; ++i) {
@@ -129,7 +129,7 @@ public class Dialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             Dialog.DialogNewGraph newGraphDialog = new Dialog.DialogNewGraph(
-                    GraphType.values()[chooseGraphType.getSelectedIndex()]);
+                    GraphType.values()[chooseGraphType.getSelectedIndex()], true);
             JOptionPane.showMessageDialog(null, newGraphDialog.getPanel(), "New graph",
                     JOptionPane.OK_CANCEL_OPTION);
             GUI.graph.createNew(newGraphDialog);

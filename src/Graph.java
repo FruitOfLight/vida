@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.TreeSet;
 
 import javax.swing.JOptionPane;
 
@@ -19,7 +20,7 @@ public class Graph implements Drawable {
     GraphListener listener;
 
     //
-    private GraphType type;
+    private GraphType type = GraphType.any;
 
     public GraphType getType() {
         return type;
@@ -211,14 +212,13 @@ public class Graph implements Drawable {
                 return false;
             }
         }
-        type = GraphType.any;
         Vertex vertex = new Vertex(x, y, ID);
         vertices.add(vertex);
+        edited();
         return true;
     }
 
     public void removeVertex(Vertex vertex) {
-        type = GraphType.any;
         ArrayList<Edge> delete = new ArrayList<Edge>();
         for (Edge edge : edges) {
             if (edge.from.equals(vertex)) {
@@ -234,10 +234,10 @@ public class Graph implements Drawable {
             edges.remove(edge);
         }
         vertices.remove(vertex);
+        edited();
     }
 
     public void createEdge(Vertex from, Vertex to) {
-        type = GraphType.any;
         if (from == null || to == null || from.equals(to)) {
             return;
         }
@@ -261,8 +261,13 @@ public class Graph implements Drawable {
         }
         Edge.connectOpposite(edgeFrom, edgeTo);
         // vrcholom hrany nepridavame, hrana sa im prida sama
+        edited();
+    }
 
-        GUI.gRepaint();
+    void removeEdge(Edge edge) {
+        edges.remove(edge);
+        edge.removeFromVertex();
+        edited();
     }
 
     Object getObject(double x, double y, Tool tool) {
@@ -306,12 +311,6 @@ public class Graph implements Drawable {
                     result = message;
             }
         return result;
-    }
-
-    void removeEdge(Edge edge) {
-        type = GraphType.any;
-        edges.remove(edge);
-        edge.removeFromVertex();
     }
 
     private static final String version = "Version 1.01";
@@ -399,7 +398,9 @@ public class Graph implements Drawable {
 
     public void createNew() {
         Dialog.DialogNewGraph newGraphDialog = new Dialog.DialogNewGraph(
-                GUI.model.settings.getGraphType());
+                (GUI.model.settings.getGraphType() == GraphType.any) ? type
+                        : GUI.model.settings.getGraphType(),
+                (GUI.model.settings.getGraphType() == GraphType.any) ? false : true);
         int ok = JOptionPane.showConfirmDialog(null, newGraphDialog.getPanel(), "New graph",
                 JOptionPane.OK_CANCEL_OPTION);
         if (ok == JOptionPane.OK_OPTION) {
@@ -411,6 +412,7 @@ public class Graph implements Drawable {
         emptyGraph();
         switch (newGraphDialog.getType()) {
         case 0:
+            type = GraphType.any;
             break;
         case 1:
             createClique(newGraphDialog.getInputValue(0), newGraphDialog.getEdges());
@@ -443,7 +445,7 @@ public class Graph implements Drawable {
         canvas.zoom = 1.0;
         vertices.clear();
         edges.clear();
-        type = GraphType.any;
+        edited();
     }
 
     private void createClique(int n, boolean edges) {
@@ -519,6 +521,48 @@ public class Graph implements Drawable {
             }
         }
         type = GraphType.grid;
+    }
+
+    private boolean checking = false;
+
+    public void edited() {
+        if (checking)
+            return;
+        System.out.println("edited");
+        checking = true;
+        boolean fix = (GUI.controls != null && GUI.controls.get("g_lock-type") != null && GUI.controls
+                .get("g_lock-type").isActive());
+        boolean correct = true;
+        switch (type) {
+        case any:
+            break;
+        case clique:
+            for (Vertex v : vertices) {
+                if (v.edges.size() < vertices.size() - 1) {
+                    TreeSet<Vertex> neighs = new TreeSet<Vertex>();
+                    for (Edge e : v.edges)
+                        neighs.add(e.to);
+                    for (Vertex u : vertices) {
+                        if (u != v && !neighs.contains(u))
+                            if (fix)
+                                createEdge(v, u);
+                            else
+                                correct = false;
+                    }
+                }
+            }
+            break;
+        case wheel:
+            break;
+        case cycle:
+            break;
+        case grid:
+            break;
+        }
+        if (!correct) {
+            type = GraphType.any;
+        }
+        checking = false;
     }
 
     public void setDefaultValues() {

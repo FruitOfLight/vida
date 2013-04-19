@@ -15,7 +15,7 @@ public class MessageQueue implements Drawable {
         bornlist = new LinkedList<Message>();
     }
 
-    public void step(long time) {
+    public void force(long time) {
         updateMessages();
         if (list.size() > 0) {
             double defdist = 1.0 / list.size();
@@ -32,10 +32,14 @@ public class MessageQueue implements Drawable {
             for (Message message : list) {
                 message.measure(time);
             }
+        }
+    }
+
+    public void move(long time) {
+        if (list.size() > 0) {
             for (Message message : list) {
                 message.move(time);
             }
-
             for (Message message : list) {
                 if (message.state == DeliverState.delivered)
                     continue;

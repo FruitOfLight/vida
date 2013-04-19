@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 
 import javax.swing.JOptionPane;
 
-public class Vertex {
+public class Vertex implements Comparable<Vertex> {
 
     private double x, y, radius;
     private int ID;
@@ -236,6 +236,20 @@ public class Vertex {
 
     public void removeEdge(Edge edge) {
         edges.remove(edge);
+    }
+
+    @Override
+    public int compareTo(Vertex v) {
+        if (this == v)
+            return 0;
+
+        if (this.x != v.x)
+            return ((Double) this.x).compareTo(v.x);
+        if (this.y != v.y)
+            return ((Double) this.y).compareTo(v.y);
+        if (this.ID != v.ID)
+            return ((Integer) this.ID).compareTo(v.ID);
+        return 0;
     }
 
 }
