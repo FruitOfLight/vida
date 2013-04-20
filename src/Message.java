@@ -217,15 +217,12 @@ class Message {
             force = 1;
         else
             force = 0;
-        if (selected > 0 && selected != 5) {
-            double x = edge.from.getX() * (1.0 - position) + edge.to.getX() * position;
-            double y = edge.from.getY() * (1.0 - position) + edge.to.getY() * position;
-            double x1 = GUI.graph.listener.xlast - x;
-            double y1 = GUI.graph.listener.ylast - y;
-            double x2 = (edge.to.getX() - edge.from.getX());
-            double y2 = (edge.to.getY() - edge.from.getY());
-            double prod = (x1 * x2 + y1 * y2) / Math.sqrt(x2 * x2 + y2 * y2);
-            force = Math.min(100.0, Math.max(prod / 10, -100.0)) / factor;
+
+        if ((prevM != null) && (prevM.position - position < defDist)) {
+            force -= Math.pow(2 * (defDist - prevM.position + position) / defDist, 2);
+        }
+        if ((nextM != null) && (position - nextM.position < defDist)) {
+            force += Math.pow(1.0 * (defDist - position + nextM.position) / defDist, 2);
         }
         double turbo = 1.0;
         switch (edge.getSpeed()) {
@@ -245,11 +242,15 @@ class Message {
         force *= turbo * factor;
         GUI.model.listenSpeed(force);
 
-        if ((prevM != null) && (prevM.position - position < defDist)) {
-            force -= Math.pow(2 * (defDist - prevM.position + position) / defDist, 2);
-        }
-        if ((nextM != null) && (position - nextM.position < defDist)) {
-            force += Math.pow(1.0 * (defDist - position + nextM.position) / defDist, 2);
+        if (selected > 0 && selected != 5) {
+            double x = edge.from.getX() * (1.0 - position) + edge.to.getX() * position;
+            double y = edge.from.getY() * (1.0 - position) + edge.to.getY() * position;
+            double x1 = GUI.graph.listener.xlast - x;
+            double y1 = GUI.graph.listener.ylast - y;
+            double x2 = (edge.to.getX() - edge.from.getX());
+            double y2 = (edge.to.getY() - edge.from.getY());
+            double prod = (x1 * x2 + y1 * y2) / Math.sqrt(x2 * x2 + y2 * y2);
+            force += Math.min(100.0, Math.max(prod / 10, -100.0)) / factor;
         }
 
     }

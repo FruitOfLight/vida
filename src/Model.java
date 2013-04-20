@@ -206,7 +206,7 @@ public class Model {
     }
 
     void listenSpeed(double speed) {
-        speedBalance = Math.min(speedBalance, 0.5 / speed);
+        speedBalance = Math.min(speedBalance, 0.5 / Math.abs(speed));
     }
 
     void refreshBalance(long time) {
@@ -214,9 +214,10 @@ public class Model {
             stableSpeedBalance *= Math.pow(0.99, time * 0.001);
             return;
         }
-        double p = Math.pow(0.1, time * 0.001);
-        stableSpeedBalance = p * stableSpeedBalance + (1 - p) * speedBalance;
-        speedBalance = 10.0;
+        //double p = Math.pow(0.1, time * 0.001);
+        //stableSpeedBalance = p * stableSpeedBalance + (1 - p) * speedBalance;
+        stableSpeedBalance = speedBalance;
+        speedBalance = 20.0;
     }
 
     double getSpeedBalance() {
