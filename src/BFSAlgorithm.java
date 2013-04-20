@@ -7,6 +7,11 @@ public class BFSAlgorithm implements Algorithm {
 
     public BFSAlgorithm() {
         this.defaultSettings();
+        GUI.model.setPath(getPath());
+    }
+
+    public String getPath() {
+        return "./algorithms/BFS.cpp";
     }
 
     public void defaultSettings() {

@@ -49,7 +49,7 @@ public class Edge {
 
     public boolean isNear(double x, double y, double zoom) {
         double distance = Math.abs(dist(x, y));
-        if (distance > 5.0 / Math.sqrt(zoom))
+        if (zoom >= 0 && distance > 5.0 / Math.sqrt(zoom))
             return false;
         double d = (from.getX() - to.getX()) * (from.getX() - to.getX())
                 + (from.getY() - to.getY()) * (from.getY() - to.getY());
@@ -58,6 +58,20 @@ public class Edge {
         if (d1 > d || d2 > d)
             return false;
         return true;
+    }
+
+    public double closedDist(double x, double y) {
+        double res = Math.abs(dist(x, y));
+        double p, d = Math.sqrt(Canvas.scalarProduct(from.getX() - to.getX(),
+                from.getY() - to.getY()));
+
+        if ((p = Canvas.scalarProduct(x - from.getX(), y - from.getY(), to.getX() - from.getX(),
+                to.getY() - from.getY())) < 0)
+            res += (-p) / d;
+        if ((p = Canvas.scalarProduct(x - to.getX(), y - to.getY(), from.getX() - to.getX(),
+                from.getY() - to.getY())) < 0)
+            res += (-p) / d;
+        return res;
     }
 
     public double dist(double x, double y) {

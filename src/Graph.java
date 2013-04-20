@@ -556,7 +556,6 @@ public class Graph implements Drawable {
         case cycle:
             for (Vertex v : vertices) {
                 if (v.edges.size() > 2) {
-                    System.out.println("vid " + v.getID());
                     if (fix)
                         for (Edge e : v.edges) {
                             if (e.to.edges.size() > 2) {
@@ -565,13 +564,41 @@ public class Graph implements Drawable {
                                     break;
                             }
                         }
-                    System.out.println("ves " + v.edges.size());
                     if (v.edges.size() > 2) {
                         correct = false;
                     }
                 }
+                if (v.edges.size() == 0) {
+                    if (fix) {
+                        Edge closest = null;
+                        for (Edge e : edges) {
+                            if (closest == null
+                                    || (closest.closedDist(v.getX(), v.getY()) > e.closedDist(
+                                            v.getX(), v.getY())))
+                                closest = e;
+                        }
+                        if (closest != null) {
+                            createEdge(closest.from, v);
+                            createEdge(closest.to, v);
+                            removeEdge(closest);
+                        }
+                    } else {
+                        correct = false;
+                    }
+                }
+                // moze nastat aj == 0 z predosleho pripadu
                 if (v.edges.size() < 2) {
-                    correct = false;
+                    if (fix)
+                        for (Vertex u : vertices) {
+                            if (u.edges.size() < 2) {
+                                createEdge(v, u);
+                                if (v.edges.size() >= 2)
+                                    break;
+                            }
+                        }
+                    if (v.edges.size() > 2) {
+                        correct = false;
+                    }
                 }
             }
             break;

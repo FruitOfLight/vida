@@ -105,7 +105,7 @@ public class Dialog {
         private JPanel panel = new JPanel();
 
         String[] graphTypes = { "Any", "Clique", "Cycle", "Grid", "Wheel" };
-        String[] modelTypes = { "Leader Election", "Broadcast", "Traversal" };
+        String[] modelTypes = { "Default", "Leader Election", "Broadcast", "Traversal" };
 
         private JComboBox<String> chooseGraphType, chooseModelType;
         private JComponent[] setters = new JComponent[Property.values().length];

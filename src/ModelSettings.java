@@ -19,7 +19,7 @@ enum GraphType {
 }
 
 enum ModelType {
-    LE, BC, TR
+    DEF, LE, BC, TR
 }
 
 public class ModelSettings {
@@ -89,7 +89,7 @@ public class ModelSettings {
         if (ok == JOptionPane.OK_OPTION) {
             newProgramSettings.apply(this);
             GUI.acceptSettings(this);
-            //GUI.graph.acceptSettings(this);
+            GUI.graph.acceptSettings(this);
         }
     }
 

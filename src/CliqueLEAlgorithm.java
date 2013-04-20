@@ -9,6 +9,11 @@ public class CliqueLEAlgorithm implements Algorithm {
 
     public CliqueLEAlgorithm() {
         this.defaultSettings();
+        GUI.model.setPath(getPath());
+    }
+
+    public String getPath() {
+        return "./algorithms/leaderElectionCliqueNlogN.cpp";
     }
 
     public void print(PrintStream out) {

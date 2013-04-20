@@ -10,9 +10,17 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Model {
+
     private String programPath = "";
     protected String binaryPath = "./box/program";
     String programName = "";
+
+    public void setPath(String path) {
+        programPath = path;
+        programName = programPath.substring(programPath.lastIndexOf('/') + 1,
+                programPath.lastIndexOf('.'));
+        compile();
+    }
 
     Graph graph;
     RunState running;
@@ -25,7 +33,6 @@ public class Model {
     int overallMessageCount;
 
     Model() {
-
         running = RunState.stopped;
         settings = new ModelSettings();
         programLoader = new JFileChooser("./algorithms/");
@@ -58,10 +65,7 @@ public class Model {
                     graph.emptyGraph();
                     GUI.gRepaint();
                 }
-                programPath = file.getPath();
-                programName = programPath.substring(programPath.lastIndexOf('/') + 1,
-                        programPath.lastIndexOf('.'));
-                compile();
+                setPath(file.getPath());
             }
 
             GUI.controls.refresh();

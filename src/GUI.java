@@ -173,6 +173,8 @@ public class GUI {
     }
 
     public static void setModel(ModelType modelTyp) {
+        if (modelTyp == ModelType.DEF)
+            model = new Model();
         if (modelTyp == ModelType.LE)
             model = new LeaderElectionModel();
         else if (modelTyp == ModelType.BC)
