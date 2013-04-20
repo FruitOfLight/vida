@@ -216,7 +216,8 @@ public class Model {
     }
 
     double getSpeedBalance() {
-        return GUI.controls.get("p_auto-speed").isActive() ? stableSpeedBalance : 1;
+        return (GUI.controls != null && GUI.controls.get("p_auto-speed") != null && GUI.controls
+                .get("p_auto-speed").isActive()) ? stableSpeedBalance : 1;
     }
 
     String getSendSpeedString(int length) {

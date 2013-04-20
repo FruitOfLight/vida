@@ -220,18 +220,11 @@ public class Graph implements Drawable {
 
     public void removeVertex(Vertex vertex) {
         ArrayList<Edge> delete = new ArrayList<Edge>();
-        for (Edge edge : edges) {
-            if (edge.from.equals(vertex)) {
-                edge.from.edges.remove(edge);
-                delete.add(edge);
-            }
-            if (edge.to.equals(vertex)) {
-                edge.to.edges.remove(edge);
-                delete.add(edge);
-            }
+        for (Edge edge : vertex.edges) {
+            delete.add(edge);
         }
         for (Edge edge : delete) {
-            edges.remove(edge);
+            edge.remove(this);
         }
         vertices.remove(vertex);
         edited();
@@ -265,8 +258,7 @@ public class Graph implements Drawable {
     }
 
     void removeEdge(Edge edge) {
-        edges.remove(edge);
-        edge.removeFromVertex();
+        edge.remove(this);
         edited();
     }
 
@@ -317,6 +309,7 @@ public class Graph implements Drawable {
 
     public void read(Scanner input) {
         emptyGraph();
+        checking = true;
         try {
             String line = input.nextLine();
             if (!line.equals(version)) {
@@ -338,6 +331,8 @@ public class Graph implements Drawable {
             System.err.println("Exception while loading graph");
             emptyGraph();
         }
+        checking = false;
+        edited();
         GUI.gRepaint();
     }
 
@@ -410,6 +405,7 @@ public class Graph implements Drawable {
 
     public void createNew(Dialog.DialogNewGraph newGraphDialog) {
         emptyGraph();
+        checking = true;
         switch (newGraphDialog.getType()) {
         case 0:
             type = GraphType.any;
@@ -430,6 +426,7 @@ public class Graph implements Drawable {
         case 5:
             break;
         }
+        checking = false;
         GUI.gRepaint();
     }
 
@@ -533,6 +530,7 @@ public class Graph implements Drawable {
         boolean fix = (GUI.controls != null && GUI.controls.get("g_lock-type") != null && GUI.controls
                 .get("g_lock-type").isActive());
         boolean correct = true;
+        print(System.out);
         switch (type) {
         case any:
             break;
@@ -553,15 +551,38 @@ public class Graph implements Drawable {
             }
             break;
         case wheel:
+            correct = false;
             break;
         case cycle:
+            for (Vertex v : vertices) {
+                if (v.edges.size() > 2) {
+                    System.out.println("vid " + v.getID());
+                    if (fix)
+                        for (Edge e : v.edges) {
+                            if (e.to.edges.size() > 2) {
+                                removeEdge(e);
+                                if (v.edges.size() <= 2)
+                                    break;
+                            }
+                        }
+                    System.out.println("ves " + v.edges.size());
+                    if (v.edges.size() > 2) {
+                        correct = false;
+                    }
+                }
+                if (v.edges.size() < 2) {
+                    correct = false;
+                }
+            }
             break;
         case grid:
+            correct = false;
             break;
         }
         if (!correct) {
             type = GraphType.any;
         }
+        print(System.out);
         checking = false;
     }
 

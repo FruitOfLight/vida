@@ -7,7 +7,8 @@ public class Edge {
 
     Vertex from, to;
     Edge oppositeEdge; // hrana z to do from
-    boolean selected, removed;
+    boolean selected;
+    private boolean removed;
     private int speed;
     MessageQueue queue;
 
@@ -47,8 +48,8 @@ public class Edge {
     }
 
     public boolean isNear(double x, double y, double zoom) {
-        double distance = dist(x, y);
-        if (distance > 20.0 / zoom)
+        double distance = Math.abs(dist(x, y));
+        if (distance > 5.0 / Math.sqrt(zoom))
             return false;
         double d = (from.getX() - to.getX()) * (from.getX() - to.getX())
                 + (from.getY() - to.getY()) * (from.getY() - to.getY());
@@ -60,28 +61,20 @@ public class Edge {
     }
 
     public double dist(double x, double y) {
-        double a1 = to.getY() - from.getY(), b1 = -to.getX() + from.getX(), c1;
-        c1 = -a1 * from.getX() - b1 * from.getY();
-
-        double a2 = b1, b2 = -a1, c2;
-        c2 = -a2 * x - b2 * y;
-        double x1, y1;
-        if (a1 == 0) {
-            y1 = (-c1 * a2 + a1 * c2) / (-b2 * a1 + b1 * a2);
-            x1 = (-c2 - b2 * y1) / (a2);
-        } else {
-            y1 = (-c2 * a1 + a2 * c1) / (-b1 * a2 + b2 * a1);
-            x1 = (-c1 - b1 * y1) / (a1);
-        }
-        return (y1 - y) * (y1 - y) + (x1 - x) * (x1 - x);
+        double s = Canvas.vectorProduct(from.getX() - x, from.getY() - y, to.getX() - x, to.getY()
+                - y);
+        double d = Math
+                .sqrt(Canvas.scalarProduct(from.getX() - to.getX(), from.getY() - to.getY()));
+        return s / d;
     }
 
-    public void removeFromVertex() {
+    public void remove(Graph graph) {
         if (removed)
             return;
         removed = true;
+        graph.edges.remove(this);
         from.removeEdge(this);
-        oppositeEdge.removeFromVertex();
+        oppositeEdge.remove(graph);
     }
 
     public void setSpeed(int speed) {

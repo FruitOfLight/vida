@@ -127,4 +127,16 @@ public class Canvas extends JPanel {
         }
         return (String[]) words.toArray(new String[words.size()]);
     }
+
+    public static double vectorProduct(double x1, double y1, double x2, double y2) {
+        return x1 * y2 - x2 * y1;
+    }
+
+    public static double scalarProduct(double x1, double y1, double x2, double y2) {
+        return x1 * x2 + y1 * y2;
+    }
+
+    public static double scalarProduct(double x, double y) {
+        return x * x + y * y;
+    }
 }
