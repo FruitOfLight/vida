@@ -1,0 +1,33 @@
+\nadpis{O. Batoh ( 7 ) }
+
+Balíme sa na sústredko. Máme $n$ vecí, každá z nich má objem $o_i$ a do batoha
+sa nám zmestia veci, ktorých objem dohromady nie je viac ako $m$ - celkový objem batoha.
+Každú vec si samozrejme môžem zobrať najviac raz.
+
+Aký najväčší objem vecí si môžeme zobrať?
+
+Pri výbere optimálneho riešenia rátajte s tým, že $m$ je rádovo toľko čo $n$.
+
+\vstup
+n = 3, m = 5
+2 2 2
+
+\vystup
+4
+
+\koniec
+
+\nadpis{vzorák}
+Dynamika - aký objem viem dosiahnuť, ak uvažujem len prvých $i$ vecí - $D[i][objem]$ je \emph{true/false}.
+Inicializácia $D[0][0] =$ \emph{true}.
+
+Update robím forcyklom, aby sa každá vec použila len raz, asi takto. Ak objem $(i+1)$-tej
+veci je $x$, tak pre všetky $v$ od $0$ po $m$,
+$D[i+1][v+x] |= D[i][v]$
+
+Na konci pozriem maximálne $v$, také, že $D[n][v]$ je true.
+
+Stačí mi pamätať si posledné dva sĺpce, takže pamäť vie byť lineárna.
+Dokonca to viem robiť celé v jednom jednorozmernom poli, len musím updatovať odzadu.
+
+T: $O(n \cdot m)$; S: $O(m)$.

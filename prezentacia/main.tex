@@ -1,0 +1,123 @@
+\documentclass{beamer}
+\usepackage{slovak}
+\usepackage[utf8]{inputenc}
+\usepackage{epsfig}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{url}
+\usepackage{color}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{verbatim}
+\usepackage{fancybox}
+\usepackage{tabularx}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage{fancyvrb}
+\usepackage{ksp-lst-utf8}
+
+\mode<presentation>
+{
+  \usetheme{Warsaw}
+  \usecolortheme{seahorse}
+  \usecolortheme{rose}
+  \setbeamercovered{transparent}
+}
+
+\title{ViDA: Vizualizácia distribuovaných algoritmov}
+
+%\uv{Zaba}
+\author{Michal Anderle \newline Ján Hozza}
+
+\date[ŠVK]{ŠVK -- 23. Apríl 2013}
+
+\begin{document}
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}
+    \frametitle{Distribuované algoritmy}
+
+    \begin{block}{Vlastnosti}
+        \begin{itemize}
+        \vfill\item niekoľko počítačov zapojených do siete obojsmernými komunikačnými linkami
+        \vfill\item komunikácia prebieha posielaním správ
+        \vfill\item správy sa nestrácajú, ale nie je garantovaná rýchlosť posielania --
+        asynchonizácia
+        \end{itemize}
+    \end{block}
+
+    \begin{block}{Ciele}
+        \begin{itemize}
+        \vfill\item procesy sa snažia spoločne vyriešiť daný problém
+        \vfill\item snaha poslať čo najmenej správ
+        \vfill\item klasické problémy -- voľba šéfa, broadcast, traverzovanie \dots
+        \end{itemize}
+    \end{block}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Hlavné ciele našej aplikácie}
+
+    \begin{block}{}
+        \begin{itemize}
+            \vfill\item jednoduché používanie
+            \vfill\item vizualizácie konkrétnych algoritmov s priblížením ich fungovanie
+            \vfill\item interaktivita s používateľom
+            \vfill\item možnosť naprogramovať si vlastné vizualizácie
+        \end{itemize}
+    \end{block}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Výzor a nástroje}
+
+    \begin{block}{}
+    \begin{itemize}
+        \vfill\item procesy a linky reprezentovné grafom
+        \vfill\item bublinkový interface na zobrazovanie informácií
+        \vfill\item grafické okno poskytujúce možnosť rýchleho editovania
+        \vfill\item možnosť časovania správ
+        \vfill\item neprehltenosť dátami -- menej podstatné informácie sa dajú zobrazovať dodatočne
+    \end{itemize}
+    \end{block}
+
+    %TODO obrazok
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Vizualizované algoritmy}
+
+    \begin{block}{}
+    \begin{itemize}
+        \vfill\item voľba šéfa na úplnom grafe s $O(n\log n)$ správami
+        \vfill\item distribuované BFS -- broadcast
+        \vfill\item distribuované DFS -- traverzovanie
+    \end{itemize}
+    \end{block}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Tvorba vlastných vizualizácií}
+
+    \begin{block}{}
+    \begin{itemize}
+        \vfill\item jednoduchá C++ knižnica vidalib
+        \vfill\item prístup ku všetkým vizualizačným nástrojom
+        \vfill\item možnosť nazrieť "pod pokrývku" jednotlivým algoritmom
+    \end{itemize}
+    \end{block}
+
+    %TODO obrazok
+
+\end{frame}
+
+%\listing{code/stack.cpp}
+%\includegraphics[height=0.5\textheight]{img/tree.png}
+
+\end{document}

@@ -1,0 +1,17 @@
+    \nadpis{Z}
+
+V pamäti máme uložené usporiadané pole A. Zistite, či
+v ňom existujú dva prvky také, že dajú súčet $K$.
+
+\vstup
+1 3 8 13 41
+16
+\vystup
+Ano
+\komentar
+Pozicie $2$ a $4$, lebo $3+13=16$.
+\koniec
+
+Riešenie: Pamätám si dva pointre, na začiatok a na koniec.
+Ak súčet čísel na ktoré ukazujú je menší ako $K$, zväčším prvý
+pointer, inak druhý. Ak medzi tým stretnem $K$ vyhral som.

@@ -1,0 +1,26 @@
+\nadpis{Z. Batoh ( 5 ) }
+
+Balíme sa na sústredko. Máme $n$ vecí, každá z nich má objem $o_i$ a do batoha
+sa nám zmestia veci, ktorých objem dohromady nie je viac ako $m$ - celkový objem batoha.
+Každú vec si samozrejme môžem zobrať najviac raz.
+
+Koľko najviac vecí si môžeme zobrať?
+
+Pri výbere optimálneho riešenia rátajte s tým, že $m$ je rádovo toľko, čo $n$.
+(Teda napríklad $O(n^2 \cdot m)$ je lepšie aj ako $O(n^4)$ aj ako $O(m^4)$)
+
+\vstup
+n = 3, m = 5
+2 2 2
+
+\vystup
+2
+
+\koniec
+
+\nadpis{vzorák}
+Greedy, oplatí sa zobrať najmenšie veci. Teda postupne
+berieme veci od najmenších, kým sa neminie miesto. 
+Utriediť to vieme napríklad countsortom v $O(n+m)$. 
+
+T: $O(n+m)$; S: $O(n)$.

@@ -1,0 +1,33 @@
+\nadpis{T. Konzervy ( 10 ) }
+
+Babka v pivnici skladuje konzervy s ovocím. Má ich tam poukladané pekne jednu vedľa druhej v
+pravidelnej mriežke $n \times n$ a každá konzerva má nejaký objem.
+
+Chceme z pivnice uchmatnúť niekoľko konzierv, ktoré majú dokopy čo najväčší objem a zároveň chceme,
+aby si babka nič nevšimla - teda aby z každého štvorca rozmerov $2 \times 2$ chýbala najviac jedna
+konzerva. 
+
+Aký najvačší objem vieme dosiahnuť?
+
+\vstup
+n = 3
+2 1 2
+1 4 3
+3 2 1
+
+\vystup
+8
+
+\komentar
+Napríklad môžeme zobrať konzervy na pozíciách $(1,1)$, $(2,3)$, $(3,1)$. $2+3+3 = 8$
+
+\koniec
+
+\nadpis{vzorák}
+Klasicka dynamika, $n\cdot \phi^{2n}$.
+
+Uplný vzorák, idem po riadkoch po políčkach a pamätám si všetky možnosti pre posledných n+1 bitov.
+Z nich viem rýchlo vyberať správne, keď sa rozhodujem, či zoberiem alebo nezoeriem nejaké konktrétne
+políčko. To sa dá robiť v čase $n^2 \cdot \phi^{n+1}$.
+
+T: $O(n^2 \cdot \phi^n)$; S: $O(\phi^n)$.

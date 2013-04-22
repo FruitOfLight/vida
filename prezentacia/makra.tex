@@ -1,0 +1,169 @@
+\catcode`\@=11
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% ROZMERY STRANKY %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%% zvisle rozmery, zakomentovane su default %%%%%
+\voffset 1.5cm \advance\voffset -1truein   % advance, lebo TeX priratava 1in
+                                           % \topmargin 0pt % nad headerom
+\headheight 49pt                           
+                                           % \headsep 25pt % medzi headerom a textom
+\textheight 22cm                           % cele body
+                                           % \footskip 30pt % spodok body az spodok footera
+%%%%% vodorovne rozmery, zakomentovane su default %%%%%
+\hoffset 2cm \advance\hoffset -1truein     % advance, lebo TeX priratava 1in
+\oddsidemargin 0pt
+\textwidth 17cm
+                                           % \marginparsep 11pt
+\marginparwidth 0pt
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% HEADERS, FOOTERS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\lhead{\Large\scshape Rozquicky}
+\chead{}%\includegraphics[height=1.5cm]{mop-logo}}
+\rhead{\large\sf Lazy pod Makytou \\ 18-25. 11. 2012}
+\lfoot{}
+\cfoot{strana {\bfseries\thepage} z {\bfseries\pageref{LastPage}}}
+\rfoot{\ifx\men@ulohy\undefined\relax\else úloha: \men@ulohy\fi}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% SLOVENSKE UVODZOVKY %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\catcode`\"=13
+\def "{\begingroup\clqq\def "{\endgroup\crqq}}
+\def\dospecials{\do\ \do\\\do\{\do\}\do\$\do\&%
+  \do\#\do\^\do\^^K\do\_\do\^^A\do\%\do\~\do\"}
+
+\def\beginnerobuvodzovky{\begingroup\def "{\crqq}} % ked robime listing, chceme uvodzovky len hore
+\def\endnerobuvodzovky{\endgroup}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% NADPISY %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\vynechaj@ktreba#1{\par\ifdim\lastskip>\parskip\else \vskip#1\relax\fi}
+
+\def\velkynadpis#1{%
+  \vynechaj@ktreba{1cm}%
+  \noindent\centerline{\sf\large\bfseries #1}%
+  \par\medskip%
+}
+
+\def\uloha#1#2{%
+  \vynechaj@ktreba{1cm}%
+  \noindent{\sf\large\bfseries #1\quad #2}%
+  \def\men@ulohy{#1}%
+  \par\medskip%
+}
+
+\def\nadpis#1{%
+  \vynechaj@ktreba{12pt}%
+  \noindent{\sf\bfseries #1}\par\medskip%
+}
+
+\def\info#1#2{
+\global\def\men@ulohy{#1}%
+\centerline{\begin{tabularx}{0.9\textwidth}{|>{\hsize=\hsize}X|>{\hsize=\hsize}X|}
+\hline
+úloha: {\tt #1} & body: {\tt #2} \\
+\hline
+\end{tabularx}}
+\par\bigskip
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% I/O %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newlength{\myb@xwidth}
+\myb@xwidth=\textwidth 
+\divide\myb@xwidth 2
+\advance\myb@xwidth -17pt 
+
+\def\databoxl@bel{}
+
+% definujeme active chary _ a medzera
+\begingroup\catcode`\_=13\gdef_{\begingroup\string_\endgroup}\endgroup
+\begingroup\catcode`\ =13\gdef {\begingroup~\endgroup}\endgroup
+
+\def\begincodeb@x{
+  \noindent
+  \begin{Sbox}
+  \begin{minipage}[t]{\myb@xwidth}
+  \tt\obeylines\obeyspaces
+  \catcode`\_=13
+}
+\def\endcodeb@x{
+  \end{minipage}\end{Sbox}
+}
+\def\begindisplaycodeb@x{
+  \noindent
+  \begin{minipage}[t]{0.48\textwidth}
+  \noindent\centerline{\databoxl@bel}\smallskip\par
+  \fbox{\TheSbox}%
+}
+\def\enddisplaycodeb@x{
+  \end{minipage}
+}
+
+
+\def\vstup{
+  \def\komentar{
+    \endcodeb@x
+    \begindisplaycodeb@x
+    \par\medskip\sl
+    \def\vystup{
+      \enddisplaycodeb@x
+      \hfill
+      \ifx\outputlabel\undefined\def\databoxl@bel{output}\else\def\databoxl@bel{\outputlabel}\fi
+      \begincodeb@x
+    }
+    \def\koniec{
+      \enddisplaycodeb@x
+      \medskip\par
+    }
+  }
+  \def\vystup{
+    \endcodeb@x
+    \begindisplaycodeb@x
+    \enddisplaycodeb@x
+    \hfill
+    \ifx\outputlabel\undefined\def\databoxl@bel{výstup}\else\def\databoxl@bel{\outputlabel}\fi
+    \begincodeb@x
+  }
+  \def\koniec{
+    \endcodeb@x
+    \begindisplaycodeb@x
+    \enddisplaycodeb@x
+    \medskip\par
+  }
+  \ifx\inputlabel\undefined\def\databoxl@bel{vstup}\else\def\databoxl@bel{\inputlabel}\fi
+  \begincodeb@x
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% TIRAZ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\tiraz#1#2#3{%
+\hrule
+\vbox{\begin{center}
+SLOVENSKÁ KOMISIA OLYMPIÁDY V INFORMATIKE\\
+\smallskip
+{\footnotesize\bfseries \upcaserocnik\ ROČNÍK OLYMPIÁDY V INFORMATIKE}\\
+%\ifriesenia Riešenia \else Zadania \fi
+% \kolo. kola kategórie P\\
+%\ifden \den. súťažný deň\fi
+
+%\thispagestyle{empty}
+\footnotesize
+\medskip
+\noindent
+Vydala IUVENTA s finančnou podporou Ministerstva školstva SR\\
+Náklad: #3 výtlačkov\\
+Zodpovedný redaktor: #1\\
+Sadzba programom \LaTeX\\
+\smallskip
+\copyright\  Slovenská komisia Olympiády v informatike, #2
+\end{center}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% KONIEC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\catcode`\@=12
+\endinput
+

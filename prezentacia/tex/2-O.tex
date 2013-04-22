@@ -1,0 +1,28 @@
+\nadpis{O. Postupnosť ( 4 + 4 ) }
+
+Majme postupnost binárnych reťazcov: 01, 0110, 01101001, 0110100110010110 \dots
+(Ďalší člen vznikne zlepením predchádzajúceho a jeho negácie)
+
+Predstavte si, že ste vygenerovali dostatočne dlhý reťazec tejto postupnosti.
+
+a) Nájdite a popíšte algoritmus, ktorý pre zadané $i$ vráti počet jednotiek
+v reťazci od začiatku po $i$-te miesto.
+
+b) Nájdite a popíšte algoritmus, ako zistiť, ktorá cifra je na $i$-tom políčku.
+
+\vstup
+3
+
+\vystup
+2
+1
+\koniec
+
+\nadpis{vzorák}
+Najskôr vyriešime podúlohu b. Keďže vieme ako postupnosť vznikala, tak
+$P[2^n] + a = 1-P[a]$, pre $0 \leq a < 2^n$. Takto sa vieme prebublať až ku
+$a \in \{0,1\}$ čo je triviálny prípad. 
+
+Podúloha a, je potom lahká, lebo výsledok je $i/2 + (i\%2) \cdot (P[i])$.
+
+T: $O(log(i))$; S: $O(1)$.

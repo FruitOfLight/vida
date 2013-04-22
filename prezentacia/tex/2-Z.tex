@@ -1,0 +1,32 @@
+\nadpis{Z. Kartograf ( 2 + 3 ) }
+Máme zadanú maticu rozmerov $r \times s$  na ktorej sú znaky '.' a '\#'. '.' je voda a '\#' je pevnina.
+Ostrov je súvislý kus pevniny - t.j. medzi každými dvoma kúskami ostrova sa dá dostať tak, že sa
+pohybujeme len hore, dole, doľava a doprava a nikdy nevstúpime do vody.
+
+Máte zaručené, že celý okraj mapy je voda.
+
+Zaujíma nás:
+
+a) počet všetkých ostrovov
+
+b) najväčší z ich obvodov
+
+\vstup
+5 9
+.........
+.\#..\#\#.\#.
+...\#\#....
+.....\#\#..
+.........
+\vystup
+4
+10
+\koniec
+
+\nadpis{vzorák}
+Prejdeme celé pole a vždy keď nájdeme neofarbenú pevninu, ofarbíme ostrov,
+napríklad pomocou dfs. V dfs si počítam, koľkokrát som mal za suseda 
+vodu a to bude obvod ostrova.
+
+T: $O(rs)$; S: $O(rs)$.
+

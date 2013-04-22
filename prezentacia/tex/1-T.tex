@@ -1,0 +1,25 @@
+\nadpis{T}
+
+Žaba si chce zarobiť na brigádach. Preto si vyhliadol, aké
+rôzne brigády sa konajú nasledujúce dni. Je ich $n$. Každá
+má daný čas kedy začína, kedy končí a koľko peňazí na nej
+zarobím. Zistite koľko najviac peňazí vie Žaba zarobiť, ak
+peniaze dostane len ak sa zúčastní celej brigády a ak nejaká
+končí vtedy keď iná začína, vie stihnúť obe.
+
+\vstup
+3
+1 3 2
+3 8 4
+2 4 10
+\vystup
+10
+\komentar
+Zúčastní sa len jednej brigády v čase 2-4, lebo je dobre platená.
+\koniec
+
+Riešenie: Usortím si brigády podľa času konca. Snažím sa robiť dynamiku:
+koľko viem zarobiť za prvých $i$ brigád. To zistím tak, že zoberiem maximum
+z $D[i-1]$ a $c(i)+D[j]$ kde $j$
+je taká brigáda, čo končí skôr ako $i$-ta
+začína. Hodnotu $j$ binárne vyhľadávam.

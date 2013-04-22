@@ -1,0 +1,624 @@
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\section{Pozvoµný úvod}
+
+\subsection{Základný problém kompresie}
+
+\begin{frame}
+  \frametitle{Indukcia zlyháva}
+  
+  \begin{center}
+  \includegraphics[height=0.8\textheight]{bus}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Základný problém kompresie}
+  
+  \begin{block}{Èo máme}
+  disk a na disku veµký súbor
+  \end{block}
+  
+  \begin{block}{Èo chceme}
+  disk a na disku men¹í súbor
+  \end{block}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Sprosté rie¹enie}
+  
+  \begin{block}<1->{Rie¹enie}
+  uma¾eme polovicu súboru
+  \end{block}
+  
+  \begin{block}<2->{Problém}
+  pri¹li sme o (väè¹inou asi dôle¾itú) polovicu súboru
+  \end{block}
+  
+  \begin{block}<3->{Èo \textbf{presnej¹ie} chceme}
+  disk a na disku men¹í súbor, 
+  \textbf{z ktorého vieme spä» zostroji» pôvodný súbor}
+  \end{block}
+  
+\end{frame}
+
+\subsection{Skromný cieµ a jeho (ne)mo¾nos»}
+
+\begin{frame}
+  \frametitle{Skromný cieµ}
+  
+  \begin{block}<1->{Kompresný program}
+  Program, ktorý vie vyrába» z väè¹ích súborov men¹ie, a z tých
+  men¹ích potom spä» zostroji» väè¹ie.
+  \end{block}
+  
+  \begin{block}<2->{Aký dobrý program chceme?}
+  Na úvod skromný cieµ: vedie» µubovoµný 1 MB súbor zmen¹i» aspoò o 10 B.
+  \end{block}
+  
+  \begin{block}<3->{Problém 2}
+  Súborov s veµkos»ou 1 MB je
+  \centerline{
+  $1\,204\,203\,453\,131\,759\,529\,492\,479$-krát \textbf{viac} 
+  %(1.2 kvadriliardy)
+  }
+  ako súborov s veµkos»ou o 10 B men¹ou (a men¹ích).
+  \end{block}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Záver?}
+  
+  \begin{block}<1->{Dôsledok}
+  $99.999\,999\,999\,999\,999\,999\,999\,917\%$ súborov nevieme zmen¹i» ani len o 10 bajtov.
+
+  Kompresia nemô¾e fungova».
+  \end{block}
+  
+  \begin{block}<2->{Prax je sviòa}
+  V praxi to ale funguje. 
+  Kde je pes zakopaný?
+  \end{block}
+  
+\end{frame}
+
+\section{Experiment}
+
+\subsection{Náhodné postupnosti}
+
+\begin{frame}
+  \frametitle{Akèná vsuvka}
+
+  Potrebujem niekoµko (skupín) dobrovoµníkov \\
+  vybavených kockami, mincami, \dots
+
+  \begin{block}{Úloha}
+  \begin{itemize}
+  \item Zobra» list papiera (A5).
+  \item Napísa» naò hore jednoslovné \uv{heslo}, \\
+    podµa ktorého si ho spoznáte.
+  \item Vygenerova» èo najrýchlej¹ie \\
+    náhodnú postupnos» tak 200 núl a jednotiek.
+  \end{itemize}
+  \end{block}
+
+  znak=0, hlava=1
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Akènej¹ia vsuvka}
+
+  Potrebujem e¹te niekoµko dobrovoµníkov
+
+  \begin{block}{Úloha}
+  \begin{itemize}
+  \item Zobra» list papiera (A5).
+  \item Napísa» naò hore jednoslovné \uv{heslo}, \\
+    podµa ktorého si ho spoznáte.
+  \item Èo najrýchlej¹ie naò napísa» \\
+    náhodnú postupnos» tak 200 núl a jednotiek.
+  \end{itemize}
+  \end{block}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Vyhodnotenie}
+  
+  \begin{block}<2->{Závery}
+
+  Dokonca aj v situáciách, kedy to nevidíme, dáta, s ktorými
+  robíme, nie sú náhodné. 
+
+  Pravidelnosti v dátach budeme môc» vyu¾i».
+  \end{block}
+
+\end{frame}
+
+\section{Kompresia a informácia}
+
+\subsection{Ukladanie informácií}
+
+\begin{frame}
+  \frametitle{Tá istá informácia sa dá ulo¾i» rôzne}
+
+  \begin{block}{Menej dobre}
+  \uv{01010101010101010101010101010101010101010101010101}
+  \end{block}
+
+  \begin{block}<2->{Lep¹ie}
+  \uv{$25$-krát 01}, prípadne \uv{\tt 25[01]}
+  \end{block}
+
+  \begin{block}{Menej dobre}
+  \uv{011010100010100010100010000010100000100010100\dots 00}
+  \end{block}
+
+  \begin{block}<2->{Lep¹ie}
+  \uv{re»azec då¾ky $100\,000$ s jednotkami na prvoèíselných pozíciách}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Preèo kompresia funguje?}
+
+  \begin{itemize}
+  \item Informácie kódujeme neefektívne.
+  \item Kompresia = nájdenie efektívneho zápisu.
+  \item Niekde je hranica -- nedá sa v¹etko zakódova» 1 bitom.
+  \item<2-> Tou hranicou je mno¾stvo informácie v súbore.
+  \end{itemize}
+\end{frame}
+
+\subsection{Meranie mno¾stva informácií}
+
+\begin{frame}
+  \frametitle{Ako mera» mno¾stvo informácií?}
+
+  Hra: Uhádni slovenskú vetu:
+
+  \begin{block}{Veta}
+  \centerline{{\tt ??????????????}\quad (14 znakov)} % srnka sa pasie
+  \end{block}
+
+  Mô¾ete sa pýta» áno/nie otázky.
+
+  Otázniky mô¾u by» veµké písmená a medzery.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Ako mera» mno¾stvo informácií?}
+
+  Pýta» sa dalo rôznymi spôsobmi -- lep¹ími aj hor¹ími.
+
+  \begin{block}{Mno¾stvo informácie}
+   = poèet otázok, ktoré potrebujeme,
+  ak sa pýtame \uv{najlep¹ie}.
+  \end{block}
+
+  \begin{itemize}
+  \item[~]<2-> \hspace{-0.7cm}Ka¾dá odpoveï áno/nie = 1 bit informácie.
+  \item[~]<3-> \hspace{-0.7cm}Èo je \uv{najlep¹ie}? \\ 
+    Intuitívne: pýta» sa tak, aby pravdepodobnos» oboch odpovedí
+    bola zhruba $1/2$.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Ako mera» mno¾stvo informácií?}
+
+  Èo ale keï vám poviem nejakú vetu? Koµko informácie obsahuje?
+
+  \begin{block}{Iný pohµad na to isté}
+  Informáciu dostávame, keï vidíme, ¾e nastal nejaký jav. 
+
+  Mno¾stvo informácie závisí od jeho pravdepodobnosti.
+  \end{block}
+
+  \begin{block}{Príklad}
+  ®rebovanie náhodného dòa.
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Poriadnej¹ia definícia mno¾stva informácie}
+
+  $I(p)$: Koµko informácie nám dá to, ¾e nastane jav èo mal pravdepodobnos» $p$?
+
+  \begin{itemize}
+  \item<2-> $I$ je spojitá a klesajúca, $I(1)=0$, pre $p\to 0$ je $I(p)\to\infty$.
+  \item<3-> Dva nezávislé javy: $I(pq)=I(p)+I(q)$.
+  \item<4-> $I(1/2)=1$ \qquad (hod mincou dá jeden bit informácie)
+  \end{itemize}
+
+  \begin{block}<5->{Rie¹enie}
+  $$I(p) = \log_2 (1/p) = -\log_2 p$$
+  \end{block}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Spä» k pýtaniu otázok}
+
+  Opýtam sa áno/nie otázku, kde odpoveï áno má pravdep. $p$.
+
+  Koµko informácie dostanem?
+  \begin{itemize}
+  \item s pravdep. $p$ dostanem: $-\log_2 p$ bitov
+  \item s pravdep. $1-p$ dostanem: $-\log_2 (1-p)$ bitov
+  \item<2-> v priemere dostanem: $-p\log_2p - (1-p)\log_2 (1-p)$ bitov
+  \end{itemize}
+
+  \only<1-2>{\vspace{0.6\textheight}}
+  \includegraphics<3->[height=0.6\textheight]{graf}
+
+\end{frame}
+
+% FIXME rozhodovaci strom
+
+\section{Kompresia je len jedna}
+
+\subsection{Kolmogorov a tí druhí}
+
+\begin{frame}
+  \frametitle{Èo to znamená pre kompresiu?}
+
+  Kompresia = hra \uv{uhádni súbor na èo najmenej otázok}. \\
+  ~~(=\uv{popí¹ súbor èo najmenej bitmi})
+
+  \bigskip
+  Správna \uv{stratégia pýtania sa} závisí od pravdepodobností
+  jednotlivých mo¾ností -- ak vieme nieèo o dátach, ktoré ideme
+  komprimova», mô¾eme to vyu¾i». 
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Existuje jeden \uv{najlep¹í kompresný algoritmus}?}
+
+  \dots\ alebo závisí na tom, ako robíme dekompresiu?
+
+  \visible<2->{
+  \bigskip
+  Samorozbaµovacie archívy:
+  \begin{itemize}
+  \item Zoberieme komprimovaný súbor $S$.
+  \item Prilepíme k nemu na zaèiatok kód.
+  \item Máme program $P$, ktorý po spustení vyrobí pôvodný súbor.
+  \item $P$ má od $S$ len o kon¹tantný poèet znakov viac.
+  \end{itemize}
+  }
+
+  \begin{block}<3->{Záver: Kolmogorovská zlo¾itos»}
+  Zlo¾itos» súboru = veµkos» najmen¹ieho programu, ktorý ho vyrobí.
+  \end{block}
+
+\end{frame}
+
+\section{Prax}
+
+\begin{frame}
+  \frametitle{~}
+  \vfill
+  \begin{center}
+  \huge\bfseries
+  Prax
+  \end{center}
+  \vfill
+\end{frame}
+
+\subsection{Prehµad}
+
+\begin{frame}
+  \frametitle{V¹eobecne o praktickej kompresii}
+  
+  \begin{block}{Problém}
+  Optimálna kompresia je výpoètovo veµmi nároèná. 
+  \end{block}
+
+  \begin{block}{Obmedzenie z praxe}
+  Èasová zlo¾itos» nie moc hor¹ia ako lineárna.
+  \end{block}
+
+  \begin{block}{Dôsledok}
+  Kompresný algoritmus si musí \uv{vybra»} vhodný \uv{druh závislostí},
+  ktoré hµadá a efektívnej¹ie ukladá.
+  \end{block}
+\end{frame}
+
+\subsection{Prefixové kódy}
+
+\begin{frame}
+  \frametitle{Èo sú binárne kódy?}
+  \begin{block}{Èo ideme vyu¾i»?}
+  To, ¾e sa rôzne znaky vyskytujú v súbore rôzne èasto.
+  \end{block}
+
+  \begin{block}{Binárne kódy}
+  \begin{itemize}
+  \item postupnos» bitov = \emph{kódové slovo}
+  \item ka¾dému znaku priradíme \emph{kódové slovo}
+  \item príklad: ASCII kód (v¹etko má då¾ku 8)
+  \item vieme lep¹ie: èastej¹ím znakom da» krat¹ie kódy
+  \end{itemize}
+  \end{block}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Aký binárny kód chceme?}
+
+  \begin{block}{Musí sa da» dekódova»}
+  $$a\to 0, \qquad b\to 11, \qquad c\to 011$$
+  \end{block}
+
+  \begin{block}<2->{Musí sa da» dekódova» efektívne}
+  $$a\to 1, \qquad b\to 10, \qquad c\to 01$$
+
+  Postupnos» $1010101010$ je $bbbbb$, ale $10101010101$ je $accccc$.
+  \end{block}
+  
+  \begin{block}<3->{A e¹te\dots}
+  \dots\ by aj mal komprimova».
+  \end{block}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Ako na to?}
+
+  \begin{block}{Hlavná idea}
+  Budeme postupne "háda»" znaky a zapisova» si odpovede.
+  \end{block}
+
+  \begin{minipage}{0.45\textwidth}
+  \visible<2>{
+  \includegraphics[height=0.6\textheight]{bst}
+  }
+  \end{minipage}
+  \begin{minipage}{0.5\textwidth}
+  \begin{block}{Príklad}
+     \begin{tabular}{r|r|r|r}
+     a & b & c & d \\
+     \hline
+     35\% & 12\% & 4\% & 17\% \\
+     \hline
+     \hline
+     e & f & g & h \\
+     \hline
+     25\% & 5\% & 1\% & 1\% \\
+     \end{tabular}
+
+     \visible<2>{
+     \bigskip
+     Strom urèuje kódy: $b\to 100$
+
+     \bigskip
+     Cena ná¹ho kódu: 2.2 bitu/znak.
+     }
+  \end{block}
+  \end{minipage}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Ako zostroji» najlep¹í strom?}
+
+  \begin{block}{Fanov kód}
+  V¾dy èo najrovnomernej¹ie rozdeli» znaky \uv{na polovicu}.
+  \end{block}
+
+  \begin{block}{Fanov kód nemusí by» optimálny}
+  Príklad: 40\% a, po 15\% b, c, d, e.
+  \end{block}
+  
+  \begin{minipage}[t]{0.4\textwidth}
+  Fano: 2.45 bitu/znak
+
+  \includegraphics[width=0.9\textwidth]{fano}
+  \end{minipage}
+  \begin{minipage}[t]{0.55\textwidth}
+  Optimálne: 2.20 bitu/znak
+
+  \includegraphics[width=0.6\textwidth]{huffman}
+  \end{minipage}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Optimálny Huffmanov kód}
+  
+  \begin{block}{Pozorovania o optimálnom strome}
+  \begin{itemize}
+  \item èím èastej¹ie písmeno, tým krat¹í kód $\Rightarrow$ ¹mejdy sú dole
+  \item vnútorné vrcholy majú stupeò 2
+  \item 
+    na spodnej úrovni sú 2 susedné vrcholy \\
+    $\Rightarrow$ prehád¾eme znaky tak, aby 2 najväè¹ie ¹mejdy susedili
+  \end{itemize}
+  \end{block}
+
+  \includegraphics[height=0.45\textheight]{zly}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Praktické výsledky}
+  
+  \begin{block}{Slovenský text bez diakritiky}
+  \begin{itemize}
+  \item nekomprimovaný: 4.75 bitu/znak
+  \item Huffmanov kód:  4.26 bitu/znak
+  \item Huffmanov kód podµa predch. trigramu: 2.50 bitu/znak
+  \end{itemize}
+  \end{block}
+
+\end{frame}
+
+\subsection{Kompresia obrázkov}
+
+\begin{frame}
+  \frametitle{Odhad je ná¹ kamarát}
+
+  \begin{block}{Pozorovanie}
+  Èo vieme odhadnú», to vieme aj komprimova».
+  \end{block}
+
+  Odhad pixelu obrázka:
+
+  \begin{center}
+  \includegraphics[width=0.7\textwidth]{odhad}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Jednoduchý algoritmus}
+
+  \begin{block}{Zaèiatok algoritmu}
+  \begin{enumerate}
+  \item Ideme po riadkoch.
+  \item Ka¾dý pixel skúsime odhadnú» pomocou predchádzajúcich.
+  \item Zapisujeme si veµkosti chyby.
+  \end{enumerate}
+  \end{block}
+
+  \begin{block}{Pozorovania}
+  \begin{itemize}
+  \item Z týchto údajov vieme spä» zostroji» obrázok.
+  \item Ak dobre hádame, budú zapísané hodnoty zväè¹a okolo 0.
+  \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Praktické testy -- testovacia sada}
+
+  \begin{tabular}{cc}
+  \includegraphics[width=0.27\textwidth]{ukazka-obal}
+  &
+  \includegraphics[width=0.37\textwidth]{ukazka-foto}
+  \\
+  \includegraphics[width=0.37\textwidth]{ukazka-biely}
+  &
+  \includegraphics[width=0.37\textwidth]{ukazka-scan}
+  \\
+  \end{tabular}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Praktické testy -- úspe¹nos» predpovedania}
+
+  \begin{tabular}{cc}
+  \includegraphics[width=0.4\textwidth]{predikcia-obal}
+  &
+  \includegraphics[width=0.4\textwidth]{predikcia-foto}
+  \\
+  \includegraphics[width=0.4\textwidth]{predikcia-biely}
+  &
+  \includegraphics[width=0.4\textwidth]{predikcia-scan}
+  \\
+  \end{tabular}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Jednoduchý algoritmus II}
+
+  \begin{block}{Algoritmus}
+  \begin{enumerate}
+  \item Ideme po riadkoch.
+  \item Ka¾dý pixel skúsime odhadnú» pomocou predchádzajúcich.
+  \item Zapisujeme si veµkosti chyby.
+  \item Výsledné údaje skomprimujeme Huffmanovym kódom.
+  \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Praktické testy -- výsledky kompresie} 
+
+  \begin{tabular}{l|r|r|r|r}
+  & obal & foto & biely & scan \\
+  \hline
+  BMP & $2\,746\,518$ & $14\,745k$ & $892\,854$ & $106\,855k$ \\
+  PNG & $2\,120\,351$ &  $7\,754k$ &  $71\,765$ &  $60\,903k$ \\
+  ZIP & $2\,379\,730$ & $10\,981k$ &  $59\,633$ &  $84\,921k$ \\
+  RAR & $2\,294\,352$ &  $8\,539k$ &  $51\,457$ &  $65\,739k$ \\
+  na¹e& $2\,120\,142$ &  $8\,898k$ & $202\,394$ &  $69\,933k$ \\
+  \hline
+  TIF & $2\,761\,924$ &  $5\,751k$ &  $70\,086$ &  $39\,779k$ \\
+  JPG &    $920\,558$ &  $2\,464k$ &  $88\,238$ &  $16\,603k$ \\
+  \end{tabular}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Úvod do stratovej kompresie} 
+  
+  \begin{block}{Èo si mô¾eme dovoli»?}
+  Mô¾eme zmeni» objekt tak, aby to èlovek (príli¹) nespoznal.
+  \end{block}
+
+  \begin{block}{Ako sa to robí v praxi?}
+  Magické zaklínadlo: Fourierova transformácia.
+  \end{block}
+
+  \begin{block}{Vieme spravi» nieèo jednoduché a úèinné?}
+  V na¹om algoritme si mô¾eme zapísa» nie skutoènú chybu, ale \uv{$\pm 1$}, ako sa nám hodí.
+
+  Inými slovami, mô¾eme vhodne nastavi» najmenej významný bit (alebo 2) z obrázka a nik si
+  niè nev¹imne.
+  \end{block}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Praktické testy -- výsledky kompresie II} 
+
+  \begin{tabular}{l|r|r|r|r}
+  & obal & foto & biely & scan \\
+  \hline
+  BMP & $2\,746\,518$ & $14\,745k$ & $892\,854$ & $106\,855k$ \\
+  PNG & $2\,120\,351$ &  $7\,754k$ &  $71\,765$ &  $60\,903k$ \\
+  ZIP & $2\,379\,730$ & $10\,981k$ &  $59\,633$ &  $84\,921k$ \\
+  RAR & $2\,294\,352$ &  $8\,539k$ &  $51\,457$ &  $65\,739k$ \\
+  na¹e& $2\,120\,142$ &  $8\,898k$ & $202\,394$ &  $69\,933k$ \\
+  \hline
+  TIF & $2\,761\,924$ &  $5\,751k$ &  $70\,086$ &  $39\,779k$ \\
+  JPG &    $920\,558$ &  $2\,464k$ &  $88\,238$ &  $16\,603k$ \\
+  1bit& $1\,779\,299$ &  $7\,153k$ & $188\,287$ &  $56\,919k$ \\
+  2bit& $1\,443\,371$ &  $5\,566k$ & $174\,060$ &  $43\,742k$ \\
+  \end{tabular}
+
+  \begin{block}{Nie je to a¾ tak naniè}
+  Pri 2bit ostalo zo vstupu $75\%$ nedotknutých, \\
+  na scan+foto komprimovaná veµkos» klesla na $62\%$.
+  \end{block}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{~} 
+  \vfill
+  \begin{center}
+  \huge\bfseries
+  Zazvonil zvonec, 
+
+  rozprávke je koniec.
+  \end{center}
+  \vfill
+\end{frame}
+
+\end{document}
+
+% vim: fdm=marker

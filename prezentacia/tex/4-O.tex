@@ -1,0 +1,33 @@
+\nadpis{O}
+
+Sultán má šnúru $n$ perál, ktoré ležia
+na stole tak, že práve $m$ z nich visí dole
+zo stola. Jeho sluha mu chce zopár perál ukradnúť,
+ale musí si dávať pozor. Každý deň vie zobrať perlu
+len z jedného jej konca, ale vždy musí práve $m$
+perál visieť dolu zo stola. Samozrejme perly majú
+svoje váhy. Označme $V_d$ váhu visiacich perál
+a váhu $V_n$ nevisiacich. Ak platí $V_d>k.V_n$ pre dané
+$k$ perly spadnú na zem, čo sa nemôže stať.
+A samozrejme každá perla má svoju cenu, kažá inú
+a sluha chce zarobiť. Poraďte sluhovi ako má perly
+kradnúť aby nakradol čo najviac a nebol spozorovaný.
+
+\vstup
+5 2 1
+5 3
+4 2
+6 4
+3 2
+2 2
+\vystup
+2 5
+NN
+\komentar
+môže zobrať najviac dve z Nevisicej časti.
+\koniec
+
+Riešenie: Spravím nejaké prefixové sumy. Vždy sa oplatí
+najskôr brať zo spodu a až potom zvrchu. Pozriem všetky
+možnosti čo zoberiem zo spodu a druhú hranicu binárne dohľadám
+(alebo aj nie)

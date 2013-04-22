@@ -1,0 +1,20 @@
+\nadpis{O}
+
+Máte zadaných $N$ bodov v rovine. Zistite, najväčší počet
+takých bodov, že ležia na jednej priamke.
+
+\vstup
+3
+0 0
+1 1
+2 2
+\vystup
+3
+\komentar
+Vsetky tri su kolinearne.
+\koniec
+
+Riešenie: Triviálne riešenie v čase $O(n^3)$ vyskúša všetky dvojice
+bodov, čo vytvorí priamku a pre ostatné body overí či na nej ležia.
+Riešenie $O(n^2.log n)$ - pre každý bod polárne usortím a hľadám počet
+rovnakých uhlov. Cez hashmapu to ide aj $O(n^2)$.

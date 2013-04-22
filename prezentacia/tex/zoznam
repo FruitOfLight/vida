@@ -1,0 +1,25 @@
+\velkynadpis{1. deň}
+\input tex/1-Z.tex
+\input tex/1-O.tex
+\input tex/1-T.tex
+\vfill\eject
+\velkynadpis{2. deň}
+\input tex/2-Z.tex
+\input tex/2-O.tex
+\input tex/2-T.tex
+\vfill\eject
+\velkynadpis{3. deň}
+\input tex/3-Z.tex 
+\input tex/3-O.tex 
+\input tex/3-T.tex 
+\vfill\eject
+\velkynadpis{4. deň}
+\input tex/4-Z.tex
+\input tex/4-O.tex
+\input tex/4-T.tex
+\vfill\eject
+\velkynadpis{5. deň}
+\input tex/5-Z.tex
+\input tex/5-O.tex
+\input tex/5-T.tex
+\vfill\eject

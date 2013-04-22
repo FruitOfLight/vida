@@ -1,0 +1,28 @@
+\nadpis{T}
+
+V obchode ste si kúpili dva rovnaké odmerné valce.
+Na každom je $K\leq 25$ rysiek. Operácie čo viete
+robiť sú: doliať vodu po nejakú  rysku, vyliať vodu
+po nejakú rysku, preliať vodu z jedného valca do
+druhého po nejakú rysku. Zistite, na koľko najmenej
+operácii viete dostať v jednej nádobe hodnotu $L$.
+Rysky sú menšie ako $10^6$.
+
+\vstup
+3
+0 3 7
+4
+\vystup
+2
+\komentar
+Napustim vodu do prvej po $7$ a do druhej vylejem po $3$.
+V prvej mi ostane $4$ vody.
+\koniec
+
+Riešenie: Normálne BFS so stavmi [ryska,nejaka voda] hodi TLE
+kedze mam $25000000$ stavov a z kazdeho ide $25$ hran. Musime
+to zlepsit. Rozbime si stavy na viac. Budeme si pamatat, ci
+nejaká akcia začala a teda môže pokračovať. Teda stavov je
+$4$ krat tolko, ale menej hran. Fajn, co ale s tym ze chcem
+pocet operacii? No normalne ked zacina akcia mam hrany vahy
+$1$ inak $0$. A robim BFS s deque.

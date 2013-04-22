@@ -1,0 +1,27 @@
+\nadpis{Z}
+
+Chystáte sa pozrieť si nejaký dobrý film, problémom však
+je vybrať nejaký dobrý film. Máte databázu filmov. Označme
+si $Q(i)$ kvalitu $i$-teho filmu. O niektorých filmoch viete,
+že ich $Q(i)=0$. Ďalej viete, že niektoré filmy sa na seba
+podobajú. To ovplyvňuje ich kvalitu. $Q(i)$ pre iné ako zadané
+filmy sa vyráta ako $Q(j)+1$ kde $j$ je najhorší k nemu podobný
+film. Na vstupe dostanete počet filmov, počet fakt zlých filmov
+a ktoré to sú a zoznam podobností, vypíšte všetky indexy najlepších filmov, teda tých
+s najvyšším $Q(i)$.
+
+\vstup
+5 2
+1 4
+4
+1 2
+2 3
+3 4
+3 5
+\vystup
+5
+\komentar
+Film číslo $5$ má hodnotenie $2$.
+\koniec
+
+Riešenie: Pustím obyčajné BFS na tomto grafe, hľadám najvzdialenejšie vrcholy.
