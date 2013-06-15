@@ -58,6 +58,7 @@ public class Vertex implements Comparable<Vertex> {
     }
 
     public Vertex(double x, double y, int ID) {
+        parentPort = -1;
         edges = new ArrayList<Edge>();
         this.x = x;
         this.y = y;
