@@ -69,7 +69,7 @@ public class Vertex implements Comparable<Vertex> {
     }
 
     public void defaultSettings() {
-        parentPort = -1;
+        setParentPort(-1);
         color = new Color(0, 255, 0);
         radius = CONST.vertexSize;
         bubble.defaultSettings();
