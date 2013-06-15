@@ -78,6 +78,9 @@ public class Graph implements Drawable {
         // vykresli vrcholy a hrany
         g.setFont(new Font(Font.MONOSPACED, Font.ITALIC, 14));
         for (Edge edge : edges) {
+            edge.preDraw(g);
+        }
+        for (Edge edge : edges) {
             edge.draw(g);
         }
         g.setStroke(Canvas.thinStroke);

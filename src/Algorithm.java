@@ -1,3 +1,4 @@
+
 import java.io.PrintStream;
 
 public interface Algorithm extends Drawable {

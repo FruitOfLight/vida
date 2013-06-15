@@ -3,6 +3,7 @@
 //Apple Strawberry
 
 #include<cstdio>
+#include<cstdarg>
 #include<iostream>
 #include<cstring>
 #include<algorithm>
@@ -31,6 +32,7 @@ namespace WatchVariables {
     // pocuve na mena
     // _vertex_color e.g. "255,47,42"
     // _vertex_size in %, e.g. "80"
+    // _parent_port, e.g. "4" unknown is "-1" 
 
     namespace details{
         map<string,string> stringVariables;
@@ -197,6 +199,15 @@ void Messager::run(){
             readline();
         }
     }
+}
+
+string strprintf(const char *format, ...){
+    char buffer[255];
+    va_list args;
+    va_start (args, format);
+    vsnprintf(buffer, 255, format, args);
+    va_end (args);
+    return string(buffer);
 }
 
 /////////////////////////////////

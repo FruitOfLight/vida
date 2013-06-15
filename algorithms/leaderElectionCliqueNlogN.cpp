@@ -16,51 +16,33 @@ using namespace Property;
 using namespace WatchVariables;
 
 int wait;
-int parentPort;
 
 void recieveCapture(int port, pair<int,int> strength) {
     if(getSValue("state")!="captured" && strength > make_pair(getIValue("level"),id)) {
-        char inf[100];
-        sprintf(inf,"I'm captured by ID %d with level %d",strength.second,strength.first);
-        sendInformation(string(inf));
+        sendInformation(strprintf("I'm captured by ID %d with level %d",strength.second,strength.first));
         setSValue("state","captured");
         setIValue("parent",strength.second);
-        parentPort = port;
+        setIValue("_parent_port",port);
         setSValue("leader","no");
         setSValue("_vertex_color","255,0,0");
-        char up[100];
-        sprintf(up,"capture-active:%d:%d:%d:%d",getIValue("level"),id,strength.first,strength.second);
-        algorithmUpdate(string(up));
+        algorithmUpdate(strprintf("capture-active:%d:%d:%d:%d",getIValue("level"),id,strength.first,strength.second));
         exitProgram("false");
         sendMessage(port, "{accept}");
     }
     else if(getSValue("state")=="captured") {
-        char inf[100];
-        sprintf(inf,"I need help from my leader");
-        sendInformation(string(inf));
-        char up[100];
-        sprintf(up,"capture-capture:%d:%d:%d:%d",strength.first,strength.second,id,getIValue("parent"));
-        algorithmUpdate(string(up));
-        char buff[100];
-        sprintf(buff,"{help %d,%d} %d",strength.first,strength.second,port);
-        sendMessage(parentPort,string(buff));
+        sendInformation(strprintf("I need help from my leader"));
+        algorithmUpdate(strprintf("capture-capture:%d:%d:%d:%d",strength.first,strength.second,id,getIValue("parent")));
+        sendMessage(getIValue("_parent_port"),strprintf("{help %d,%d} %d",strength.first,strength.second,port));
     }
 }
 
 void recieveAccept(int port) {
     if(getSValue("state")!="active") return;
     setIValue("level",getIValue("level")+1);
-    char inf[100];
-    sprintf(inf,"I get subordinate, my actual level is %d",getIValue("level"));
-    sendInformation(string(inf));
-    char up[100];
-    sprintf(up,"level:%d",getIValue("level"));
-    algorithmUpdate(up);
-    sprintf(up,"accept:%d:%d",id,getIValue("level"));
-    algorithmUpdate(up);
-    char num[100];
-    sprintf(num,"%d",100+50*getIValue("level"));
-    setSValue("_vertex_size",string(num));
+    sendInformation(strprintf("I get subordinate, my actual level is %d",getIValue("level")));
+    algorithmUpdate(strprintf("level:%d",getIValue("level")));
+    algorithmUpdate(strprintf("accept:%d:%d",id,getIValue("level")));
+    setSValue("_vertex_size",strprintf("%d",100+50*getIValue("level")));
     if(getIValue("level")==ports.size()) {
         setSValue("_vertex_color","0,0,255");
         setSValue("leader","yes");
@@ -68,43 +50,31 @@ void recieveAccept(int port) {
         exitProgram("true");
         return;
     }
-    char buff[100];
-    sprintf(buff,"{capture %d,%d}",getIValue("level"),id);
     wait = getIValue("level");
-    sendMessage(ports[getIValue("level")],string(buff));
+    sendMessage(ports[getIValue("level")],strprintf("{capture %d,%d}",getIValue("level"),id));
 }
 
 void recieveHelp(int port, pair<int,int> strength, int port1) {
     if(strength < make_pair(getIValue("level"),id)) {
         sendInformation("We won");
-        char up[100];
-        sprintf(up,"help-win:%d:%d:%d:%d",getIValue("level"),id,strength.first,strength.second);
-        algorithmUpdate(string(up));
+        algorithmUpdate(strprintf("help-win:%d:%d:%d:%d",getIValue("level"),id,strength.first,strength.second));
         sendMessage(port,"{victory}");
         return ;
     }
     if(getSValue("state") == "active") setSValue("state","killed");
     setSValue("leader","no");
     setSValue("_vertex_color","255,0,0");
-    char buff[100];
     sendInformation("I'm defeated");
-    char up[100];
-    sprintf(up,"help-defeat:%d:%d:%d:%d",getIValue("level"),id,strength.first,strength.second);
-    algorithmUpdate(string(up));
+    algorithmUpdate(strprintf("help-defeat:%d:%d:%d:%d",getIValue("level"),id,strength.first,strength.second));
     exitProgram("false");
-    sprintf(buff,"{defeat} %d,%d",port1,strength.second);
-    sendMessage(port,string(buff));
+    sendMessage(port,strprintf("{defeat} %d,%d",port1,strength.second));
 }
 
 void recieveDefeat(int port, int port1, int newParent) {
-    char inf[100];
-    sprintf(inf,"I'm captured");
-    sendInformation(string(inf));
-    char up[100];
-    sprintf(up,"Defeat:%d:%d",id,newParent);
-    algorithmUpdate(up);
+    sendInformation(strprintf("I'm captured"));
+    algorithmUpdate(strprintf("Defeat:%d:%d",id,newParent));
     setIValue("parent",newParent);
-    parentPort = port1;
+    setIValue("_parent_port",port1);
     sendMessage(port1,"{accept}");
 }
 
@@ -163,11 +133,9 @@ void init(){
     setIValue("parent",-1);
     setSValue("leader","maybe");
     setSValue("state","active");
-    parentPort = -1;
-    char buffer[100];
-    sprintf(buffer,"{capture %d,%d}",getIValue("level"),id);
+    setIValue("_parent_port",-1);
     wait = 0;
-    sendMessage(ports[0],string(buffer));
+    sendMessage(ports[0],strprintf("{capture %d,%d}",getIValue("level"),id));
 }
 
 int main(){

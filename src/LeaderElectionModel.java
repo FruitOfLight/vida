@@ -1,3 +1,4 @@
+
 public class LeaderElectionModel extends Model {
 
     Vertex leader;

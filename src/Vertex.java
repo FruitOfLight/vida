@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 public class Vertex implements Comparable<Vertex> {
 
     private double x, y, radius;
-    private int ID;
+    private int ID, parentPort;
     private Color color;
     private Color auraColor;
 
@@ -24,21 +24,30 @@ public class Vertex implements Comparable<Vertex> {
     public double getX() { return x; }
     public double getY() { return y; }
     public double getRadius() { return radius; }
-    public void move(double x, double y) { 
-        this.x = x; 
-        this.y = y;
-        bubble.move(this.x, this.y-this.radius);
-    }
     public Color getColor() { return color; }
     public void setColor(Color color) { this.color = color;}
     public Color getAuraColor() { return auraColor; }
     public void setAuraColor(Color color) { this.auraColor = color;}
+    // @formatter:on
+    public void move(double x, double y) {
+        this.x = x;
+        this.y = y;
+        bubble.move(this.x, this.y - this.radius);
+    }
+
     public void setRadius(double radius) {
         this.radius = radius;
         GUI.graph.pushAway(this);
-        bubble.move(this.x, this.y-this.radius);
+        bubble.move(this.x, this.y - this.radius);
     }
-    // @formatter:on
+
+    public void setParentPort(int port) {
+        if (parentPort != -1)
+            edges.get(parentPort).parentEdge = false;
+        parentPort = port;
+        if (parentPort != -1)
+            edges.get(parentPort).parentEdge = true;
+    }
 
     ArrayList<Edge> edges;
     Program program;
@@ -53,14 +62,14 @@ public class Vertex implements Comparable<Vertex> {
         this.x = x;
         this.y = y;
         this.ID = ID;
-        radius = CONST.vertexSize;
         watchVariables = new HashMap<String, String>();
-        color = new Color(0, 255, 0);
         bubble = new Bubble(this.x, this.y - this.radius);
         auraColor = new Color(255, 255, 255, 0);
+        defaultSettings();
     }
 
     public void defaultSettings() {
+        parentPort = -1;
         color = new Color(0, 255, 0);
         radius = CONST.vertexSize;
         bubble.defaultSettings();
@@ -86,7 +95,6 @@ public class Vertex implements Comparable<Vertex> {
     public Map<String, String> watchVariables;
 
     public void setVariable(String name, String value) {
-        // TODO Fuj object hore nechceme, ale toto je len provizorne riesenie 
         if (name.charAt(0) == '_') {
             if (name.equals("_vertex_color")) {
                 String parts[] = value.split(",", 3);
@@ -95,6 +103,9 @@ public class Vertex implements Comparable<Vertex> {
             }
             if (name.equals("_vertex_size")) {
                 setRadius(CONST.vertexSize * Math.sqrt(Integer.parseInt(value.trim()) * 0.01));
+            }
+            if (name.equals("_parent_port")) {
+                setParentPort(program.ports.indexOf(Integer.parseInt(value.trim())));
             }
         } else {
             watchVariables.remove(name);

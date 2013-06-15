@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 
 // orientovana hrana z from do to
 public class Edge {
@@ -8,6 +9,7 @@ public class Edge {
     Vertex from, to;
     Edge oppositeEdge; // hrana z to do from
     boolean selected;
+    boolean parentEdge;
     private boolean removed;
     private int speed;
     MessageQueue queue;
@@ -35,6 +37,23 @@ public class Edge {
         message.setEdge(this);
         message.toPort = this.to.edges.indexOf(this.oppositeEdge);
         queue.pushMessage(message);
+    }
+
+    public void preDraw(Graphics2D g) {
+        if (parentEdge) {
+            g.setColor(new Color(200, 200, 0));
+            Path2D polygon = new Path2D.Double();
+            double r = to.getRadius();
+            double d = (from.getX() - to.getX()) * (from.getX() - to.getX())
+                    + (from.getY() - to.getY()) * (from.getY() - to.getY());
+            double vx = (from.getY() - to.getY()) * r / Math.sqrt(d);
+            double vy = -(from.getX() - to.getX()) * r / Math.sqrt(d);
+            polygon.moveTo(from.getX(), from.getY());
+            polygon.lineTo(to.getX() + vx, to.getY() + vy);
+            polygon.lineTo(to.getX() - vx, to.getY() - vy);
+            polygon.lineTo(from.getX(), from.getY());
+            g.fill(polygon);
+        }
     }
 
     public void draw(Graphics2D g) {
