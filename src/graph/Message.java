@@ -11,6 +11,7 @@ import java.awt.geom.RoundRectangle2D;
 import ui.CONST;
 import ui.Canvas;
 import ui.GUI;
+import algorithms.Player;
 import enums.Constrast;
 import enums.DeliverState;
 import enums.RunState;
@@ -23,6 +24,7 @@ public class Message {
         return GUI.random.nextDouble() * 0.9 + 0.1;
     }
 
+    Player player;
     public int fromPort, toPort;
     Edge edge;
     public String rawContent;
@@ -35,6 +37,7 @@ public class Message {
     Color gColor;
 
     public Message(int port, String content) {
+        player = GUI.player;
         selected = 0;
         state = DeliverState.born;
         this.fromPort = port;
@@ -182,7 +185,8 @@ public class Message {
         dy = y - dh;
         g.translate(x, y);
         g.rotate(Math.atan2(fy, fx));
-        g.scale(1.0 / Math.sqrt(GUI.graph.canvas.zoom), 1.0 / Math.sqrt(GUI.graph.canvas.zoom));
+        g.scale(1.0 / Math.sqrt(player.graph.canvas.zoom),
+                1.0 / Math.sqrt(player.graph.canvas.zoom));
         g.translate(-x, -y);
 
         Color c = new Color(255, 180, 100);
@@ -248,7 +252,7 @@ public class Message {
     // predpocita si svoj pohyb
     public void measure(long time) {
         // sila ktora sa snazi odoslat spravu
-        if (GUI.model.running == RunState.running)
+        if (player.running == RunState.running)
             force = 1;
         else
             force = 0;
@@ -264,18 +268,18 @@ public class Message {
         // factor ma kazda sprava vlastny, urci sa nahodne pri vzniku
         force *= getEdgeSpeed() * factor;
         // oznamime modelu svoju chcenu rychlost
-        GUI.model.listenSpeed(force);
+        player.listenSpeed(force);
 
         // tahanie uzivatelom
         if (selected > 0 && selected != 5) {
             double x = edge.from.getX() * (1.0 - position) + edge.to.getX() * position;
             double y = edge.from.getY() * (1.0 - position) + edge.to.getY() * position;
-            double x1 = GUI.graph.listener.xlast - x;
-            double y1 = GUI.graph.listener.ylast - y;
+            double x1 = player.graph.listener.xlast - x;
+            double y1 = player.graph.listener.ylast - y;
             double x2 = (edge.to.getX() - edge.from.getX());
             double y2 = (edge.to.getY() - edge.from.getY());
             double prod = (x1 * x2 + y1 * y2) / Math.sqrt(x2 * x2 + y2 * y2);
-            double modelspeed = GUI.model.getSpeedBalance() * GUI.model.getSendSpeed();
+            double modelspeed = player.getSpeedBalance() * player.getSendSpeed();
             force += Math.min(10.0, Math.max(prod / 100.0, -10.0)) / factor / Math.sqrt(modelspeed);
         }
     }
@@ -286,14 +290,13 @@ public class Message {
             return;
 
         // upravime podla rychlosti modelu
-        double speed = GUI.model.getSpeedBalance() * GUI.model.getSendSpeed() * time * 0.001
-                * force;
+        double speed = player.getSpeedBalance() * player.getSendSpeed() * time * 0.001 * force;
         position += speed;
 
         // paksametle okolo odosielania a nevyskocenia z hrany
         if (position >= 1.0) {
             position = 1.0;
-            if (GUI.model.running == RunState.running
+            if (player.running == RunState.running
                     && (prevM == null || prevM.state == DeliverState.inbox))
                 state = DeliverState.inbox;
         }

@@ -18,8 +18,8 @@ import ui.Dialog;
 import ui.Drawable;
 import ui.GUI;
 import ui.Tool;
-import algorithms.Model;
 import algorithms.ModelSettings;
+import algorithms.Player;
 import enums.GraphType;
 import enums.Property;
 import enums.RunState;
@@ -32,6 +32,7 @@ public class Graph implements Drawable {
     public Canvas canvas;
     public double mousex, mousey;
     public GraphListener listener;
+    public Player player;
 
     //
     private GraphType type = GraphType.any;
@@ -46,6 +47,7 @@ public class Graph implements Drawable {
     long waitTime = 0;
 
     public Graph() {
+        player = GUI.player;
         vertices = new ArrayList<Vertex>();
         edges = new ArrayList<Edge>();
         setCanvas(new Canvas(this));
@@ -73,8 +75,8 @@ public class Graph implements Drawable {
         totalTime += delay;
         ticks++;
         if (totalTime >= 2000) {
-            Model.sfps = (int) (1000 / longest);
-            Model.afps = (int) (1000 * ticks / totalTime);
+            Player.sfps = (int) (1000 / longest);
+            Player.afps = (int) (1000 * ticks / totalTime);
             totalTime = 0;
             longest = 0;
             ticks = 0;
@@ -85,8 +87,8 @@ public class Graph implements Drawable {
             if (System.currentTimeMillis() - pauseTime > waitTime) {
                 pauseTime = -1;
                 waitTime = 0;
-                GUI.model.running = RunState.running;
-                GUI.model.start();
+                player.running = RunState.running;
+                player.start();
             }
         }
         // vykresli vrcholy a hrany
@@ -113,8 +115,8 @@ public class Graph implements Drawable {
         for (Vertex vertex : vertices) {
             vertex.bubble.draw(g);
         }
-        if (GUI.model.algorithm != null)
-            GUI.model.algorithm.draw(g);
+        if (player.model.algorithm != null)
+            player.model.algorithm.draw(g);
     }
 
     public boolean selectWithMouse(MouseEvent mouse) {
@@ -124,7 +126,7 @@ public class Graph implements Drawable {
         if (o == null)
             return false;
         if (o instanceof Vertex) {
-            if (mouse.getClickCount() == 2 && GUI.model.running == RunState.stopped) {
+            if (mouse.getClickCount() == 2 && player.running == RunState.stopped) {
                 ((Vertex) o).onClicked();
             } else {
                 GUI.zoomWindow.drawVertex(((Vertex) o));
@@ -196,7 +198,7 @@ public class Graph implements Drawable {
     }
 
     public int getNewVertexID(int size) {
-        if (GUI.model.settings.isProperty(Property.anonym)) {
+        if (player.model.settings.isProperty(Property.anonym)) {
             return 0;
         }
         int bound = size * 2;
@@ -368,51 +370,15 @@ public class Graph implements Drawable {
         }
     }
 
-    public void pushAway(Vertex v) {
-        for (Vertex neig : vertices) {
-            if (neig == v)
-                continue;
-            if (!v.isNearPoint(neig.getX(), neig.getY(), neig.getRadius() + 5))
-                continue;
-            for (int i = 0; i < 50; i++) {
-                double dx = i;
-                if (Math.random() < 0.5)
-                    dx += 3 * Math.random();
-                else {
-                    dx *= -1;
-                    dx -= 3 * Math.random();
-                }
-                double dy = i;
-                if (Math.random() < 0.5)
-                    dy += 3 * Math.random();
-                else {
-                    dy *= -1;
-                    dy -= 3 * Math.random();
-                }
-                boolean t = true;
-                for (Vertex v1 : vertices) {
-                    if (v1 == neig)
-                        continue;
-                    if (v1.isNearPoint(neig.getX() + dx, neig.getY() + dy, 5 + neig.getRadius()))
-                        t = false;
-                }
-                if (!t)
-                    continue;
-                neig.move(neig.getX() + dx, neig.getY() + dy);
-                break;
-            }
-        }
-    }
-
     public String getTypeString() {
         return type.toString() + " " + vertices.size();
     }
 
     public void createNew() {
         Dialog.DialogNewGraph newGraphDialog = new Dialog.DialogNewGraph(
-                (GUI.model.settings.getGraphType() == GraphType.any) ? type
-                        : GUI.model.settings.getGraphType(),
-                (GUI.model.settings.getGraphType() == GraphType.any) ? false : true);
+                (player.model.settings.getGraphType() == GraphType.any) ? type
+                        : player.model.settings.getGraphType(),
+                (player.model.settings.getGraphType() == GraphType.any) ? false : true);
         int ok = JOptionPane.showConfirmDialog(null, newGraphDialog.getPanel(), "New graph",
                 JOptionPane.OK_CANCEL_OPTION);
         if (ok == JOptionPane.OK_OPTION) {

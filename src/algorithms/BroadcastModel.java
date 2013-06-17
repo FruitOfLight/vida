@@ -1,11 +1,7 @@
 package algorithms;
 
-import java.util.Random;
-
-import ui.Dialog;
-import ui.GUI;
-import enums.RunState;
 import graph.Vertex;
+import ui.Dialog;
 
 public class BroadcastModel extends Model {
 
@@ -22,30 +18,12 @@ public class BroadcastModel extends Model {
     }
 
     @Override
-    public void load() {
-        this.defaultSettings();
-        if (running != RunState.stopped)
-            stop();
-        graph = GUI.graph;
-        Random gen = new Random();
-        int gossip = gen.nextInt(graph.vertices.size());
-        for (int i = 0; i < graph.vertices.size(); i++) {
-            graph.vertices.get(i).program = new Program(graph.vertices.get(i), this);
-            if (i == gossip) {
-                graph.vertices.get(i).program.load(binaryPath + ".bin", 1);
-            } else {
-                graph.vertices.get(i).program.load(binaryPath + ".bin", 0);
-            }
-        }
-    }
-
-    @Override
     public void processExit(String exitValue, Vertex vertex) {
         familiarProcessCount++;
-        if (familiarProcessCount == graph.vertices.size()) {
+        if (familiarProcessCount == player.graph.vertices.size()) {
             if (algorithm == null) {
                 Dialog.showMessage("Well done.");
-                this.stop();
+                player.stop();
             } else {
                 algorithm.finishAlgorithm(null);
             }

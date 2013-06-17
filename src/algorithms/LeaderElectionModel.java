@@ -1,9 +1,7 @@
 package algorithms;
 
-import enums.RunState;
 import graph.Vertex;
 import ui.Dialog;
-import ui.GUI;
 
 public class LeaderElectionModel extends Model {
 
@@ -23,18 +21,6 @@ public class LeaderElectionModel extends Model {
     }
 
     @Override
-    public void load() {
-        this.defaultSettings();
-        if (running != RunState.stopped)
-            stop();
-        graph = GUI.graph;
-        for (Vertex v : graph.vertices) {
-            v.program = new Program(v, this);
-            v.program.load(binaryPath + ".bin", 1);
-        }
-    }
-
-    @Override
     void processExit(String exitValue, Vertex vertex) {
         if (exitValue.equals("false"))
             deadProcessCount++;
@@ -42,21 +28,21 @@ public class LeaderElectionModel extends Model {
             //FIXME vyhod chybovu hlasku
             if (leader != null) {
                 Dialog.showError("Leader had been already choosed.");
-                this.stop();
+                player.stop();
                 return;
             } else
                 leader = vertex;
         }
         //FIXME vyhod chybovu hlasku
-        if (deadProcessCount == graph.vertices.size()) {
+        if (deadProcessCount == player.graph.vertices.size()) {
             Dialog.showError("There is no leader");
-            this.stop();
+            player.stop();
             return;
         }
-        if (deadProcessCount == graph.vertices.size() - 1 && leader != null) {
+        if (deadProcessCount == player.graph.vertices.size() - 1 && leader != null) {
             if (algorithm == null) {
                 Dialog.showMessage("Well done.");
-                this.stop();
+                player.stop();
             } else
                 algorithm.finishAlgorithm(leader);
             return;

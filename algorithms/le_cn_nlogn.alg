@@ -1,6 +1,6 @@
 Version 1.0
 
-Model
+Settings
     anonym: no
     graph: clique
 

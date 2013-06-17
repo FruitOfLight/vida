@@ -38,7 +38,7 @@ public class Dialog {
         }
 
         public int getID() {
-            if (GUI.model.settings.isProperty(Property.anonym))
+            if (GUI.player.model.settings.isProperty(Property.anonym))
                 return 0;
             return IDField.getInt(0, 0, 1000000);
         }
@@ -138,7 +138,7 @@ public class Dialog {
                     GraphType.values()[chooseGraphType.getSelectedIndex()], true);
             JOptionPane.showMessageDialog(null, newGraphDialog.getPanel(), "New graph",
                     JOptionPane.OK_CANCEL_OPTION);
-            GUI.graph.createNew(newGraphDialog);
+            GUI.player.graph.createNew(newGraphDialog);
         }
 
         public void apply(ModelSettings settings) {

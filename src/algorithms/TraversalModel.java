@@ -1,12 +1,7 @@
 package algorithms;
 
-import enums.RunState;
 import graph.Vertex;
-
-import java.util.Random;
-
 import ui.Dialog;
-import ui.GUI;
 
 public class TraversalModel extends Model {
 
@@ -27,31 +22,12 @@ public class TraversalModel extends Model {
     }
 
     @Override
-    public void load() {
-        this.defaultSettings();
-        if (running != RunState.stopped)
-            stop();
-        graph = GUI.graph;
-        Random gen = new Random();
-        int firstToken = gen.nextInt(graph.vertices.size());
-        token = graph.vertices.get(firstToken);
-        for (int i = 0; i < graph.vertices.size(); i++) {
-            graph.vertices.get(i).program = new Program(graph.vertices.get(i), this);
-            if (i == firstToken) {
-                graph.vertices.get(i).program.load(binaryPath + ".bin", 1);
-            } else {
-                graph.vertices.get(i).program.load(binaryPath + ".bin", 0);
-            }
-        }
-    }
-
-    @Override
     public void processExit(String exitValue, Vertex vertex) {
         discoveredCount++;
-        if (discoveredCount == graph.vertices.size()) {
+        if (discoveredCount == player.graph.vertices.size()) {
             if (algorithm == null) {
                 Dialog.showMessage("Well done.");
-                this.stop();
+                player.stop();
             } else {
                 algorithm.finishAlgorithm(null);
             }

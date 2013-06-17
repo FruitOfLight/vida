@@ -1,10 +1,5 @@
 package ui;
 
-import enums.RunState;
-import enums.ToolTarget;
-import enums.ToolType;
-import graph.MessageQueue;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -16,23 +11,23 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import algorithms.Model;
+import algorithms.Player;
+import enums.RunState;
+import enums.ToolTarget;
+import enums.ToolType;
+import graph.MessageQueue;
 
 public class Controls implements Drawable {
     JPanel panel;
     Canvas canvas;
-    Model model;
-
-    public void setModel(Model model) {
-        this.model = model;
-    }
+    Player player;
 
     static final int gridWidth = 30;
     static final int gridSpace = 10;
     static final int gridHeight = 30;
 
     public Controls() {
-        model = GUI.model;
+        player = GUI.player;
         panel = new JPanel();
         canvas = new Canvas(this);
         panel.setLayout(null);
@@ -62,17 +57,17 @@ public class Controls implements Drawable {
 
     public void onClick(String name) {
         if (name.equals("p_start")) {
-            GUI.model.start();
+            player.start();
         } else if (name.equals("s_run")) {
-            GUI.model.start();
+            player.start();
         } else if (name.equals("p_pause")) {
-            GUI.model.pause();
+            player.pause();
         } else if (name.equals("p_stop")) {
-            GUI.model.stop();
+            player.stop();
         } else if (name.equals("p_fast")) {
-            GUI.model.setSendSpeed(GUI.model.getSendSpeed() * CONST.speedFactor);
+            player.setSendSpeed(player.getSendSpeed() * CONST.speedFactor);
         } else if (name.equals("p_slow")) {
-            GUI.model.setSendSpeed(GUI.model.getSendSpeed() / CONST.speedFactor);
+            player.setSendSpeed(player.getSendSpeed() / CONST.speedFactor);
         } else if (name.equals("s_load")) {
             Menu.performAction(2, 0);
         } else if (name.equals("s_settings")) {
@@ -92,15 +87,15 @@ public class Controls implements Drawable {
 
     public boolean showMe(String name) {
         if (name.equals("p_start")) {
-            return model.running == RunState.paused;
+            return player.running == RunState.paused;
         } else if (name.equals("s_run")) {
-            return model.running == RunState.stopped;
+            return player.running == RunState.stopped;
         } else if (name.equals("p_pause")) {
-            return model.running == RunState.running;
+            return player.running == RunState.running;
         } else if (name.equals("p_stop")) {
-            return model.running != RunState.stopped;
+            return player.running != RunState.stopped;
         } else if (name.equals("gs_message")) {
-            return model.running != RunState.stopped;
+            return player.running != RunState.stopped;
         } else {
             return true;
         }
@@ -108,14 +103,14 @@ public class Controls implements Drawable {
 
     public String getContent(String name) {
         if (name.equals("l_graph")) {
-            return GUI.graph.getTypeString();
+            return player.graph.getTypeString();
         } else if (name.equals("l_program")) {
-            return model.programName.equals("") ? "none" : model.programName;
+            return player.model.program.name.equals("") ? "none" : player.model.program.name;
         } else if (name.equals("l_running")) {
-            String s = model.getSendSpeedString(5) + " : " + model.getSendSpeedString(-5);
-            if (model.running == RunState.running)
+            String s = player.getSendSpeedString(5) + " : " + player.getSendSpeedString(-5);
+            if (player.running == RunState.running)
                 return "Playing " + s;
-            else if (model.running == RunState.paused)
+            else if (player.running == RunState.paused)
                 return "Paused (" + s + ")";
             else
                 return "Stopped (" + s + ")";
@@ -199,7 +194,7 @@ public class Controls implements Drawable {
 
     public void draw(Graphics2D g) {
         g.setColor(new Color(0, 0, 0));
-        g.drawString("fps: " + Model.afps + ":" + Model.sfps + ":" + (int) Model.fps + " mc:"
+        g.drawString("fps: " + Player.afps + ":" + Player.sfps + ":" + (int) Player.fps + " mc:"
                 + MessageQueue.messageCount, 10, 20);
         try {
             ((ControlLabel) get("l_graph")).refresh();

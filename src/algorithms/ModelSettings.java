@@ -85,7 +85,7 @@ public class ModelSettings {
         if (ok == JOptionPane.OK_OPTION) {
             newProgramSettings.apply(this);
             GUI.acceptSettings(this);
-            GUI.graph.acceptSettings(this);
+            GUI.player.graph.acceptSettings(this);
         }
     }
 
@@ -147,17 +147,11 @@ public class ModelSettings {
     }
 
     public void print(PrintStream out) {
-        for (int i = 0; i < properties.length; ++i)
-            out.println(properties[i]);
-        for (int i = 0; i < locked.length; ++i)
-            out.println(locked[i] ? 1 : 0);
+
     }
 
-    public void read(Scanner in) {
-        for (int i = 0; i < properties.length; ++i)
-            properties[i] = in.nextInt();
-        for (int i = 0; i < locked.length; ++i)
-            locked[i] = (in.nextInt() != 0);
+    public void read(AlgReader reader) {
+
     }
 
 }

@@ -35,7 +35,7 @@ public class Menu {
         case 1:
             switch (c) {
             case 0:
-                GUI.graph.createNew();
+                GUI.player.graph.createNew();
                 break;
             case 1:
                 int value = GUI.graphLoader.showOpenDialog(null);
@@ -43,7 +43,7 @@ public class Menu {
                     try {
                         File file = GUI.graphLoader.getSelectedFile();
                         Scanner input = new Scanner(file);
-                        GUI.graph.read(input);
+                        GUI.player.graph.read(input);
                         input.close();
                     } catch (Exception e) {
                         System.out.println("Exception during opening\n");
@@ -57,7 +57,7 @@ public class Menu {
                     try {
                         File file = GUI.graphSaver.getSelectedFile();
                         PrintStream output = new PrintStream(file);
-                        GUI.graph.print(output);
+                        GUI.player.graph.print(output);
                         output.close();
                     } catch (Exception e) {
                         System.out.println("Exception during saving\n");
@@ -69,31 +69,31 @@ public class Menu {
             }
             break;
         case 2:
-            if (GUI.model.running != RunState.stopped)
+            if (GUI.player.running != RunState.stopped)
                 break;
             switch (c) {
             case 0:
-                GUI.model.openProgram();
+                GUI.player.model.openAlgorithm();
                 break;
             case 1:
-                GUI.model.settings.showDialog();
+                GUI.player.model.settings.showDialog();
                 break;
             default:
                 Dialog.showError("Not implemented");
             }
             break;
         case 3:
-            if (GUI.model.running != RunState.stopped)
+            if (GUI.player.running != RunState.stopped)
                 break;
             switch (c) {
             case 0:
-                GUI.model.algorithm = null;
+                GUI.player.model.algorithm = null;
                 break;
             case 1:
-                GUI.model.algorithm = new CliqueLEAlgorithm();
+                GUI.player.model.algorithm = new CliqueLEAlgorithm();
                 break;
             case 2:
-                GUI.model.algorithm = new BFSAlgorithm();
+                GUI.player.model.algorithm = new BFSAlgorithm();
                 break;
             default:
                 Dialog.showError("Not implemented");

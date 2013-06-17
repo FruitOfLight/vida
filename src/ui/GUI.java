@@ -1,8 +1,6 @@
 package ui;
 
 import enums.Language;
-import enums.ModelType;
-import graph.Graph;
 import graph.MessageQueue;
 
 import java.awt.Dimension;
@@ -28,11 +26,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 
-import algorithms.BroadcastModel;
-import algorithms.LeaderElectionModel;
-import algorithms.Model;
 import algorithms.ModelSettings;
-import algorithms.TraversalModel;
+import algorithms.Player;
 
 public class GUI {
     public static Random random = new Random();
@@ -41,8 +36,7 @@ public class GUI {
     static JFileChooser graphSaver;
 
     // uz pristupujeme cez graf 
-    public static Graph graph;
-    public static Model model;
+    public static Player player;
     public static Controls controls;
     public static MessageQueue messageQueue;
     public static GlobalKeyListener gkl;
@@ -101,7 +95,7 @@ public class GUI {
             frame.add(layeredPane);
             //layeredPane.setLayout(null);
             layeredPane.add(menu);
-            layeredPane.add(graph.canvas);
+            layeredPane.add(player.graph.canvas);
             layeredPane.add(informationPanel.scrollPanel);
             layeredPane.add(zoomWindow.canvas);
             layeredPane.add(popupInformation);
@@ -109,7 +103,7 @@ public class GUI {
             frame.add(controls.panel);
 
             layeredPane.setComponentZOrder(menu, 0);
-            layeredPane.setComponentZOrder(graph.canvas, 1);
+            layeredPane.setComponentZOrder(player.graph.canvas, 1);
             layeredPane.setComponentZOrder(informationPanel.scrollPanel, 0);
             layeredPane.setComponentZOrder(zoomWindow.canvas, 0);
             layeredPane.setComponentZOrder(popupInformation, 0);
@@ -151,8 +145,8 @@ public class GUI {
         System.out.println("refreshLayout " + gw + " " + gh);
         layeredPane.setBounds(0, 0, frame.getContentPane().getWidth(), gh + CONST.menuHeight);
         menu.setBounds(0, 0, frame.getContentPane().getWidth(), CONST.menuHeight);
-        graph.canvas.setLocation(0, CONST.menuHeight);
-        graph.resizeCanvas(gw, gh);
+        player.graph.canvas.setLocation(0, CONST.menuHeight);
+        player.graph.resizeCanvas(gw, gh);
         controls.panel.setBounds(0, gh + CONST.menuHeight, frame.getContentPane().getWidth(),
                 CONST.controlsHeight);
         informationPanel.scrollPanel.setBounds(gw - CONST.informationWidth, CONST.menuHeight,
@@ -170,46 +164,34 @@ public class GUI {
     public static void gRepaint() {
         if (controls != null)
             GUI.controls.canvas.repaint();
-        if (graph != null)
-            GUI.graph.canvas.repaint();
+        if (player.graph != null)
+            player.graph.canvas.repaint();
         if (layeredPane != null)
             GUI.layeredPane.repaint();
     }
 
     public static void acceptSettings(ModelSettings settings) {
         System.out.println("Gui is accepting new settings");
-        graph.acceptSettings(settings);
+        player.graph.acceptSettings(settings);
         System.out.println("graph accepted new settings");
-        setModel(settings.getModel());
+        player.setModel(settings.getModel());
         System.out.println("Gui accepted new settings");
-    }
-
-    public static void setModel(ModelType modelTyp) {
-        if (modelTyp == ModelType.DEF)
-            model = new Model();
-        if (modelTyp == ModelType.LE)
-            model = new LeaderElectionModel();
-        else if (modelTyp == ModelType.BC)
-            model = new BroadcastModel();
-        else if (modelTyp == ModelType.TR)
-            model = new TraversalModel();
-        controls.setModel(model);
     }
 
     public static void saveApp() {
         try {
             File file = new File("backup/graf.in");
             PrintStream out = new PrintStream(file);
-            graph.print(out);
+            player.graph.print(out);
             out.close();
-            file = new File("backup/program.in");
+            /*TODO file = new File("backup/program.in");
             out = new PrintStream(file);
-            model.print(out);
-            out.close();
-            file = new File("backup/settings.in");
+            player.model.print(out);
+            out.close();*/
+            /*TODO file = new File("backup/settings.in");
             out = new PrintStream(file);
             model.settings.print(out);
-            out.close();
+            out.close();*/
         } catch (Exception e) {
             System.out.println(e.toString());
         }
@@ -219,17 +201,17 @@ public class GUI {
         try {
             File file = new File("backup/graf.in");
             Scanner in = new Scanner(file);
-            graph.read(in);
+            player.graph.read(in);
             in.close();
-            file = new File("backup/program.in");
+            /*TODO file = new File("backup/program.in");
             in = new Scanner(file);
-            model.read(in);
-            model.compile();
+            player.model.read(in);
+            player.model.compile();
             in.close();
             file = new File("backup/settings.in");
             in = new Scanner(file);
-            model.settings.read(in);
-            in.close();
+            player.model.settings.read(in);
+            in.close();*/
         } catch (Exception e) {
             System.out.println(e.toString());
         }
@@ -237,17 +219,16 @@ public class GUI {
 
     public static void main(String[] args) {
         language = Language.english;
-        // TODO spravit krajsie
+
         gkl = new GlobalKeyListener();
-        graph = new Graph();
-        //FIXME len na testovanie
-        model = new LeaderElectionModel();
+        player = new Player();
         controls = new Controls();
-        graph.listener.setControls(controls);
+        player.graph.listener.setControls(controls);
 
         zoomWindow = new ZoomWindow();
         informationPanel = new InformationPanel();
         globalTimer = new Timer();
+
         final Window window = new Window();
         SwingUtilities.invokeLater(window);
         loadApp();

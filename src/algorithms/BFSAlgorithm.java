@@ -3,18 +3,20 @@ package algorithms;
 import java.awt.Graphics2D;
 import java.io.PrintStream;
 
-import ui.Bubble;
 import ui.GUI;
 import enums.BubblePosition;
+import graph.Bubble;
 import graph.Vertex;
 
 public class BFSAlgorithm implements Algorithm {
 
     Bubble generalInfo;
+    Player player;
 
     public BFSAlgorithm() {
+        player = GUI.player;
         this.defaultSettings();
-        GUI.model.setPath(getPath());
+        //GUI.model.setPath(getPath());
     }
 
     public String getPath() {
@@ -39,13 +41,13 @@ public class BFSAlgorithm implements Algorithm {
                 "At the begining of this algorithm, one process know new gossip."
                         + "He wants to share gossip with everyone else. That means, "
                         + "he sends message to each neighbor.", -2);
-        GUI.model.pause();
+        player.pause();
     }
 
     public void finishAlgorithm(Vertex v) {
         generalInfo.addInformation(
                 "All processes know the new gossip. Total number of send messages is"
-                        + GUI.model.overallMessageCount, -1);
+                        + player.model.overallMessageCount, -1);
         generalInfo.addInformation("Press 'R' to continue.", -1);
     }
 
@@ -53,7 +55,7 @@ public class BFSAlgorithm implements Algorithm {
 
     public void recieveUpdate(Vertex vertex, String message) {
         if (message.contains("recieve") && !recieve) {
-            GUI.globalTimer.schedule(new Model.AuraEvent(vertex, 7), 0);
+            GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
             String[] values = message.split(":");
             generalInfo
                     .addInformation(
@@ -62,10 +64,10 @@ public class BFSAlgorithm implements Algorithm {
                                     + " recieved new gossip. He wants to spread it, so he sends gossip to each neighbor"
                                     + " except the one, who sent him this gossip.", -2);
             recieve = true;
-            GUI.model.pause();
+            player.pause();
         }
         if (message.contains("old") && !old) {
-            GUI.globalTimer.schedule(new Model.AuraEvent(vertex, 7), 0);
+            GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
             String[] values = message.split(":");
             generalInfo
                     .addInformation(
@@ -75,7 +77,7 @@ public class BFSAlgorithm implements Algorithm {
                                     + " He ignores this message, because he has already sent the gossip to his neighbors.",
                             -2);
             old = true;
-            GUI.model.pause();
+            player.pause();
         }
         GUI.controls.refresh();
         GUI.gRepaint();

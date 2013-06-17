@@ -23,6 +23,7 @@ import ui.GUI;
  */
 public class Program extends Thread {
     Vertex vertex;
+    Player player;
     int id;
     public ArrayList<Integer> ports;
     boolean running;
@@ -34,8 +35,9 @@ public class Program extends Thread {
 
     boolean exited;
 
-    public Program(Vertex v, Model m) {
+    public Program(Vertex v, Player p) {
         super();
+        player = p;
         vertex = v;
         vertex.program = this;
         running = false;
@@ -58,7 +60,7 @@ public class Program extends Thread {
             while ((line = out.readLine()) != null) {
                 if (line.charAt(0) == '@') {
                     String[] parts = line.substring(1).split(":", 2);
-                    if (GUI.model.canSendMessage(vertex, Integer.parseInt(parts[0].trim())))
+                    if (player.model.canSendMessage(vertex, Integer.parseInt(parts[0].trim())))
                         send(Integer.parseInt(parts[0].trim()), parts[1].trim());
                 }
                 if (line.charAt(0) == '#') {
@@ -73,14 +75,14 @@ public class Program extends Thread {
                     vertex.setVariable(parts[0].trim(), parts[1].trim());
                 }
                 if (line.charAt(0) == '%') {
-                    GUI.model.pauseFromProcess(vertex);
+                    player.pauseFromProcess(vertex);
                 }
-                if (line.charAt(0) == '*' && GUI.model.algorithm != null) {
-                    GUI.model.algorithm.recieveUpdate(vertex, line.substring(1).trim());
+                if (line.charAt(0) == '*' && player.model.algorithm != null) {
+                    player.model.algorithm.recieveUpdate(vertex, line.substring(1).trim());
                 }
                 if (line.charAt(0) == '&' && !exited) {
                     exited = true;
-                    GUI.model.processExit(line.substring(1).trim(), vertex);
+                    player.model.processExit(line.substring(1).trim(), vertex);
                 }
             }
             out.close();
@@ -140,7 +142,7 @@ public class Program extends Thread {
     }
 
     public void receive(Message message) {
-        GUI.model.statisticMessage();
+        player.model.statisticMessage();
         in.println("@ " + ports.get(message.toPort) + " : " + message.rawContent);
         in.flush();
     }

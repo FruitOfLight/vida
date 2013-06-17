@@ -41,7 +41,7 @@ public class GraphListener implements MouseListener, MouseMotionListener, MouseW
     public void draw(Graphics2D g) {
         Tool tool = controls.getTool();
         // vykresli polhranu
-        if (begin != null && GUI.model.running == RunState.stopped
+        if (begin != null && graph.player.running == RunState.stopped
                 && tool.compatible(ToolType.create) && tool.compatible(ToolTarget.edge)) {
             g.setColor(new Color(0, 0, 0));
             g.draw(new Line2D.Double(begin.getX(), begin.getY(), xlast, ylast));
@@ -74,9 +74,9 @@ public class GraphListener implements MouseListener, MouseMotionListener, MouseW
                     return;
             }
             if (tool.target == ToolTarget.any) {
-                if (GUI.model.running == RunState.running) {
+                if (graph.player.running == RunState.running) {
                     GUI.controls.onClick("p_pause");
-                } else if (GUI.model.running == RunState.paused) {
+                } else if (graph.player.running == RunState.paused) {
                     GUI.controls.onClick("p_start");
                 }
             }
@@ -127,7 +127,7 @@ public class GraphListener implements MouseListener, MouseMotionListener, MouseW
             noClick = true;
         }
         if (tool.compatible(ToolType.create) && tool.compatible(ToolTarget.edge)
-                && GUI.model.running == RunState.stopped) {
+                && graph.player.running == RunState.stopped) {
             graph.createEdge(begin, graph.getVertex(mouseGetX(mouse), mouseGetY(mouse)));
         }
         begin = null;

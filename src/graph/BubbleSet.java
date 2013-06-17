@@ -1,4 +1,6 @@
-package ui;
+package graph;
+
+import ui.GUI;
 
 public class BubbleSet {
     // nemazat tu komentare !!!
@@ -9,7 +11,7 @@ public class BubbleSet {
     public static long time = 1;
 
     public static void step(long delay) {
-        time += (long) (delay * Math.sqrt(GUI.model.getSendSpeed()));
+        time += (long) (delay * Math.sqrt(GUI.player.getSendSpeed()));
     }
 
     /*nemazat komentar

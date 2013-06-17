@@ -1,4 +1,4 @@
-package ui;
+package graph;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -10,6 +10,10 @@ import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+
+import ui.Canvas;
+import ui.Drawable;
+import ui.GUI;
 
 import enums.BubblePosition;
 import enums.BubbleState;
@@ -59,6 +63,7 @@ public class Bubble implements Drawable {
     }
 
     BubbleState state;
+    Graph graph;
     private LinkedList<Information> list;
     private boolean updated;
     private int maxWidth;
@@ -76,6 +81,7 @@ public class Bubble implements Drawable {
     private double x, y, dx, dy, dw, dh, dr = 8;
 
     public Bubble(double x, double y) {
+        graph = GUI.player.graph;
         list = new LinkedList<Bubble.Information>();
         lines = new ArrayList<String>();
         state = BubbleState.alive;
@@ -104,7 +110,7 @@ public class Bubble implements Drawable {
             return;
         if (!GUI.controls.get("v_bubble-all-vertices").isActive())
             return;
-        float alpha = transparency * (isOnPoint(GUI.graph.mousex, GUI.graph.mousey) ? 0.5f : 1.0f);
+        float alpha = transparency * (isOnPoint(graph.mousex, graph.mousey) ? 0.5f : 1.0f);
         if (alpha < 0.01)
             return;
         Composite originalComposite = g.getComposite();
@@ -149,17 +155,17 @@ public class Bubble implements Drawable {
         dx = (position == BubblePosition.NE || position == BubblePosition.SE) ? x : x - dw;
         dy = (position == BubblePosition.SW || position == BubblePosition.SE) ? y : y - dh;
         if (locked) {
-            dx = (dx - GUI.graph.canvas.offX) / GUI.graph.canvas.zoom;
-            dy = (dy - GUI.graph.canvas.offY) / GUI.graph.canvas.zoom;
-            g.translate((x - GUI.graph.canvas.offX) / GUI.graph.canvas.zoom,
-                    (y - GUI.graph.canvas.offY) / GUI.graph.canvas.zoom);
-            g.scale(1.0 / Math.sqrt(GUI.graph.canvas.zoom), 1.0 / Math.sqrt(GUI.graph.canvas.zoom));
-            g.translate(-(x - GUI.graph.canvas.offX) / GUI.graph.canvas.zoom,
-                    -(y - GUI.graph.canvas.offY) / GUI.graph.canvas.zoom);
+            dx = (dx - graph.canvas.offX) / graph.canvas.zoom;
+            dy = (dy - graph.canvas.offY) / graph.canvas.zoom;
+            g.translate((x - graph.canvas.offX) / graph.canvas.zoom, (y - graph.canvas.offY)
+                    / graph.canvas.zoom);
+            g.scale(1.0 / Math.sqrt(graph.canvas.zoom), 1.0 / Math.sqrt(graph.canvas.zoom));
+            g.translate(-(x - graph.canvas.offX) / graph.canvas.zoom, -(y - graph.canvas.offY)
+                    / graph.canvas.zoom);
 
         } else {
             g.translate(x, y);
-            g.scale(1.0 / Math.sqrt(GUI.graph.canvas.zoom), 1.0 / Math.sqrt(GUI.graph.canvas.zoom));
+            g.scale(1.0 / Math.sqrt(graph.canvas.zoom), 1.0 / Math.sqrt(graph.canvas.zoom));
             g.translate(-x, -y);
         }
 
@@ -172,7 +178,7 @@ public class Bubble implements Drawable {
     }
 
     public synchronized void updateInformation() {
-        boolean paused = GUI.model.running == RunState.paused;
+        boolean paused = graph.player.running == RunState.paused;
         for (Iterator<Information> it = list.iterator(); it.hasNext();) {
             if (it.next().dead(BubbleSet.time, paused)) {
                 it.remove();
@@ -183,15 +189,13 @@ public class Bubble implements Drawable {
 
     public boolean isOnPoint(double mx, double my) {
         if (locked) {
-            mx = (mx - (x - GUI.graph.canvas.offX) / GUI.graph.canvas.zoom)
-                    * Math.sqrt(GUI.graph.canvas.zoom) + (x - GUI.graph.canvas.offX)
-                    / GUI.graph.canvas.zoom;
-            my = (my - (y - GUI.graph.canvas.offY) / GUI.graph.canvas.zoom)
-                    * Math.sqrt(GUI.graph.canvas.zoom) + (y - GUI.graph.canvas.offY)
-                    / GUI.graph.canvas.zoom;
+            mx = (mx - (x - graph.canvas.offX) / graph.canvas.zoom) * Math.sqrt(graph.canvas.zoom)
+                    + (x - graph.canvas.offX) / graph.canvas.zoom;
+            my = (my - (y - graph.canvas.offY) / graph.canvas.zoom) * Math.sqrt(graph.canvas.zoom)
+                    + (y - graph.canvas.offY) / graph.canvas.zoom;
         } else {
-            mx = (mx - x) / Math.sqrt(GUI.graph.canvas.zoom) + x;
-            my = (my - y) / Math.sqrt(GUI.graph.canvas.zoom) + y;
+            mx = (mx - x) / Math.sqrt(graph.canvas.zoom) + x;
+            my = (my - y) / Math.sqrt(graph.canvas.zoom) + y;
 
         }
         return dx <= mx && mx <= dx + dw && dy <= my && my <= dy + dh;

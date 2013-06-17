@@ -13,8 +13,6 @@ import java.util.Map.Entry;
 
 import javax.swing.JOptionPane;
 
-import ui.Bubble;
-import ui.BubbleSet;
 import ui.CONST;
 import ui.Canvas;
 import ui.Dialog;
@@ -27,13 +25,15 @@ import enums.Preference;
 public class Vertex implements Comparable<Vertex> {
 
     private double x, y, radius;
-    private int ID, parentPort;
+    private int ID, parentPort, initial;
     private Color color;
     private Color auraColor;
 
     // @formatter:off
     public int getID() { return ID; }
     public void setID(int ID) { this.ID = ID; }
+    public int getInitial() { return initial; }
+    public void setInitial(int initial) { this.initial = initial; }
     public double getX() { return x; }
     public double getY() { return y; }
     public double getRadius() { return radius; }
@@ -50,7 +50,6 @@ public class Vertex implements Comparable<Vertex> {
 
     public void setRadius(double radius) {
         this.radius = radius;
-        GUI.graph.pushAway(this);
         bubble.move(this.x, this.y - this.radius);
     }
 
