@@ -69,6 +69,7 @@ public class Vertex implements Comparable<Vertex> {
         defaultSettings();
     }
 
+    // resetne hodnoty ako farba, velkost..
     public void defaultSettings() {
         setParentPort(-1);
         color = new Color(0, 255, 0);
@@ -76,10 +77,12 @@ public class Vertex implements Comparable<Vertex> {
         bubble.defaultSettings();
     }
 
+    // posle spravu
     void send(Message message) {
         edges.get(message.fromPort).send(message);
     }
 
+    // prijme spravu
     void receive(Message message) {
         program.receive(message);
         message.state = DeliverState.delivered;
@@ -88,6 +91,7 @@ public class Vertex implements Comparable<Vertex> {
         }
     }
 
+    // zakrici bublinku
     void shout(String s, int strength) {
         long duration = strength * 4000;
         bubble.addInformation(s, BubbleSet.time + duration);
@@ -147,6 +151,7 @@ public class Vertex implements Comparable<Vertex> {
         g.fill(ellipse);
     }
 
+    // vykresli udaje v zoom okienku
     public void zoomDraw(Graphics2D g) {
         int edgeHeight = 20;
         int indent = 25;
@@ -228,10 +233,12 @@ public class Vertex implements Comparable<Vertex> {
         return z;
     }
 
+    // ci je bod v gulicke vrchola
     public boolean isOnPoint(double x, double y) {
         return isNearPoint(x, y, 0.0);
     }
 
+    // ci je bod blizsie ako distance ku gulicke vrchola
     public boolean isNearPoint(double x1, double y1, double distance) {
         return (x1 - x) * (x1 - x) + (y1 - y) * (y1 - y) < (radius + distance)
                 * (radius + distance);

@@ -2,8 +2,8 @@ import java.awt.Graphics2D;
 import java.util.LinkedList;
 
 /**
- * Fronta pre správy
- * 
+ * Fronta pre správy, kazda hrana ma vlastnu stara sa hlavne o dve veci: aby sa spravy nepredbiehali
+ * aby sa to nezrubalo pri viacnasobnom pristupovani
  */
 public class MessageQueue implements Drawable {
     private LinkedList<Message> list;
@@ -15,7 +15,8 @@ public class MessageQueue implements Drawable {
         bornlist = new LinkedList<Message>();
     }
 
-    public void force(long time) {
+    // vsetkym spravam necha predpocitat pohyb
+    public void measure(long time) {
         updateMessages();
         if (list.size() > 0) {
             double defdist = 1.0 / list.size();
@@ -35,6 +36,7 @@ public class MessageQueue implements Drawable {
         }
     }
 
+    // vsetky spravy necha pohnut sa
     public void move(long time) {
         if (list.size() > 0) {
             for (Message message : list) {
@@ -58,17 +60,20 @@ public class MessageQueue implements Drawable {
             message.edgeDraw(g);
     }
 
+    // vycisti sa, zmaze so seba vsetky spravy
     synchronized public void clear() {
         list.clear();
         bornlist.clear();
     }
 
+    // prida novu spravu
     public void pushMessage(Message message) {
         bornlist.add(message);
         message.state = DeliverState.alive;
         messageCount++;
     }
 
+    // preklopi spravy s cerstvo narodenych do zivych
     synchronized public void updateMessages() {
         while (bornlist.size() > 0)
             list.add(bornlist.pop());

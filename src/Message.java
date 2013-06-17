@@ -6,9 +6,12 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.awt.geom.RoundRectangle2D;
 
+/*
+ * Sprava
+ */
 class Message {
     static double getRandomMessageFactor() {
-        return GUI.random.nextDouble() * 0.45 + 0.05;
+        return GUI.random.nextDouble() * 0.9 + 0.1;
     }
 
     int fromPort;
@@ -40,6 +43,7 @@ class Message {
         }
     }
 
+    // sprarsuje specialne znacky e.g. farba, dolezite miesto
     void processContent() {
         int pos = 0;
         while ((pos = rawContent.indexOf("$", pos)) != -1) {
@@ -58,6 +62,7 @@ class Message {
         this.edge = edge;
     }
 
+    // vykresli svoj obsah
     public void drawInfo(Graphics g, int rX, int rY, int rW, int rH) {
         // tuto to mozno nie je uplne najrychljeise
 
@@ -78,6 +83,7 @@ class Message {
         }
     }
 
+    // vykresli obsah v zoomovacom okienku
     public void zoomDraw(Graphics2D g) {
         double indent = 25;
         Path2D polygon = new Path2D.Double();
@@ -116,6 +122,7 @@ class Message {
         }
     }
 
+    // vykresli ikonku, co beha po hrane
     public void edgeDraw(Graphics2D g) {
         if (state == DeliverState.delivered)
             return;
@@ -145,6 +152,7 @@ class Message {
         }
     }
 
+    // vykresli bublinkovu verziu spravy
     public void bubbleDraw(Graphics2D g) {
         double x = edge.from.getX() * (1.0 - position) + edge.to.getX() * position;
         double y = edge.from.getY() * (1.0 - position) + edge.to.getY() * position;
@@ -183,14 +191,16 @@ class Message {
         }*/
     }
 
-    double side(double x, double y, double x1, double y1, double x2, double y2) {
-        x1 -= x;
-        y1 -= y;
-        x2 -= x;
-        y2 -= y;
+    // vektorovy sucin 0->1 a 0->2
+    double side(double x0, double y0, double x1, double y1, double x2, double y2) {
+        x1 -= x0;
+        y1 -= y0;
+        x2 -= x0;
+        y2 -= y0;
         return Math.signum(x1 * y2 - x2 * y1);
     }
 
+    // vrati, ci bod je vnutri ikonky co beha po hrane
     public boolean isOnPoint(double mx, double my) {
         if (state == DeliverState.delivered)
             return false;
@@ -212,36 +222,43 @@ class Message {
         return false;
     }
 
+    // rychlost hrany
+    double getEdgeSpeed() {
+        switch (edge.getSpeed()) {
+        case -2:
+            return 0;
+        case -1:
+            return 0.3;
+        case 1:
+            return 3.0;
+        case 2:
+            return 50.0;
+        }
+        return 1.0;
+    }
+
+    // predpocita si svoj pohyb
     public void measure(long time) {
+        // sila ktora sa snazi odoslat spravu
         if (GUI.model.running == RunState.running)
             force = 1;
         else
             force = 0;
 
+        // spravy si udrzuju rozostupy 
         if ((prevM != null) && (prevM.position - position < defDist)) {
             force -= Math.pow(2 * (defDist - prevM.position + position) / defDist, 2);
         }
         if ((nextM != null) && (position - nextM.position < defDist)) {
             force += Math.pow(1.0 * (defDist - position + nextM.position) / defDist, 2);
         }
-        double turbo = 1.0;
-        switch (edge.getSpeed()) {
-        case -2:
-            turbo = 0;
-            break;
-        case -1:
-            turbo = 0.3;
-            break;
-        case 1:
-            turbo = 3.0;
-            break;
-        case 2:
-            turbo = 50.0;
-            break;
-        }
-        force *= turbo * factor;
+
+        // factor ma kazda sprava vlastny, urci sa nahodne pri vzniku
+        force *= getEdgeSpeed() * factor;
+        // oznamime modelu svoju chcenu rychlost
         GUI.model.listenSpeed(force);
 
+        // tahanie uzivatelom
         if (selected > 0 && selected != 5) {
             double x = edge.from.getX() * (1.0 - position) + edge.to.getX() * position;
             double y = edge.from.getY() * (1.0 - position) + edge.to.getY() * position;
@@ -250,29 +267,33 @@ class Message {
             double x2 = (edge.to.getX() - edge.from.getX());
             double y2 = (edge.to.getY() - edge.from.getY());
             double prod = (x1 * x2 + y1 * y2) / Math.sqrt(x2 * x2 + y2 * y2);
-            force += Math.min(100.0, Math.max(prod / 10, -100.0)) / factor;
+            double modelspeed = GUI.model.getSpeedBalance() * GUI.model.getSendSpeed();
+            force += Math.min(10.0, Math.max(prod / 100.0, -10.0)) / factor / Math.sqrt(modelspeed);
         }
-
     }
 
+    // pohne sa (pohyb musia mat vsetky spravy predpocitane pomocou measure)
     public void move(long time) {
         if (state == DeliverState.delivered)
             return;
 
+        // upravime podla rychlosti modelu
         double speed = GUI.model.getSpeedBalance() * GUI.model.getSendSpeed() * time * 0.001
                 * force;
         position += speed;
+
+        // paksametle okolo odosielania a nevyskocenia z hrany
         if (position >= 1.0) {
             position = 1.0;
             if (GUI.model.running == RunState.running
                     && (prevM == null || prevM.state == DeliverState.inbox))
                 state = DeliverState.inbox;
         }
-        if (position <= 0.0) {
+        if (position <= 0.0)
             position = 0.0;
-        }
     }
 
+    // nastavi rychlost spravy (speed je int od -2 po 2)
     void setSpeed(int speed) {
         switch (speed) {
         case -2:

@@ -9,6 +9,9 @@ import java.util.TimerTask;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+/*
+ * Zdruzuje vlasnosti model, spusta program, stara sa o nastavenia * 
+ */
 public class Model {
 
     private String programPath = "";
@@ -193,38 +196,16 @@ public class Model {
         }
     }
 
+    ///////////////////////////// Rychlost prehravania ///////////////////////////////
+
     private double sendSpeed = 1.2;
     private double speedBalance = 1.0, stableSpeedBalance = 1.0;
     static int fps, afps, sfps;
 
-    void setSendSpeed(double speed) {
-        sendSpeed = speed;
-    }
-
-    double getSendSpeed() {
-        return sendSpeed;
-    }
-
-    void listenSpeed(double speed) {
-        speedBalance = Math.min(speedBalance, 0.5 / Math.abs(speed));
-    }
-
-    void refreshBalance(long time) {
-        if (running == RunState.paused) {
-            stableSpeedBalance *= Math.pow(0.99, time * 0.001);
-            return;
-        }
-        //double p = Math.pow(0.1, time * 0.001);
-        //stableSpeedBalance = p * stableSpeedBalance + (1 - p) * speedBalance;
-        stableSpeedBalance = speedBalance;
-        speedBalance = 20.0;
-    }
-
-    double getSpeedBalance() {
-        return (GUI.controls != null && GUI.controls.get("p_auto-speed") != null && GUI.controls
-                .get("p_auto-speed").isActive()) ? stableSpeedBalance : 1;
-    }
-
+    // @formatter:off
+    void setSendSpeed(double speed) { sendSpeed = speed; }
+    double getSendSpeed() { return sendSpeed; }
+    // @formatter:on
     String getSendSpeedString(int length) {
         Double d = getSendSpeed();
         if (length < 0) {
@@ -237,6 +218,30 @@ public class Model {
         return result;
     }
 
+    // kazda sprava touto metodou oznamuje modelu svoju planovanu rychlost, 
+    // model na zaklade toho moze (ak je zapnute) menit celkovu rychlost pohybu
+    void listenSpeed(double speed) {
+        speedBalance = Math.min(speedBalance, 0.7 / Math.abs(speed));
+    }
+
+    // zavola sa raz po zozbierani rychlosti sprav
+    void refreshBalance(long time) {
+        if (running == RunState.paused) {
+            stableSpeedBalance *= Math.pow(0.99, time * 0.001);
+            return;
+        }
+        //double p = Math.pow(0.1, time * 0.001);
+        //stableSpeedBalance = p * stableSpeedBalance + (1 - p) * speedBalance;
+        stableSpeedBalance = speedBalance;
+        speedBalance = 20.0;
+    }
+
+    double getSpeedBalance() {
+        return 0.5 * ((GUI.controls != null && GUI.controls.get("p_auto-speed") != null && GUI.controls
+                .get("p_auto-speed").isActive()) ? stableSpeedBalance : 1);
+    }
+
+    // ma zmysel pri traverzale napr.
     boolean canSendMessage(Vertex vertex, int port) {
         return true;
     }
@@ -265,7 +270,7 @@ public class Model {
             // Spravy
             if (model.running != RunState.stopped) {
                 for (Edge edge : model.graph.edges)
-                    edge.queue.force(delay);
+                    edge.queue.measure(delay);
             }
             model.refreshBalance(delay);
             if (model.running != RunState.stopped) {
