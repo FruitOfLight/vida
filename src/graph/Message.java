@@ -252,7 +252,7 @@ public class Message {
     // predpocita si svoj pohyb
     public void measure(long time) {
         // sila ktora sa snazi odoslat spravu
-        if (player.running == RunState.running)
+        if (player.state == RunState.running)
             force = 1;
         else
             force = 0;
@@ -296,7 +296,7 @@ public class Message {
         // paksametle okolo odosielania a nevyskocenia z hrany
         if (position >= 1.0) {
             position = 1.0;
-            if (player.running == RunState.running
+            if (player.state == RunState.running
                     && (prevM == null || prevM.state == DeliverState.inbox))
                 state = DeliverState.inbox;
         }

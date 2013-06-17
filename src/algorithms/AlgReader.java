@@ -6,36 +6,38 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 public class AlgReader {
+    private static final String version = "Version 1.00";
     private File file;
     private TreeMap<String, String> map;
     public static final String empty = "#empty";
     public static final String error = "#error";
-    public static final String[] knownSections = { "Settings", "Program", "Observer" };
+    public static final String[] knownSections = { "#section", "Settings", "Program", "Observer" };
 
     public AlgReader(File file) throws FileNotFoundException {
+        if (!file.exists())
+            return;
         map = new TreeMap<String, String>();
         this.file = file;
         String ext = file.getName().substring(file.getName().lastIndexOf('.'));
+        setValue("Program", "path", file.getParent() + "/");
+        setValue("Program", "name", file.getName());
         if (ext.equals(".bin")) {
             setValue("Program", "source", file.getName());
-            setValue("Program", "path", file.getParent());
         }
         if (ext.equals(".cpp") || ext.equals(".cc")) {
             readFromCpp();
             setValue("Program", "source", file.getName());
-            setValue("Program", "path", file.getParent());
         }
         if (ext.equals(".alg")) {
             readFromAlg();
-            setValue("Program", "path", file.getParent());
         }
-        setValue("Program", "name", file.getName());
     }
 
     void readFromAlg() throws FileNotFoundException {
         Scanner in = new Scanner(file);
         String line, section = "";
-        while ((line = in.nextLine()) != null) {
+        while (in.hasNext()) {
+            line = in.nextLine();
             if (line.startsWith("    ")) {
                 parseEntry(line, section);
             } else {
@@ -50,7 +52,8 @@ public class AlgReader {
     void readFromCpp() throws FileNotFoundException {
         Scanner in = new Scanner(file);
         String line, section = "";
-        while ((line = in.nextLine()) != null) {
+        while (in.hasNext()) {
+            line = in.nextLine();
             if (line.trim().contains("/*")) {
                 section = "Settings";
             }
@@ -76,12 +79,12 @@ public class AlgReader {
         String key = (parts.length > 0) ? parts[0] : error;
         String value = (parts.length > 1) ? parts[1] : empty;
         String section = key;
-        setValue("#", key, value);
+        setValue("#section", key, value);
         return section;
     }
 
     String getVersion() {
-        return null;
+        return version;
     }
 
     void setValue(String key1, String key2, String value) {

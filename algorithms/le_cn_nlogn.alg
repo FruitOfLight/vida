@@ -5,5 +5,4 @@ Settings
     graph: clique
 
 Program
-    compile: ./compile.sh 
-    path: ./leaderElectionCliqueNlogN.cpp
+    source: ./leaderElectionCliqueNlogN.cpp

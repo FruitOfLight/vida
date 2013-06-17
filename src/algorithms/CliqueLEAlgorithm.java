@@ -186,7 +186,7 @@ public class CliqueLEAlgorithm implements Algorithm {
 
     public void draw(Graphics2D g) {
         generalInfo.draw(g);
-        if (player.running != RunState.stopped) {
+        if (player.state != RunState.stopped) {
             levelInfo.defaultSettings();
             levelInfo.addInformation("Number of process on", -1);
             for (int i = 0; i < player.graph.vertices.size(); i++) {

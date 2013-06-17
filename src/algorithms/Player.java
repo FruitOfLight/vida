@@ -22,10 +22,12 @@ public class Player {
     // toto je ten jediny spravny hlavny graf a model, z ktoreho ostatne objekty cerpaju
     public Graph graph;
     public Model model;
-    public RunState running;
+    public RunState state;
     long startingTime;
 
     public Player() {
+        state = RunState.stopped;
+        GUI.player = this;
         model = new Model();
         graph = new Graph();
     }
@@ -42,7 +44,7 @@ public class Player {
     }
 
     public RunState getRunState() {
-        return running;
+        return state;
     }
 
     int timerid;
@@ -50,7 +52,7 @@ public class Player {
     public void start() {
         GUI.controls.refresh();
         startingTime = System.currentTimeMillis();
-        if (running == RunState.stopped) {
+        if (state == RunState.stopped) {
             if (model.program.compiling) {
                 Dialog.showMessage("Program is still compiling, try it again, please");
                 return;
@@ -59,7 +61,7 @@ public class Player {
             model.load();
         }
         timerid++;
-        running = RunState.running;
+        state = RunState.running;
         StepEvent.time = System.currentTimeMillis();
         GUI.globalTimer.schedule(new StepEvent(this, timerid), 0);
 
@@ -78,9 +80,9 @@ public class Player {
         /*if (algorithm != null)
             algorithm.defaultSettings();*/
         GUI.controls.refresh();
-        if (running == RunState.stopped)
+        if (state == RunState.stopped)
             return;
-        running = RunState.stopped;
+        state = RunState.stopped;
         for (Vertex v : graph.vertices)
             v.program.kill();
         for (Edge e : graph.edges)
@@ -93,13 +95,13 @@ public class Player {
 
     public void pause() {
         GUI.controls.refresh();
-        if (running == RunState.stopped)
+        if (state == RunState.stopped)
             return;
-        running = RunState.paused;
+        state = RunState.paused;
     }
 
     void pauseFromProcess(Vertex vertex) {
-        running = RunState.paused;
+        state = RunState.paused;
         GUI.globalTimer.schedule(new AuraEvent(vertex, 7), 0);
         pause();
     }
@@ -136,7 +138,7 @@ public class Player {
 
     // zavola sa raz po zozbierani rychlosti sprav
     public void refreshBalance(long time) {
-        if (running == RunState.paused) {
+        if (state == RunState.paused) {
             stableSpeedBalance *= Math.pow(0.99, time * 0.001);
             return;
         }
@@ -163,7 +165,7 @@ public class Player {
 
         @Override
         public void run() {
-            if (player.running == RunState.stopped || id != player.timerid) {
+            if (player.state == RunState.stopped || id != player.timerid) {
                 return;
             }
             long prevTime = time;
@@ -173,16 +175,16 @@ public class Player {
                 fps = (int) (1000 / delay);
 
             // Spravy
-            if (player.running != RunState.stopped) {
+            if (player.state != RunState.stopped) {
                 for (Edge edge : player.graph.edges)
                     edge.queue.measure(delay);
             }
             player.refreshBalance(delay);
-            if (player.running != RunState.stopped) {
+            if (player.state != RunState.stopped) {
                 for (Edge edge : player.graph.edges)
                     edge.queue.move(delay);
             }
-            if (player.running == RunState.running)
+            if (player.state == RunState.running)
                 BubbleSet.step(delay);
 
             GUI.gRepaint();

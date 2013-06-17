@@ -87,15 +87,15 @@ public class Controls implements Drawable {
 
     public boolean showMe(String name) {
         if (name.equals("p_start")) {
-            return player.running == RunState.paused;
+            return player.state == RunState.paused;
         } else if (name.equals("s_run")) {
-            return player.running == RunState.stopped;
+            return player.state == RunState.stopped;
         } else if (name.equals("p_pause")) {
-            return player.running == RunState.running;
+            return player.state == RunState.running;
         } else if (name.equals("p_stop")) {
-            return player.running != RunState.stopped;
+            return player.state != RunState.stopped;
         } else if (name.equals("gs_message")) {
-            return player.running != RunState.stopped;
+            return player.state != RunState.stopped;
         } else {
             return true;
         }
@@ -108,9 +108,9 @@ public class Controls implements Drawable {
             return player.model.program.name.equals("") ? "none" : player.model.program.name;
         } else if (name.equals("l_running")) {
             String s = player.getSendSpeedString(5) + " : " + player.getSendSpeedString(-5);
-            if (player.running == RunState.running)
+            if (player.state == RunState.running)
                 return "Playing " + s;
-            else if (player.running == RunState.paused)
+            else if (player.state == RunState.paused)
                 return "Paused (" + s + ")";
             else
                 return "Stopped (" + s + ")";

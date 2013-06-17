@@ -69,7 +69,7 @@ public class Menu {
             }
             break;
         case 2:
-            if (GUI.player.running != RunState.stopped)
+            if (GUI.player.state != RunState.stopped)
                 break;
             switch (c) {
             case 0:
@@ -83,7 +83,7 @@ public class Menu {
             }
             break;
         case 3:
-            if (GUI.player.running != RunState.stopped)
+            if (GUI.player.state != RunState.stopped)
                 break;
             switch (c) {
             case 0:

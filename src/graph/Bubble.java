@@ -178,7 +178,7 @@ public class Bubble implements Drawable {
     }
 
     public synchronized void updateInformation() {
-        boolean paused = graph.player.running == RunState.paused;
+        boolean paused = graph.player.state == RunState.paused;
         for (Iterator<Information> it = list.iterator(); it.hasNext();) {
             if (it.next().dead(BubbleSet.time, paused)) {
                 it.remove();

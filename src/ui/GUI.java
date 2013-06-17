@@ -221,7 +221,7 @@ public class GUI {
         language = Language.english;
 
         gkl = new GlobalKeyListener();
-        player = new Player();
+        new Player();
         controls = new Controls();
         player.graph.listener.setControls(controls);
 

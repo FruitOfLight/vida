@@ -87,7 +87,7 @@ public class Graph implements Drawable {
             if (System.currentTimeMillis() - pauseTime > waitTime) {
                 pauseTime = -1;
                 waitTime = 0;
-                player.running = RunState.running;
+                player.state = RunState.running;
                 player.start();
             }
         }
@@ -126,7 +126,7 @@ public class Graph implements Drawable {
         if (o == null)
             return false;
         if (o instanceof Vertex) {
-            if (mouse.getClickCount() == 2 && player.running == RunState.stopped) {
+            if (mouse.getClickCount() == 2 && player.state == RunState.stopped) {
                 ((Vertex) o).onClicked();
             } else {
                 GUI.zoomWindow.drawVertex(((Vertex) o));
@@ -348,6 +348,7 @@ public class Graph implements Drawable {
             type = loadedType;
         } catch (Exception e) {
             System.err.println("Exception while loading graph");
+            e.printStackTrace();
             emptyGraph();
         }
         checking = false;

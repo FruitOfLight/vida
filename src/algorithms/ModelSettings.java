@@ -147,7 +147,7 @@ public class ModelSettings {
     }
 
     public void print(PrintStream out) {
-
+        out.println("Settings");
     }
 
     public void read(AlgReader reader) {

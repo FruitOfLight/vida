@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import ui.Dialog;
 import ui.GUI;
@@ -28,6 +29,9 @@ public class Model {
     int overallMessageCount;
 
     public Model() {
+        programLoader = new JFileChooser("./algorithms/");
+        programLoader.setFileFilter(new FileNameExtensionFilter("Algorihms", "alg", "cpp", "cc",
+                "bin"));
         settings = new ModelSettings();
         program = new ModelProgram();
         player = GUI.player;
@@ -55,6 +59,7 @@ public class Model {
             read(algReader);
             program.compile();
         }
+        GUI.controls.refresh();
     }
 
     public void load() {

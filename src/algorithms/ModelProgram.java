@@ -50,18 +50,22 @@ public class ModelProgram {
 
     void read(AlgReader reader) {
         compileCommand = null;
-        source = reader.getValue("Program", "source").trim();
-        String path = reader.getValue("Program", "path").trim();
+        source = reader.getValue("Program", "path").trim()
+                + reader.getValue("Program", "source").trim();
         String ext = source.substring(source.lastIndexOf('.'));
         if (ext.equals(".cpp") || ext.equals(".cc"))
-            compileCommand = "g++ " + path + source + " -o " + Model.binaryPath + " -O2";
+            compileCommand = "g++ " + source + " -o " + Model.binaryPath
+                    + " -O2 -std=c++0x -Wno-unused-result";
         if (ext.equals(".bin"))
-            compileCommand = "cp " + path + source + " " + Model.binaryPath;
+            compileCommand = "cp " + source + " " + Model.binaryPath;
         name = reader.getValue("Program", "name").trim();
     }
 
     void print(PrintStream out) {
-        out.println("  source: " + source);
+        out.println("Program");
+        out.println("    source: " + source);
+        out.println("    path: " + "");
+        out.println("    name: " + name);
     }
 
 }
