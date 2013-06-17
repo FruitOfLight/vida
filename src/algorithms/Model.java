@@ -3,6 +3,7 @@ package algorithms;
 import graph.Vertex;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
 import javax.swing.JFileChooser;
@@ -43,7 +44,14 @@ public class Model {
         int value = programLoader.showOpenDialog(null);
         if (value == JFileChooser.APPROVE_OPTION) {
             File file = programLoader.getSelectedFile();
-            AlgReader algReader = new AlgReader(file);
+            AlgReader algReader = null;
+
+            try {
+                algReader = new AlgReader(file);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
             read(algReader);
             program.compile();
         }

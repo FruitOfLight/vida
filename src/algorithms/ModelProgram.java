@@ -13,13 +13,14 @@ public class ModelProgram {
     public String name;
 
     ModelProgram() {
-        compileCommand = null;
-        runCommand = null;
+        compileCommand = "";
+        runCommand = "";
+        name = "";
     }
 
     boolean compiling = false;
 
-    void compile() {
+    public void compile() {
         compiling = true;
         if (compileCommand == null)
             return;
@@ -56,6 +57,7 @@ public class ModelProgram {
             compileCommand = "g++ " + path + source + " -o " + Model.binaryPath + " -O2";
         if (ext.equals(".bin"))
             compileCommand = "cp " + path + source + " " + Model.binaryPath;
+        name = reader.getValue("Program", "name").trim();
     }
 
     void print(PrintStream out) {

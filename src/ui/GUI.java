@@ -26,6 +26,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 
+import algorithms.AlgReader;
 import algorithms.ModelSettings;
 import algorithms.Player;
 
@@ -184,10 +185,10 @@ public class GUI {
             PrintStream out = new PrintStream(file);
             player.graph.print(out);
             out.close();
-            /*TODO file = new File("backup/program.in");
+            file = new File("backup/program.alg");
             out = new PrintStream(file);
             player.model.print(out);
-            out.close();*/
+            out.close();
             /*TODO file = new File("backup/settings.in");
             out = new PrintStream(file);
             model.settings.print(out);
@@ -203,12 +204,11 @@ public class GUI {
             Scanner in = new Scanner(file);
             player.graph.read(in);
             in.close();
-            /*TODO file = new File("backup/program.in");
-            in = new Scanner(file);
-            player.model.read(in);
-            player.model.compile();
+            AlgReader algReader = new AlgReader(new File("backup/program.alg"));
+            player.model.read(algReader);
+            player.model.program.compile();
             in.close();
-            file = new File("backup/settings.in");
+            /*file = new File("backup/settings.in");
             in = new Scanner(file);
             player.model.settings.read(in);
             in.close();*/
