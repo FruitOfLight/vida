@@ -148,6 +148,10 @@ public class ModelSettings {
 
     public void print(PrintStream out) {
         out.println("Settings");
+        for (int i = 0; i < properties.length; ++i) {
+            properties[i] = 0;
+
+        }
     }
 
     public void read(AlgReader reader) {
