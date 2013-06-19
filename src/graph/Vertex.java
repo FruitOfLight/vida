@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,6 +23,7 @@ import algorithms.Program;
 import enums.Constrast;
 import enums.DeliverState;
 import enums.Preference;
+import enums.Property;
 
 public class Vertex implements Comparable<Vertex> {
 
@@ -75,6 +78,7 @@ public class Vertex implements Comparable<Vertex> {
         this.x = x;
         this.y = y;
         this.ID = ID;
+        this.initial = 0;
         watchVariables = new HashMap<String, String>();
         bubble = new Bubble(this.x, this.y - this.radius);
         auraColor = new Color(255, 255, 255, 0);
@@ -132,18 +136,17 @@ public class Vertex implements Comparable<Vertex> {
     }
 
     public void draw(Graphics2D g) {
-        draw(g, true);
-    }
-
-    public void draw(Graphics2D g, boolean showID) {
         drawAura(g);
-        Ellipse2D ellipse = new Ellipse2D.Double(x - radius, y - radius, 2 * radius, 2 * radius);
+        Shape ellipse = new Ellipse2D.Double(x - radius, y - radius, 2 * radius, 2 * radius);
+        if (getInitial() != 0) {
+            ellipse = new Rectangle2D.Double(x - radius, y - radius, 2 * radius, 2 * radius);
+        }
         g.setColor(color);
         g.fill(ellipse);
         g.setColor(Canvas.contrastColor(color, Constrast.borderbw));
         g.draw(ellipse);
 
-        if (showID) {
+        if (!GUI.player.model.settings.isProperty(Property.anonym)) {
             g.setColor(Canvas.contrastColor(color, Constrast.textbw));
             g.setFont(new Font(Font.DIALOG, Font.PLAIN, (int) (13 * Math.sqrt(1))));
             String caption = Canvas.shorten(g, ((Integer) ID).toString(), (int) (radius * 2),
@@ -158,8 +161,12 @@ public class Vertex implements Comparable<Vertex> {
 
     public void drawAura(Graphics2D g) {
         g.setColor(auraColor);
-        Ellipse2D ellipse = new Ellipse2D.Double(x - radius - 6f, y - radius - 6f,
-                2f * radius + 12f, 2f * radius + 12f);
+        Shape ellipse = new Ellipse2D.Double(x - radius - 6f, y - radius - 6f, 2f * radius + 12f,
+                2f * radius + 12f);
+        if (getInitial() != 0) {
+            ellipse = new Rectangle2D.Double(x - radius - 6f, y - radius - 6f, 2f * radius + 12f,
+                    2f * radius + 12f);
+        }
         g.fill(ellipse);
     }
 
@@ -257,11 +264,12 @@ public class Vertex implements Comparable<Vertex> {
     }
 
     public void onClicked() {
-        Dialog.DialogNewVertex newVertexDialog = new Dialog.DialogNewVertex(getID());
+        Dialog.DialogNewVertex newVertexDialog = new Dialog.DialogNewVertex(getID(), getInitial());
         int ok = JOptionPane.showConfirmDialog(null, newVertexDialog.getPanel(), "Edit vertex",
                 JOptionPane.OK_CANCEL_OPTION);
         if (ok == JOptionPane.OK_OPTION) {
             setID(newVertexDialog.getID());
+            setInitial(newVertexDialog.getInit());
         }
     }
 

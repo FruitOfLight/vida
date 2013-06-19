@@ -18,7 +18,6 @@ import ui.Dialog;
 import ui.Drawable;
 import ui.GUI;
 import ui.Tool;
-import algorithms.ModelSettings;
 import algorithms.Player;
 import enums.GraphType;
 import enums.Property;
@@ -601,11 +600,4 @@ public class Graph implements Drawable {
         for (Vertex vertex : vertices)
             vertex.defaultSettings();
     }
-
-    public void acceptSettings(ModelSettings settings) {
-        // zacykli sa pri odkomentovani        
-        //for (int i = 0; i < vertices.size(); i++)
-        //    vertices.get(i).setID(getNewVertexID(i));
-    }
-
 }

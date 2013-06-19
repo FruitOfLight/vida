@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 import algorithms.ModelSettings;
 import algorithms.Setting;
 import enums.GraphType;
+import enums.InitType;
 import enums.Property;
 
 public class Dialog {
@@ -31,19 +32,36 @@ public class Dialog {
 
     public static class DialogNewVertex {
         private JPanel panel = new JPanel();
-        private InputField IDField;
+        private InputField idField, initField;
 
-        public DialogNewVertex(int defaultID) {
-            IDField = new InputField("" + defaultID);
+        public DialogNewVertex(int defaultID, int defaultInit) {
+            idField = new InputField("" + defaultID);
+            initField = new InputField("" + defaultInit);
             panel.setLayout(new GridLayout(2, 2, 5, 5));
-            panel.add(new JLabel("ID: "));
-            panel.add(IDField);
+            if (GUI.player.model.settings.isProperty(Property.anonym)) {
+                panel.add(new JLabel("anonym"));
+                panel.add(new JLabel(""));
+            } else {
+                panel.add(new JLabel("ID: "));
+                panel.add(idField);
+            }
+            if (GUI.player.model.settings.getInit() == InitType.no) {
+                panel.add(new JLabel("no initiation"));
+                panel.add(new JLabel(""));
+                initField.setText("0");
+            } else {
+                panel.add(new JLabel("Initial value: "));
+                panel.add(initField);
+            }
+
         }
 
         public int getID() {
-            if (GUI.player.model.settings.isProperty(Property.anonym))
-                return 0;
-            return IDField.getInt(0, 0, 1000000);
+            return idField.getInt(0, 0, 1000000);
+        }
+
+        public int getInit() {
+            return initField.getInt(0, 0, 1);
         }
 
         public JComponent getPanel() {

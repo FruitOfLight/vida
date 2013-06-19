@@ -33,6 +33,8 @@ public class Player {
     }
 
     public void setModel(ModelType modelTyp) {
+        ModelSettings settings = model.settings;
+        ModelProgram program = model.program;
         if (modelTyp == ModelType.def)
             model = new Model();
         if (modelTyp == ModelType.leaderElection)
@@ -41,6 +43,8 @@ public class Player {
             model = new BroadcastModel();
         else if (modelTyp == ModelType.traversal)
             model = new TraversalModel();
+        model.settings = settings;
+        model.program = program;
     }
 
     public RunState getRunState() {

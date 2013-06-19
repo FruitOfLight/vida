@@ -97,7 +97,6 @@ public class ModelSettings {
         if (ok == JOptionPane.OK_OPTION) {
             newProgramSettings.apply(this);
             GUI.acceptSettings(this);
-            GUI.player.graph.acceptSettings(this);
         }
     }
 

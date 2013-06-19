@@ -173,10 +173,9 @@ public class GUI {
 
     public static void acceptSettings(ModelSettings settings) {
         System.out.println("Gui is accepting new settings");
-        player.graph.acceptSettings(settings);
-        System.out.println("graph accepted new settings");
         player.setModel(settings.getModel());
         System.out.println("Gui accepted new settings");
+        gRepaint();
     }
 
     public static void saveApp() {
