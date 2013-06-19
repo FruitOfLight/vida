@@ -18,8 +18,10 @@ import ui.Dialog;
 import ui.Drawable;
 import ui.GUI;
 import ui.Tool;
+import algorithms.ModelSettings;
 import algorithms.Player;
 import enums.GraphType;
+import enums.InitType;
 import enums.Property;
 import enums.RunState;
 import enums.ToolTarget;
@@ -138,6 +140,20 @@ public class Graph implements Drawable {
         } else if (o instanceof Message) {
             ((Message) o).selected = 5;
             return true;
+        }
+        return false;
+    }
+
+    public boolean toggleInitWithMouse(MouseEvent mouse) {
+        Tool tool = GUI.controls.getTool();
+        Object o = getObject(mouseGetX(mouse), mouseGetY(mouse), tool);
+        if (o == null)
+            return false;
+        if (o instanceof Vertex) {
+            if (player.state == RunState.stopped) {
+                ((Vertex) o).toggleInitial();
+                return true;
+            }
         }
         return false;
     }
@@ -599,5 +615,16 @@ public class Graph implements Drawable {
     public void setDefaultValues() {
         for (Vertex vertex : vertices)
             vertex.defaultSettings();
+    }
+
+    public void acceptSettings(ModelSettings settings) {
+        if (settings.getInit() == InitType.no) {
+            while (Vertex.initialSet.size() > 0)
+                Vertex.initialSet.first().setInitial(0);
+        }
+        if (settings.getInit() == InitType.one) {
+            while (Vertex.initialSet.size() > 1)
+                Vertex.initialSet.first().setInitial(0);
+        }
     }
 }

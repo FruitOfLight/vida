@@ -1,4 +1,5 @@
 package ui;
+
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -93,6 +94,8 @@ class ControlBuilder {
             box.addElement(csb = new ControlSwitchButton(c, "gt_delete", KeyEvent.VK_T));
             csb.addRadio("tools", -1);
             box.addElement(csb = new ControlSwitchButton(c, "gt_move", KeyEvent.VK_T));
+            csb.addRadio("tools", -1);
+            box.addElement(csb = new ControlSwitchButton(c, "gt_init", KeyEvent.VK_T));
             csb.addRadio("tools", -1);
             getBox("gtoolBox").addElement(box);
             box = new ControlBox(c, get("stopButton"));

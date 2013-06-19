@@ -1,5 +1,6 @@
 package algorithms;
 
+import enums.Property;
 import graph.Message;
 import graph.Vertex;
 
@@ -101,7 +102,7 @@ public class Program extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.init(initValue);
+        this.init();
         this.start();
     }
 
@@ -113,7 +114,7 @@ public class Program extends Thread {
     }
 
     // program sa dozvie pociatocne hodnoty, ako napriklad pocet portov
-    public void init(int initValue) {
+    public void init() {
         // pocet portov a ich hodnoty
         in.print("* ports : " + ports.size());
         ArrayList<Integer> portsz = new ArrayList<Integer>();
@@ -126,10 +127,8 @@ public class Program extends Thread {
         }
         in.println();
 
-        // id
-        // TODO skontrolovat anonymitu
-        in.println("* id : " + id);
-        in.println("* initvalue : " + initValue);
+        in.println("* id : " + ((GUI.player.model.settings.isProperty(Property.anonym)) ? id : 0));
+        in.println("* initvalue : " + vertex.getInitial());
         in.println("* start");
         in.flush();
     }

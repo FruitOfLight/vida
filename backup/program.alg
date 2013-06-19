@@ -3,12 +3,12 @@ Version 1.00
 Settings
     Anonym: [no]
     Synchroned: [no]
-    Graph type: [any]
+    Graph type: [clique]
     Model type: [def]
-    Initiation: [no]
+    Initiation: [one]
 
 Program
-    source: null
+    source: /home/jano/workspace/vida/algorithms/DFS.cpp
     path: 
-    name: 
+    name: DFS.cpp
 

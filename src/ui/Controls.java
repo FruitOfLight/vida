@@ -168,6 +168,8 @@ public class Controls implements Drawable {
             type = ToolType.delete;
         if (get("gt_move").isActive())
             type = ToolType.move;
+        if (get("gt_init").isActive())
+            type = ToolType.init;
         if (get("ms_stop").isActive()) {
             type = ToolType.speed;
             value = -2;

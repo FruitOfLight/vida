@@ -61,6 +61,10 @@ public class GraphListener implements MouseListener, MouseMotionListener, MouseW
                 if (graph.selectWithMouse(mouse))
                     return;
             }
+            if (tool.type.equals(ToolType.init) && tool.compatible(ToolTarget.vertex)) {
+                if (graph.toggleInitWithMouse(mouse))
+                    return;
+            }
             if (tool.compatible(ToolType.create) && tool.compatible(ToolTarget.vertex)) {
                 if (graph.createVertex(mouseGetX(mouse), mouseGetY(mouse), graph.getNewVertexID()))
                     return;

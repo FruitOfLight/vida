@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeSet;
 
 import javax.swing.JOptionPane;
 
@@ -22,10 +23,12 @@ import ui.GUI;
 import algorithms.Program;
 import enums.Constrast;
 import enums.DeliverState;
+import enums.InitType;
 import enums.Preference;
 import enums.Property;
 
 public class Vertex implements Comparable<Vertex> {
+    public static TreeSet<Vertex> initialSet = new TreeSet<Vertex>();
 
     private double x, y, radius;
     private int ID, parentPort, initial;
@@ -36,7 +39,7 @@ public class Vertex implements Comparable<Vertex> {
     public int getID() { return ID; }
     public void setID(int ID) { this.ID = ID; }
     public int getInitial() { return initial; }
-    public void setInitial(int initial) { this.initial = initial; }
+    public void toggleInitial() { setInitial((getInitial()==0)?1:0); }
     public double getX() { return x; }
     public double getY() { return y; }
     public double getRadius() { return radius; }
@@ -45,6 +48,24 @@ public class Vertex implements Comparable<Vertex> {
     public Color getAuraColor() { return auraColor; }
     public void setAuraColor(Color color) { this.auraColor = color;}
     // @formatter:on
+    public void setInitial(int i) {
+        if (this.initial != 0) {
+            initialSet.remove(this);
+        }
+        this.initial = i;
+        if (this.initial != 0) {
+            if (GUI.player.model.settings.getInit() == InitType.no) {
+                this.initial = 0;
+                return;
+            }
+            if (GUI.player.model.settings.getInit() == InitType.one) {
+                for (Vertex v : initialSet)
+                    v.setInitial(0);
+            }
+            initialSet.add(this);
+        }
+    }
+
     public void move(double x, double y) {
         this.x = x;
         this.y = y;
