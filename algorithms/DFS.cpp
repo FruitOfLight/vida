@@ -5,6 +5,7 @@
 //Apple Strawberry
 
 #include"vidalib.h"
+#include<unistd.h>
 
 using namespace Messager;
 using namespace Property;
