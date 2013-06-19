@@ -105,7 +105,7 @@ public class Controls implements Drawable {
         if (name.equals("l_graph")) {
             return player.graph.getTypeString();
         } else if (name.equals("l_program")) {
-            return player.model.program.name.equals("") ? "none" : player.model.program.name;
+            return player.model.program.getString();
         } else if (name.equals("l_running")) {
             String s = player.getSendSpeedString(5) + " : " + player.getSendSpeedString(-5);
             if (player.state == RunState.running)

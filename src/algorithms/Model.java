@@ -21,7 +21,7 @@ public class Model {
 
     JFileChooser programLoader;
     public ModelSettings settings;
-    public ModelProgram program;
+    public AlgFileSetting program;
     public Player player;
     public Algorithm algorithm;
 
@@ -32,8 +32,7 @@ public class Model {
         programLoader = new JFileChooser("./algorithms/");
         programLoader.setFileFilter(new FileNameExtensionFilter("Algorihms", "alg", "cpp", "cc",
                 "bin"));
-        settings = new ModelSettings();
-        program = new ModelProgram();
+        settings = new ModelSettings(this);
         player = GUI.player;
     }
 
@@ -56,10 +55,17 @@ public class Model {
                 e.printStackTrace();
             }
 
-            read(algReader);
+            try {
+                read(algReader);
+            } catch (Exception e) {
+                settings.clear();
+            }
+            GUI.controls.refresh();
+            GUI.gRepaint();
             program.compile();
         }
         GUI.controls.refresh();
+        GUI.gRepaint();
     }
 
     public void load() {
@@ -94,5 +100,7 @@ public class Model {
         settings.read(reader);
         program.read(reader);
     }
+
+    //public List<Entry<Setting, Object>> 
 
 }

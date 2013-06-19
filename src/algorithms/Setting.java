@@ -1,7 +1,5 @@
 package algorithms;
 
-import java.io.File;
-
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -19,6 +17,7 @@ public abstract class Setting {
         return res;
     }
 
+    protected JComponent uiElement;
     protected Object value;
     protected String name;
     protected boolean locked;
@@ -48,15 +47,19 @@ public abstract class Setting {
         return name;
     }
 
+    public void createUiElement() {
+        uiElement = new JTextField(getString());
+    }
+
     public JComponent getUiElement() {
-        return new JTextField(getString());
+        return uiElement;
     }
 
-    public void read(JComponent component) {
-        setString(((JTextField) component).getText());
+    public void read() {
+        setString(((JTextField) uiElement).getText());
     }
 
-    String getString() {
+    public String getString() {
         return value.toString();
     }
 
@@ -94,18 +97,18 @@ class BoolSetting extends Setting {
     }
 
     @Override
-    String getString() {
+    public String getString() {
         return ((Boolean) value) ? "yes" : "no";
     }
 
     @Override
-    public JComponent getUiElement() {
-        return new JCheckBox("", (Boolean) value);
+    public void createUiElement() {
+        uiElement = new JCheckBox("", (Boolean) value);
     }
 
     @Override
-    public void read(JComponent component) {
-        setValue((Boolean) (((JCheckBox) component).isSelected()));
+    public void read() {
+        setValue((Boolean) (((JCheckBox) uiElement).isSelected()));
     }
 }
 
@@ -134,18 +137,6 @@ class StringSetting extends Setting {
     }
 }
 
-class FileSetting extends Setting {
-    FileSetting(String name) {
-        super(name);
-    }
-
-    @Override
-    boolean setString(String s) {
-        value = new File(s);
-        return true;
-    }
-}
-
 class ComboSetting extends Setting {
     String[] e;
 
@@ -161,14 +152,14 @@ class ComboSetting extends Setting {
         }*/
 
     @Override
-    public JComponent getUiElement() {
+    public void createUiElement() {
         JComboBox<String> cb = new JComboBox<String>(e);
         cb.setSelectedItem(getString());
-        return cb;
+        uiElement = cb;
     }
 
     @Override
-    public void read(JComponent component) {
-        setString((String) (((JComboBox<?>) component).getSelectedItem()));
+    public void read() {
+        setString((String) (((JComboBox<?>) uiElement).getSelectedItem()));
     }
 }

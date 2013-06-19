@@ -3,7 +3,6 @@ package ui;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.swing.JCheckBox;
@@ -131,26 +130,21 @@ public class Dialog {
     public static class DialogProgramSettings implements ActionListener {
         private JPanel panel = new JPanel();
 
-        private ArrayList<JComponent> setters = new ArrayList<JComponent>();
-
         public DialogProgramSettings(ModelSettings settings) {
             Collection<Setting> list = settings.getSettings();
             panel.setLayout(new GridLayout(list.size(), 2, 5, 5));
             for (Setting setting : list) {
+                setting.createUiElement();
                 JComponent jc = setting.getUiElement();
                 jc.setEnabled(!setting.getLocked());
-                setters.add(jc);
                 panel.add(new JLabel(setting.getName()));
                 panel.add(jc);
             }
         }
 
         public void apply(ModelSettings settings) {
-            int i = 0;
-            for (Setting setting : settings.getSettings()) {
-                setting.read(setters.get(i));
-                i++;
-            }
+            for (Setting setting : settings.getSettings())
+                setting.read();
         }
 
         public JComponent getPanel() {

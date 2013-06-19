@@ -22,16 +22,20 @@ import enums.Property;
 public class ModelSettings {
     private TreeMap<Property, Setting> map;
 
-    public ModelSettings() {
+    public ModelSettings(Model model) {
         map = new TreeMap<Property, Setting>();
         map.put(Property.anonym, new BoolSetting("Anonym"));
         map.put(Property.synchroned, new BoolSetting("Synchroned"));
         map.put(Property.graphType,
                 new ComboSetting("Graph type", Setting.toStrings(GraphType.values())));
-        map.put(Property.model,
-                new ComboSetting("Model type", Setting.toStrings(ModelType.values())));
         map.put(Property.initiation,
                 new ComboSetting("Initiation", Setting.toStrings(InitType.values())));
+        map.put(Property.model,
+                new ComboSetting("Model type", Setting.toStrings(ModelType.values())));
+        //map.put(Property.observer, );
+        AlgFileSetting p = new AlgFileSetting("Program");
+        map.put(Property.program, p);
+        model.program = p;
     }
 
     //// Zakladne pracovne funkcie
@@ -86,6 +90,13 @@ public class ModelSettings {
 
     //// Zvysok
 
+    void clear() {
+        for (Setting setting : map.values()) {
+            setting.setLocked(false);
+        }
+        setProperty(Property.program, "");
+    }
+
     public Collection<Setting> getSettings() {
         return map.values();
     }
@@ -103,6 +114,8 @@ public class ModelSettings {
     public void print(PrintStream out) {
         out.println("Settings");
         for (Setting setting : map.values()) {
+            if (setting instanceof AlgFileSetting)
+                continue;
             if (setting.getLocked()) {
                 out.println("    " + setting.getName() + ": " + setting.getString());
             } else {
@@ -113,6 +126,9 @@ public class ModelSettings {
 
     public void read(AlgReader reader) {
         for (Setting setting : map.values()) {
+            if (setting instanceof AlgFileSetting)
+                continue;
+
             String value = reader.getValue("Settings", setting.getName());
             boolean locked = true;
             if (value.startsWith(AlgReader.undefined)) {

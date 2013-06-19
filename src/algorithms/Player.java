@@ -32,17 +32,10 @@ public class Player {
         graph = new Graph();
     }
 
-    public void setModel(ModelType modelTyp) {
+    public void setModel(ModelType type) {
         ModelSettings settings = model.settings;
-        ModelProgram program = model.program;
-        if (modelTyp == ModelType.def)
-            model = new Model();
-        if (modelTyp == ModelType.leaderElection)
-            model = new LeaderElectionModel();
-        else if (modelTyp == ModelType.broadcast)
-            model = new BroadcastModel();
-        else if (modelTyp == ModelType.traversal)
-            model = new TraversalModel();
+        AlgFileSetting program = model.program;
+        model = ModelType.getNewInstance(type);
         model.settings = settings;
         model.program = program;
     }
@@ -57,6 +50,10 @@ public class Player {
         GUI.controls.refresh();
         startingTime = System.currentTimeMillis();
         if (state == RunState.stopped) {
+            if (model.program.none()) {
+                Dialog.showMessage("No program to run");
+                return;
+            }
             if (model.program.compiling) {
                 Dialog.showMessage("Program is still compiling, try it again, please");
                 return;
