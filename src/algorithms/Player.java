@@ -33,13 +33,13 @@ public class Player {
     }
 
     public void setModel(ModelType modelTyp) {
-        if (modelTyp == ModelType.DEF)
+        if (modelTyp == ModelType.def)
             model = new Model();
-        if (modelTyp == ModelType.LE)
+        if (modelTyp == ModelType.leaderElection)
             model = new LeaderElectionModel();
-        else if (modelTyp == ModelType.BC)
+        else if (modelTyp == ModelType.broadcast)
             model = new BroadcastModel();
-        else if (modelTyp == ModelType.TR)
+        else if (modelTyp == ModelType.traversal)
             model = new TraversalModel();
     }
 

@@ -9,6 +9,7 @@ public class AlgReader {
     private static final String version = "Version 1.00";
     private File file;
     private TreeMap<String, String> map;
+    public static final String undefined = "#undef";
     public static final String empty = "#empty";
     public static final String error = "#error";
     public static final String[] knownSections = { "#section", "Settings", "Program", "Observer" };
@@ -88,7 +89,7 @@ public class AlgReader {
     }
 
     void setValue(String key1, String key2, String value) {
-        map.put(key1 + "#" + key2, value);
+        map.put(normalize(key1) + "#" + normalize(key2), value.trim());
         for (String s : knownSections) {
             if (key1.equals(s))
                 return;
@@ -97,7 +98,11 @@ public class AlgReader {
     }
 
     String getValue(String key1, String key2) {
-        String value = map.get(key1 + "#" + key2);
-        return (value == null) ? "" : value;
+        String value = map.get(normalize(key1) + "#" + normalize(key2));
+        return (value == null) ? undefined : value;
+    }
+
+    public static String normalize(String str) {
+        return str.toLowerCase().replaceAll(" ", "");
     }
 }

@@ -1,5 +1,5 @@
 package enums;
 
-public enum InitValueType {
+public enum InitType {
     no, one, multi
 }

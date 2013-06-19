@@ -3,6 +3,8 @@ package ui;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -13,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import algorithms.ModelSettings;
+import algorithms.Setting;
 import enums.GraphType;
 import enums.Property;
 
@@ -110,47 +113,35 @@ public class Dialog {
     public static class DialogProgramSettings implements ActionListener {
         private JPanel panel = new JPanel();
 
-        String[] graphTypes = { "Any", "Clique", "Cycle", "Grid", "Wheel" };
-        String[] modelTypes = { "Default", "Leader Election", "Broadcast", "Traversal" };
-
-        private JComboBox<String> chooseGraphType, chooseModelType;
-        private JComponent[] setters = new JComponent[Property.values().length];
-        private String[] captions = { "Anonym", "Synchroned", "Graph type", "Model type" };
+        private ArrayList<JComponent> setters = new ArrayList<JComponent>();
 
         public DialogProgramSettings(ModelSettings settings) {
-            panel.setLayout(new GridLayout(4, 2, 5, 5));
-            // TODO zautomatizovat
-            setters[0] = new JCheckBox("", settings.isProperty(Property.anonym));
-            setters[1] = new JCheckBox("", settings.isProperty(Property.synchroned));
-            setters[2] = chooseGraphType = new JComboBox<String>(graphTypes);
-            setters[3] = chooseModelType = new JComboBox<String>(modelTypes);
-
-            for (int i = 0; i < setters.length; ++i) {
-                panel.add(new JLabel(captions[i]));
-                panel.add(setters[i]);
-                setters[i].setEnabled(!settings.getLocked(Property.values()[i]));
+            Collection<Setting> list = settings.getSettings();
+            panel.setLayout(new GridLayout(list.size(), 2, 5, 5));
+            for (Setting setting : list) {
+                JComponent jc = setting.getUiElement();
+                jc.setEnabled(!setting.getLocked());
+                setters.add(jc);
+                panel.add(new JLabel(setting.getName()));
+                panel.add(jc);
             }
         }
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Dialog.DialogNewGraph newGraphDialog = new Dialog.DialogNewGraph(
-                    GraphType.values()[chooseGraphType.getSelectedIndex()], true);
-            JOptionPane.showMessageDialog(null, newGraphDialog.getPanel(), "New graph",
-                    JOptionPane.OK_CANCEL_OPTION);
-            GUI.player.graph.createNew(newGraphDialog);
-        }
-
         public void apply(ModelSettings settings) {
-            // TODO automatizovat
-            settings.setProperty(Property.anonym, ((JCheckBox) setters[0]).isSelected());
-            settings.setProperty(Property.synchroned, ((JCheckBox) setters[1]).isSelected());
-            settings.setProperty(Property.graphType, chooseGraphType.getSelectedIndex());
-            settings.setProperty(Property.model, chooseModelType.getSelectedIndex());
+            int i = 0;
+            for (Setting setting : settings.getSettings()) {
+                setting.read(setters.get(i));
+                i++;
+            }
         }
 
         public JComponent getPanel() {
             return panel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent arg0) {
+            // TODO Auto-generated method stub
         }
 
     }

@@ -1,5 +1,5 @@
 package enums;
 
 public enum ModelType {
-    DEF, LE, BC, TR
+    def, leaderElection, broadcast, traversal
 }
