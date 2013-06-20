@@ -24,7 +24,7 @@ typedef void (IFunc)();
 
 namespace Property {
     vi ports;
-    int id;
+    int id = 0;
     int initvalue = 0;
 }
 

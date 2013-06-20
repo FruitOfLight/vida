@@ -29,6 +29,7 @@ import enums.Property;
 
 public class Vertex implements Comparable<Vertex> {
     public static TreeSet<Vertex> initialSet = new TreeSet<Vertex>();
+    public static RandomInit randomInit = new RandomInit();
 
     private double x, y, radius;
     private int ID, parentPort, initial;
@@ -59,11 +60,12 @@ public class Vertex implements Comparable<Vertex> {
                 return;
             }
             if (GUI.player.model.settings.getInit() == InitType.one) {
-                for (Vertex v : initialSet)
-                    v.setInitial(0);
+                while (Vertex.initialSet.size() > 0)
+                    Vertex.initialSet.first().setInitial(0);
             }
             initialSet.add(this);
         }
+        randomInit.autoInitial();
     }
 
     public void move(double x, double y) {

@@ -1,6 +1,11 @@
 package algorithms;
 
+import enums.InitType;
+import enums.Property;
 import graph.Vertex;
+
+import java.util.ArrayList;
+
 import ui.Dialog;
 
 public class BroadcastModel extends Model {
@@ -28,5 +33,12 @@ public class BroadcastModel extends Model {
                 algorithm.finishAlgorithm(null);
             }
         }
+    }
+
+    @Override
+    public ArrayList<Pair<Property, String>> neededSettings() {
+        ArrayList<Pair<Property, String>> list = new ArrayList<Pair<Property, String>>();
+        list.add(new Pair<Property, String>(Property.initiation, InitType.one.toString()));
+        return list;
     }
 }

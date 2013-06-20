@@ -1,10 +1,12 @@
 package algorithms;
 
+import enums.Property;
 import graph.Vertex;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -22,6 +24,7 @@ public class Model {
     JFileChooser programLoader;
     public ModelSettings settings;
     public AlgFileSetting program;
+    public AlgFileSetting observer;
     public Player player;
     public Algorithm algorithm;
 
@@ -101,6 +104,7 @@ public class Model {
         program.read(reader);
     }
 
-    //public List<Entry<Setting, Object>> 
-
+    public ArrayList<Pair<Property, String>> neededSettings() {
+        return new ArrayList<Pair<Property, String>>();
+    }
 }

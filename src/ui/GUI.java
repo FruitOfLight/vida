@@ -207,6 +207,7 @@ public class GUI {
             in.close();
             AlgReader algReader = new AlgReader(new File("backup/program.alg"));
             player.model.read(algReader);
+            acceptSettings(player.model.settings);
             player.model.program.compile();
             in.close();
             /*file = new File("backup/settings.in");

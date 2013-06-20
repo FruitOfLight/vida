@@ -101,14 +101,17 @@ public class ModelSettings {
         return map.values();
     }
 
+    public Setting getSetting(Property property) {
+        return map.get(property);
+    }
+
     public void showDialog() {
         Dialog.DialogProgramSettings newProgramSettings = new Dialog.DialogProgramSettings(this);
-        int ok = JOptionPane.showConfirmDialog(null, newProgramSettings.getPanel(),
-                "Program settings", JOptionPane.OK_CANCEL_OPTION);
-        if (ok == JOptionPane.OK_OPTION) {
-            newProgramSettings.apply(this);
-            GUI.acceptSettings(this);
-        }
+        JOptionPane.showConfirmDialog(null, newProgramSettings.getPanel(), "Program settings",
+                JOptionPane.CLOSED_OPTION);
+        newProgramSettings.apply(this);
+        GUI.acceptSettings(this);
+
     }
 
     public void print(PrintStream out) {

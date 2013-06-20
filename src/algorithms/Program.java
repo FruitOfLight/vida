@@ -127,7 +127,7 @@ public class Program extends Thread {
         }
         in.println();
 
-        in.println("* id : " + ((GUI.player.model.settings.isProperty(Property.anonym)) ? id : 0));
+        in.println("* id : " + ((GUI.player.model.settings.isProperty(Property.anonym)) ? "0" : id));
         in.println("* initvalue : " + vertex.getInitial());
         in.println("* start");
         in.flush();

@@ -25,6 +25,7 @@ public abstract class Setting {
     Setting(String name) {
         this.name = name;
         locked = false;
+        createUiElement();
     }
 
     public void setLocked(boolean locked) {
@@ -48,10 +49,19 @@ public abstract class Setting {
     }
 
     public void createUiElement() {
-        uiElement = new JTextField(getString());
+        uiElement = new JTextField();
     }
 
-    public JComponent getUiElement() {
+    public JComponent updateUiElement(String string) {
+        Object oldvalue = getValue();
+        setString(string);
+        updateUiElement();
+        setValue(oldvalue);
+        return uiElement;
+    }
+
+    public JComponent updateUiElement() {
+        ((JTextField) uiElement).setText(getString());
         return uiElement;
     }
 
@@ -103,7 +113,13 @@ class BoolSetting extends Setting {
 
     @Override
     public void createUiElement() {
-        uiElement = new JCheckBox("", (Boolean) value);
+        uiElement = new JCheckBox("");
+    }
+
+    @Override
+    public JComponent updateUiElement() {
+        ((JCheckBox) uiElement).setSelected((Boolean) value);
+        return uiElement;
     }
 
     @Override
@@ -144,6 +160,7 @@ class ComboSetting extends Setting {
         super(name);
         this.e = e;
         value = e[0];
+        uiElement = new JComboBox<String>(e);
     }
 
     /*    @Override TODO
@@ -153,9 +170,13 @@ class ComboSetting extends Setting {
 
     @Override
     public void createUiElement() {
-        JComboBox<String> cb = new JComboBox<String>(e);
-        cb.setSelectedItem(getString());
-        uiElement = cb;
+        uiElement = null;
+    }
+
+    @Override
+    public JComponent updateUiElement() {
+        ((JComboBox<?>) uiElement).setSelectedItem(value);
+        return uiElement;
     }
 
     @Override

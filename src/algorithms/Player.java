@@ -1,5 +1,6 @@
 package algorithms;
 
+import enums.InitType;
 import enums.ModelType;
 import enums.RunState;
 import graph.BubbleSet;
@@ -68,7 +69,25 @@ public class Player {
 
     }
 
+    boolean savedRandomInitiation = false;
+
     void load() {
+        Vertex.randomInit.autoInitial();
+        savedRandomInitiation = Vertex.randomInit.getInitial() != 0;
+
+        if (savedRandomInitiation) {
+            if (model.settings.getInit() == InitType.one) {
+                int i = GUI.random.nextInt(graph.vertices.size());
+                graph.vertices.get(i).setInitial(1);
+            }
+            if (model.settings.getInit() == InitType.multi) {
+                for (Vertex v : graph.vertices) {
+                    if (GUI.random.nextBoolean())
+                        v.setInitial(1);
+                }
+            }
+        }
+
         for (Vertex v : graph.vertices) {
             v.program = new Program(v, this);
             v.program.load(Model.binaryPath, 1);
@@ -80,6 +99,9 @@ public class Player {
     public void stop() {
         /*if (algorithm != null)
             algorithm.defaultSettings();*/
+        if (savedRandomInitiation) {
+            Vertex.randomInit.setInitial(1);
+        }
         GUI.controls.refresh();
         if (state == RunState.stopped)
             return;

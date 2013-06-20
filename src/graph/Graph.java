@@ -25,6 +25,7 @@ import enums.InitType;
 import enums.Property;
 import enums.RunState;
 import enums.ToolTarget;
+import enums.ToolType;
 
 public class Graph implements Drawable {
     public ArrayList<Vertex> vertices;
@@ -116,6 +117,7 @@ public class Graph implements Drawable {
         for (Vertex vertex : vertices) {
             vertex.bubble.draw(g);
         }
+        Vertex.randomInit.draw(g);
         if (player.model.algorithm != null)
             player.model.algorithm.draw(g);
     }
@@ -149,7 +151,10 @@ public class Graph implements Drawable {
         Object o = getObject(mouseGetX(mouse), mouseGetY(mouse), tool);
         if (o == null)
             return false;
-        if (o instanceof Vertex) {
+        if (o instanceof RandomInit) {
+            ((RandomInit) o).toggleInitial();
+            return true;
+        } else if (o instanceof Vertex) {
             if (player.state == RunState.stopped) {
                 ((Vertex) o).toggleInitial();
                 return true;
@@ -298,6 +303,9 @@ public class Graph implements Drawable {
 
     Object getObject(double x, double y, Tool tool) {
         Object o = null;
+        if (tool.type == ToolType.init && Vertex.randomInit.isOnPoint(x, y)) {
+            return Vertex.randomInit;
+        }
         if (tool.compatible(ToolTarget.message) && (o = getMessage(x, y)) != null) {
             return o;
         }
@@ -626,5 +634,6 @@ public class Graph implements Drawable {
             while (Vertex.initialSet.size() > 1)
                 Vertex.initialSet.first().setInitial(0);
         }
+        Vertex.randomInit.autoInitial();
     }
 }

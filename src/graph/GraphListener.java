@@ -56,7 +56,6 @@ public class GraphListener implements MouseListener, MouseMotionListener, MouseW
                 return;
             }
             Tool tool = controls.getTool();
-            tool.print(System.out);
             if (tool.compatible(ToolType.select)) {
                 if (graph.selectWithMouse(mouse))
                     return;
@@ -93,7 +92,6 @@ public class GraphListener implements MouseListener, MouseMotionListener, MouseW
     public void mousePressed(MouseEvent mouse) {
         try {
             Tool tool = controls.getTool();
-            tool.print(System.out);
             noClick = false;
             begin = graph.getVertex(mouseGetX(mouse), mouseGetY(mouse));
             xlast = mouseGetX(mouse);
@@ -124,7 +122,6 @@ public class GraphListener implements MouseListener, MouseMotionListener, MouseW
     @Override
     public void mouseReleased(MouseEvent mouse) {
         Tool tool = controls.getTool();
-        tool.print(System.out);
         if (selectedMessage != null) {
             selectedMessage.selected = 0;
             selectedMessage = null;

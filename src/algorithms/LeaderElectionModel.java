@@ -1,6 +1,11 @@
 package algorithms;
 
+import enums.InitType;
+import enums.Property;
 import graph.Vertex;
+
+import java.util.ArrayList;
+
 import ui.Dialog;
 
 public class LeaderElectionModel extends Model {
@@ -47,5 +52,12 @@ public class LeaderElectionModel extends Model {
                 algorithm.finishAlgorithm(leader);
             return;
         }
+    }
+
+    @Override
+    public ArrayList<Pair<Property, String>> neededSettings() {
+        ArrayList<Pair<Property, String>> list = new ArrayList<Pair<Property, String>>();
+        list.add(new Pair<Property, String>(Property.initiation, InitType.no.toString()));
+        return list;
     }
 }

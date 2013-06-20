@@ -3,6 +3,7 @@ package ui;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.swing.JCheckBox;
@@ -14,9 +15,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import algorithms.ModelSettings;
+import algorithms.Pair;
 import algorithms.Setting;
 import enums.GraphType;
 import enums.InitType;
+import enums.ModelType;
 import enums.Property;
 
 public class Dialog {
@@ -129,16 +132,38 @@ public class Dialog {
 
     public static class DialogProgramSettings implements ActionListener {
         private JPanel panel = new JPanel();
+        Collection<Setting> list;
+        JComboBox<?> cb;
+        ModelSettings modelSettings;
 
         public DialogProgramSettings(ModelSettings settings) {
-            Collection<Setting> list = settings.getSettings();
+            modelSettings = settings;
+            list = settings.getSettings();
             panel.setLayout(new GridLayout(list.size(), 2, 5, 5));
             for (Setting setting : list) {
-                setting.createUiElement();
-                JComponent jc = setting.getUiElement();
-                jc.setEnabled(!setting.getLocked());
+                JComponent jc = setting.updateUiElement();
                 panel.add(new JLabel(setting.getName()));
                 panel.add(jc);
+            }
+            cb = (JComboBox<?>) modelSettings.getSetting(Property.model).updateUiElement();
+            cb.addActionListener(this);
+            refresh();
+        }
+
+        public void refresh() {
+            for (Setting setting : modelSettings.getSettings())
+                setting.read();
+            System.out.println("refresh");
+            ArrayList<Pair<Property, String>> need = ModelType.getNewInstance(
+                    ModelType.valueOf((String) cb.getSelectedItem())).neededSettings();
+            for (Setting setting : list) {
+                JComponent jc = setting.updateUiElement();
+                jc.setEnabled(!setting.getLocked());
+            }
+            for (Pair<Property, String> p : need) {
+                Setting s = modelSettings.getSetting(p.getFirst());
+                JComponent jc = s.updateUiElement(p.getSecond());
+                jc.setEnabled(false);
             }
         }
 
@@ -152,10 +177,10 @@ public class Dialog {
         }
 
         @Override
-        public void actionPerformed(ActionEvent arg0) {
-            // TODO Auto-generated method stub
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("Dialog programsettings action Performed");
+            refresh();
         }
-
     }
 
 }

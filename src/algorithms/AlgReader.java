@@ -62,7 +62,7 @@ public class AlgReader {
                 break;
             }
             if (section.equals("Settings")) {
-                if (line.startsWith("    "))
+                if (line.startsWith("  "))
                     parseEntry(line, section);
             }
         }

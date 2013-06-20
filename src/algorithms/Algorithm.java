@@ -1,6 +1,5 @@
 package algorithms;
 
-
 import graph.Vertex;
 
 import java.io.PrintStream;
