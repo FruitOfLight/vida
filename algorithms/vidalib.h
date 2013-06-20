@@ -1,4 +1,4 @@
-//Fruit of Light
+//{{{ Fruit of Light
 //FoL lib
 //Apple Strawberry
 
@@ -22,13 +22,31 @@ typedef vector<int> vi;
 typedef void (MFunc)(int, string);
 typedef void (IFunc)();
 
-namespace Property {
+//}}}
+
+//Filozofia:
+//  @, Message, posielame susedovi
+//  #, Tell, robi bublinku
+//  $, Watch variables, nastavuje premenne
+//  !, sendCommand, posiela playeru/modelu (pause, exit)
+//  &, notify, posiela observeru, (update, event)
+
+string strprintf(const char *format, ...){
+    char buffer[255];
+    va_list args;
+    va_start (args, format);
+    vsnprintf(buffer, 255, format, args);
+    va_end (args);
+    return string(buffer);
+}
+
+namespace Property {//{{{
     vi ports;
     int id = 0;
     int initvalue = 0;
-}
+}//}}}
 
-namespace WatchVariables {
+namespace WatchVariables {//{{{
     // pocuve na mena
     // _vertex_color e.g. "255,47,42"
     // _vertex_size in %, e.g. "80"
@@ -65,9 +83,9 @@ namespace WatchVariables {
         For(i, str.size()) if (str[i]>='0' && str[i]<='9') value = value*10+str[i]-'0';
         return value;
     }
-}
+}//}}}
 
-namespace Messager {
+namespace Messager { //{{{
     namespace details {
         MFunc *mFunc;
         IFunc *iFunc;
@@ -120,25 +138,35 @@ namespace Messager {
         fflush(stdout);
     }
 
-    void sendInformation(const string &str){
+    void tell(const string &str){
         printf("# %s\n",str.c_str());
         fflush(stdout);
     }
 
-    void algorithmUpdate(const string &str) {
-        printf("* %s\n",str.c_str());
+    void sendCommand(const string &str) {
+        printf("! %s\n",str.c_str());
         fflush(stdout);
+    }
+
+    void notify(const string &str) {
+        printf("& %s\n",str.c_str());
+        fflush(stdout);
+    }
+
+    void update(const string &str) {
+        notify(strprintf("update: %s",str.c_str()));
+    }
+    
+    void event(const string &str) {
+        notify(strprintf("event: %s",str.c_str()));
     }
 
     void pauseProgram() {
-        char c='%';
-        printf("%c\n",c);
-        fflush(stdout);
+        sendCommand("pause: ");
     }
 
     void exitProgram(string exitValue) {
-        printf("& %s\n",exitValue.c_str());
-        fflush(stdout);
+        sendCommand(strprintf("dead: %s",exitValue.c_str()));
     }
 
     /*
@@ -155,7 +183,7 @@ namespace Messager {
 
     // spusti pocuvanie
     void run();
-};
+};//}}}
 
 void Messager::run(){
     using namespace details;
@@ -201,14 +229,6 @@ void Messager::run(){
     }
 }
 
-string strprintf(const char *format, ...){
-    char buffer[255];
-    va_list args;
-    va_start (args, format);
-    vsnprintf(buffer, 255, format, args);
-    va_end (args);
-    return string(buffer);
-}
 
 /////////////////////////////////
 /*

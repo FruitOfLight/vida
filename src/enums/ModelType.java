@@ -1,9 +1,9 @@
 package enums;
 
-import algorithms.BroadcastModel;
-import algorithms.LeaderElectionModel;
-import algorithms.Model;
-import algorithms.TraversalModel;
+import model.BroadcastModel;
+import model.LeaderElectionModel;
+import model.Model;
+import model.TraversalModel;
 
 public enum ModelType {
     def, leaderElection, broadcast, traversal;

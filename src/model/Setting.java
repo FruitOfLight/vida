@@ -1,9 +1,10 @@
-package algorithms;
+package model;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
+
 
 /*
  * Trieda stvorena pre jednoduche pridavanie nastaveni roznych typov

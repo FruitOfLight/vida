@@ -26,9 +26,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 
-import algorithms.AlgReader;
-import algorithms.ModelSettings;
-import algorithms.Player;
+
+import model.AlgReader;
+import model.ModelSettings;
+import model.Player;
+
 
 public class GUI {
     public static Random random = new Random();

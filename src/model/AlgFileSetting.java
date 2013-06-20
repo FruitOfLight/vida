@@ -1,4 +1,4 @@
-package algorithms;
+package model;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -13,6 +13,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JTextField;
+
 
 import ui.Dialog;
 

@@ -8,10 +8,11 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.awt.geom.RoundRectangle2D;
 
+import model.Player;
+
 import ui.CONST;
 import ui.Canvas;
 import ui.GUI;
-import algorithms.Player;
 import enums.Constrast;
 import enums.DeliverState;
 import enums.RunState;

@@ -1,58 +1,33 @@
-package algorithms;
+package algorithm;
 
-import enums.BubblePosition;
 import enums.RunState;
 import graph.Bubble;
 import graph.Vertex;
 
-import java.awt.Graphics2D;
-import java.io.PrintStream;
 import java.util.ArrayList;
 
+import model.Player;
 import ui.GUI;
 
-public class CliqueLEAlgorithm implements Algorithm {
+public class CliqueLEObserver extends Observer {
 
-    public Bubble generalInfo, levelInfo, lastLevelInfo;
-    Player player;
+    Bubble levelInfo, lastLevelInfo;
     public ArrayList<Integer> levelCounter;
 
-    public CliqueLEAlgorithm() {
-        player = GUI.player;
-        this.defaultSettings();
-        //GUI.model.setPath(getPath());
+    public CliqueLEObserver(Player player) {
+        super(player);
     }
 
-    public String getPath() {
-        return "./algorithms/leaderElectionCliqueNlogN.cpp";
-    }
-
-    public void print(PrintStream out) {
-        out.println("LECNlogN");
-    }
-
-    public void defaultSettings() {
-        generalInfo = new Bubble(10, 10);
-        generalInfo.setLockedPosition(true);
-        generalInfo.setMaxWidth(300);
-        generalInfo.position = BubblePosition.SE;
-        levelInfo = new Bubble(10, 200);
-        levelInfo.setLockedPosition(true);
-        levelInfo.position = BubblePosition.SE;
-        lastLevelInfo = new Bubble(10, 200);
-        lastLevelInfo.setLockedPosition(true);
-        lastLevelInfo.position = BubblePosition.SE;
-        lastLevelInfo.setMaxWidth(150);
+    @Override
+    public void inicializeAllBubbles() {
+        super.inicializeAllBubbles();
+        levelInfo = inicializeBubble(new Bubble(10, 200), 150);
+        lastLevelInfo = inicializeBubble(new Bubble(10, 200), 150);
         levelCounter = new ArrayList<Integer>();
-        captureActive = false;
-        captureCapture = false;
-        helpWin = false;
-        helpDefeat = false;
-        accept = false;
-        defeat = false;
     }
 
-    public void startAlgorithm() {
+    @Override
+    public void onStart() {
         for (int i = 0; i < player.graph.vertices.size(); i++)
             levelCounter.add(0);
         levelCounter.set(0, player.graph.vertices.size());
@@ -63,7 +38,14 @@ public class CliqueLEAlgorithm implements Algorithm {
         player.pause();
     }
 
-    public void finishAlgorithm(Vertex leader) {
+    @Override
+    public void onFinish() {
+        Vertex leader = null;
+        for (Vertex v : player.graph.vertices)
+            if (v.getVariable("leader").equals("yes"))
+                leader = v;
+        if (leader == null)
+            return;
         generalInfo
                 .addInformation(
                         "Leader is process with ID "
@@ -89,40 +71,36 @@ public class CliqueLEAlgorithm implements Algorithm {
         }
     }
 
-    boolean captureActive;
-    boolean captureCapture;
-    boolean helpWin;
-    boolean helpDefeat;
-    boolean accept;
-    boolean defeat;
-
-    public void recieveUpdate(Vertex vertex, String s) {
-        //System.out.println(s);
+    @Override
+    public void onUpdate(Vertex vertex, String s) {
         if (s.contains("level")) {
             int level = Integer.parseInt(s.substring(6).trim());
             levelCounter.set(level, levelCounter.get(level) + 1);
         }
-        if (s.contains("capture-active") && !captureActive) {
+    }
+
+    @Override
+    public void onEvent(Vertex vertex, String s) {
+        System.out.println(s);
+        if (matchNotification(s, "capture-active")) {
             GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
             String values[] = s.split(":");
             generalInfo.addInformation("Process with level " + values[3] + " and id " + values[4]
                     + " is trying to capture active process with level " + values[1] + " and id "
                     + values[2]
                     + ". Defender is defeated so it sends acceptance message to attacker.", -2);
-            captureActive = true;
             player.pause();
         }
-        if (s.contains("capture-capture") && !captureCapture) {
+        if (matchNotification(s, "capture-capture")) {
             GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
             String values[] = s.split(":");
             generalInfo.addInformation("Process with id " + values[3]
                     + " is attacked by process with level " + values[1] + " and id " + values[2]
                     + ". But this process is already captured by another process with id "
                     + values[4] + ". So it sends message to its leader for help.", -2);
-            captureCapture = true;
             player.pause();
         }
-        if (s.contains("help-win") && !helpWin) {
+        if (matchNotification(s, "help-win")) {
             GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
             String values[] = s.split(":");
             generalInfo
@@ -139,10 +117,9 @@ public class CliqueLEAlgorithm implements Algorithm {
                                     + values[2]
                                     + " is stronger, so it sends message to subordinate, that it can ignore "
                                     + values[4] + ".", -2);
-            helpWin = true;
             player.pause();
         }
-        if (s.contains("help-defeat") && !helpDefeat) {
+        if (matchNotification(s, "help-defeat")) {
             GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
             String values[] = s.split(":");
             generalInfo
@@ -159,33 +136,29 @@ public class CliqueLEAlgorithm implements Algorithm {
                                     + values[2]
                                     + " is weaker, so it is killed and it sends message to subordinate to surrender.",
                             -2);
-            helpDefeat = true;
             player.pause();
         }
-        if (s.contains("accept") && !accept) {
+        if (matchNotification(s, "accept")) {
             GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
             String values[] = s.split(":");
             generalInfo.addInformation("Process " + values[1]
                     + " won battle, it gain new subordinate and go to level " + values[2], -2);
-            accept = true;
             player.pause();
         }
-        if (s.contains("Defeat") && !defeat) {
+        if (matchNotification(s, "Defeat")) {
             GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
             String values[] = s.split(":");
             generalInfo
                     .addInformation("Leader of process " + values[1]
                             + " is defeated. New leader for this process is process " + values[2]
                             + ".", -2);
-            defeat = true;
             player.pause();
         }
-        GUI.controls.refresh();
-        GUI.gRepaint();
+        //GUI.gRepaint();
     }
 
-    public void draw(Graphics2D g) {
-        generalInfo.draw(g);
+    @Override
+    public void step(long time) {
         if (player.state != RunState.stopped) {
             levelInfo.defaultSettings();
             levelInfo.addInformation("Number of process on", -1);
@@ -194,7 +167,6 @@ public class CliqueLEAlgorithm implements Algorithm {
                         + levelCounter.get(i).toString(), -1);
             }
         }
-        levelInfo.draw(g);
-        lastLevelInfo.draw(g);
     }
+
 }

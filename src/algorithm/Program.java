@@ -1,4 +1,4 @@
-package algorithms;
+package algorithm;
 
 import enums.Property;
 import graph.Message;
@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+import model.Player;
 import ui.GUI;
 
 //TODO bugfix, ked program posle na neexistujuci port
@@ -27,7 +28,7 @@ public class Program extends Thread {
     Player player;
     int id;
     public ArrayList<Integer> ports;
-    boolean running;
+    //boolean running;
 
     Process process;
     InputStream output;
@@ -41,7 +42,7 @@ public class Program extends Thread {
         player = p;
         vertex = v;
         vertex.program = this;
-        running = false;
+        //running = false;
         exited = false;
         this.id = vertex.getID();
         ports = new ArrayList<Integer>();
@@ -53,37 +54,45 @@ public class Program extends Thread {
     @Override
     public void run() {
         super.run();
-        System.out.println("bezim " + id);
         try {
             BufferedReader out = new BufferedReader(new InputStreamReader(output));
             String line;
-            running = true;
+            //running = true;
             while ((line = out.readLine()) != null) {
-                if (line.charAt(0) == '@') {
-                    String[] parts = line.substring(1).split(":", 2);
+                char command = line.charAt(0);
+                line = line.substring(1).trim();
+                if (command == '@') {
+                    String[] parts = line.split(":", 2);
                     if (player.model.canSendMessage(vertex, Integer.parseInt(parts[0].trim())))
                         send(Integer.parseInt(parts[0].trim()), parts[1].trim());
                 }
-                if (line.charAt(0) == '#') {
-                    int p = 1;
+                if (command == '#') {
+                    int p = 0;
                     while (line.charAt(p) == '#')
                         p++;
-                    GUI.informationPanel.printInformation(vertex, line.substring(1).trim());
-                    vertex.shout(line.substring(1).trim(), p);
+                    GUI.informationPanel.printInformation(vertex, line.substring(p).trim());
+                    vertex.shout(line.substring(p).trim(), p);
                 }
-                if (line.charAt(0) == '$') {
-                    String parts[] = line.substring(1).split(":", 2);
+                if (command == '$') {
+                    String parts[] = line.split(":", 2);
                     vertex.setVariable(parts[0].trim(), parts[1].trim());
                 }
-                if (line.charAt(0) == '%') {
-                    player.pauseFromProcess(vertex);
+                if (command == '&') {
+                    String[] parts = line.split(":", 2);
+                    if (parts[0].equals("update")) {
+                        player.observer.onUpdate(vertex, parts[1].trim());
+                    } else if (parts[0].equals("event")) {
+                        player.observer.onEvent(vertex, parts[1].trim());
+                    }
                 }
-                if (line.charAt(0) == '*' && player.model.algorithm != null) {
-                    player.model.algorithm.recieveUpdate(vertex, line.substring(1).trim());
-                }
-                if (line.charAt(0) == '&' && !exited) {
-                    exited = true;
-                    player.model.processExit(line.substring(1).trim(), vertex);
+                if (command == '!') {
+                    String[] parts = line.split(":", 2);
+                    if (parts[0].equals("pause")) {
+                        player.pauseFromProcess(vertex);
+                    } else if (parts[0].equals("dead") && !exited) {
+                        exited = true;
+                        player.model.processExit(parts[1].trim(), vertex);
+                    }
                 }
             }
             out.close();
@@ -103,11 +112,17 @@ public class Program extends Thread {
             e.printStackTrace();
         }
         this.init();
+
+    }
+
+    public void go() {
+        in.println("* start");
+        in.flush();
         this.start();
     }
 
     public void kill() {
-        running = false;
+        //running = false;
         vertex.program = null;
         this.interrupt();
         process.destroy();
@@ -129,7 +144,6 @@ public class Program extends Thread {
 
         in.println("* id : " + ((GUI.player.model.settings.isProperty(Property.anonym)) ? "0" : id));
         in.println("* initvalue : " + vertex.getInitial());
-        in.println("* start");
         in.flush();
     }
 

@@ -1,42 +1,17 @@
-package algorithms;
+package algorithm;
 
-import java.awt.Graphics2D;
-import java.io.PrintStream;
-
-import ui.GUI;
-import enums.BubblePosition;
-import graph.Bubble;
 import graph.Vertex;
+import model.Player;
+import ui.GUI;
 
-public class BFSAlgorithm implements Algorithm {
+public class BFSObserver extends Observer {
 
-    Bubble generalInfo;
-    Player player;
-
-    public BFSAlgorithm() {
-        player = GUI.player;
-        this.defaultSettings();
-        //GUI.model.setPath(getPath());
+    public BFSObserver(Player player) {
+        super(player);
     }
 
-    public String getPath() {
-        return "./algorithms/BFS.cpp";
-    }
-
-    public void defaultSettings() {
-        generalInfo = new Bubble(10, 10);
-        generalInfo.setLockedPosition(true);
-        generalInfo.position = BubblePosition.SE;
-        generalInfo.setMaxWidth(300);
-        old = false;
-        recieve = false;
-    }
-
-    public void print(PrintStream out) {
-        out.println("BFS");
-    }
-
-    public void startAlgorithm() {
+    @Override
+    public void onStart() {
         generalInfo.addInformation(
                 "At the begining of this algorithm, one process know new gossip."
                         + "He wants to share gossip with everyone else. That means, "
@@ -44,31 +19,30 @@ public class BFSAlgorithm implements Algorithm {
         player.pause();
     }
 
-    public void finishAlgorithm(Vertex v) {
+    @Override
+    public void onFinish() {
         generalInfo.addInformation(
                 "All processes know the new gossip. Total number of send messages is"
                         + player.model.overallMessageCount, -1);
         generalInfo.addInformation("Press 'R' to continue.", -1);
     }
 
-    boolean old, recieve;
-
-    public void recieveUpdate(Vertex vertex, String message) {
-        if (message.contains("recieve") && !recieve) {
+    @Override
+    public void onEvent(Vertex vertex, String s) {
+        if (matchNotification(s, "recieve")) {
             GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
-            String[] values = message.split(":");
+            String[] values = s.split(":");
             generalInfo
                     .addInformation(
                             "Process with id "
                                     + values[1]
                                     + " recieved new gossip. He wants to spread it, so he sends gossip to each neighbor"
                                     + " except the one, who sent him this gossip.", -2);
-            recieve = true;
             player.pause();
         }
-        if (message.contains("old") && !old) {
+        if (matchNotification(s, "old")) {
             GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
-            String[] values = message.split(":");
+            String[] values = s.split(":");
             generalInfo
                     .addInformation(
                             "Process "
@@ -76,15 +50,7 @@ public class BFSAlgorithm implements Algorithm {
                                     + " recieved gossip. But he seen this gossip before."
                                     + " He ignores this message, because he has already sent the gossip to his neighbors.",
                             -2);
-            old = true;
             player.pause();
         }
-        GUI.controls.refresh();
-        GUI.gRepaint();
     }
-
-    public void draw(Graphics2D g) {
-        generalInfo.draw(g);
-    }
-
 }

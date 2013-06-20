@@ -1,7 +1,8 @@
-package algorithms;
+package model;
 
 import enums.InitType;
 import enums.ModelType;
+import enums.ObserverType;
 import enums.RunState;
 import graph.BubbleSet;
 import graph.Edge;
@@ -14,6 +15,8 @@ import java.util.TimerTask;
 
 import ui.Dialog;
 import ui.GUI;
+import algorithm.Observer;
+import algorithm.Program;
 
 /*
  * Spusta programy a stara sa aby bezali
@@ -24,6 +27,7 @@ public class Player {
     public Graph graph;
     public Model model;
     public RunState state;
+    public Observer observer;
     long startingTime;
 
     public Player() {
@@ -50,6 +54,7 @@ public class Player {
     public void start() {
         GUI.controls.refresh();
         startingTime = System.currentTimeMillis();
+        boolean start = false;
         if (state == RunState.stopped) {
             if (model.program.none()) {
                 Dialog.showMessage("No program to run");
@@ -61,17 +66,22 @@ public class Player {
             }
             load();
             model.load();
+            start = true;
         }
         timerid++;
         state = RunState.running;
         StepEvent.time = System.currentTimeMillis();
         GUI.globalTimer.schedule(new StepEvent(this, timerid), 0);
+        if (start)
+            go();
 
     }
 
     boolean savedRandomInitiation = false;
 
     void load() {
+        observer = ObserverType.getNewInstance(this, model.settings.getObserverType());
+        observer.init();
         Vertex.randomInit.autoInitial();
         savedRandomInitiation = Vertex.randomInit.getInitial() != 0;
 
@@ -92,8 +102,13 @@ public class Player {
             v.program = new Program(v, this);
             v.program.load(Model.binaryPath, 1);
         }
-        /*if (algorithm != null)
-            algorithm.startAlgorithm();*/
+    }
+
+    void go() {
+        for (Vertex v : graph.vertices) {
+            v.program.go();
+        }
+        observer.onStart();
     }
 
     public void stop() {
@@ -111,6 +126,7 @@ public class Player {
         for (Edge e : graph.edges)
             e.restart();
         graph.setDefaultValues();
+        observer = null;
         MessageQueue.messageCount = 0;
         GUI.informationPanel.erase();
         GUI.gRepaint();
@@ -123,7 +139,7 @@ public class Player {
         state = RunState.paused;
     }
 
-    void pauseFromProcess(Vertex vertex) {
+    public void pauseFromProcess(Vertex vertex) {
         state = RunState.paused;
         GUI.globalTimer.schedule(new AuraEvent(vertex, 7), 0);
         pause();
@@ -207,15 +223,17 @@ public class Player {
                 for (Edge edge : player.graph.edges)
                     edge.queue.move(delay);
             }
-            if (player.state == RunState.running)
+            if (player.state == RunState.running) {
                 BubbleSet.step(delay);
+                player.observer.step(delay);
+            }
 
             GUI.gRepaint();
             GUI.globalTimer.schedule(new StepEvent(player, id), 30);
         }
     }
 
-    static class AuraEvent extends TimerTask {
+    public static class AuraEvent extends TimerTask {
         Vertex vertex;
         int count;
 

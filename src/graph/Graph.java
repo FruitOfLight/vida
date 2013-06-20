@@ -12,14 +12,14 @@ import java.util.TreeSet;
 
 import javax.swing.JOptionPane;
 
+import model.ModelSettings;
+import model.Player;
 import ui.CONST;
 import ui.Canvas;
 import ui.Dialog;
 import ui.Drawable;
 import ui.GUI;
 import ui.Tool;
-import algorithms.ModelSettings;
-import algorithms.Player;
 import enums.GraphType;
 import enums.InitType;
 import enums.Property;
@@ -118,8 +118,8 @@ public class Graph implements Drawable {
             vertex.bubble.draw(g);
         }
         Vertex.randomInit.draw(g);
-        if (player.model.algorithm != null)
-            player.model.algorithm.draw(g);
+        if (player.state != RunState.stopped)
+            player.observer.draw(g);
     }
 
     public boolean selectWithMouse(MouseEvent mouse) {

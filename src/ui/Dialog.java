@@ -14,9 +14,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import algorithms.ModelSettings;
-import algorithms.Pair;
-import algorithms.Setting;
+import algorithm.Pair;
+
+import model.ModelSettings;
+import model.Setting;
+
 import enums.GraphType;
 import enums.InitType;
 import enums.ModelType;

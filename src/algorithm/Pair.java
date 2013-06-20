@@ -1,4 +1,4 @@
-package algorithms;
+package algorithm;
 
 public class Pair<A, B> {
     private A first;

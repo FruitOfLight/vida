@@ -1,4 +1,4 @@
-package algorithms;
+package model;
 
 import enums.Property;
 import graph.Vertex;
@@ -13,6 +13,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import ui.Dialog;
 import ui.GUI;
+import algorithm.Pair;
 
 /*
  * Zdruzuje vlasnosti model, spusta program, stara sa o nastavenia
@@ -26,10 +27,9 @@ public class Model {
     public AlgFileSetting program;
     public AlgFileSetting observer;
     public Player player;
-    public Algorithm algorithm;
 
     //statistics
-    int overallMessageCount;
+    public int overallMessageCount;
 
     public Model() {
         programLoader = new JFileChooser("./algorithms/");
@@ -43,7 +43,10 @@ public class Model {
         overallMessageCount++;
     }
 
+    int deadProcessCount;
+
     public void defaultSettings() {
+        deadProcessCount = 0;
     }
 
     public void openAlgorithm() {
@@ -75,7 +78,11 @@ public class Model {
         this.defaultSettings();
     }
 
-    void processExit(String exitValue, Vertex vertex) {
+    public void processExit(String exitValue, Vertex vertex) {
+        deadProcessCount++;
+        if (deadProcessCount == player.graph.vertices.size()) {
+            player.observer.onFinish();
+        }
     }
 
     // ma zmysel pri traverzale napr.

@@ -26,7 +26,7 @@ void recieve(int port, string message) {
         if(getIValue("boss")==-1) {
             char inf[100];
             sprintf(inf,"I wouldn't be boss.");
-            sendInformation(string(inf));
+            tell(string(inf));
             setIValue("boss",0);
             char color[100];
             setSValue("_vertex_color","255,0,0");
@@ -41,7 +41,7 @@ void recieve(int port, string message) {
     else if(myID==ID) {
         char inf[100];
         sprintf(inf,"I am boss.");
-        sendInformation(string(inf));
+        tell(string(inf));
         setIValue("boss",1);
         setSValue("_vertex_color","0,0,255");
     }

@@ -19,19 +19,19 @@ int wait;
 
 void recieveCapture(int port, pair<int,int> strength) {
     if(getSValue("state")!="captured" && strength > make_pair(getIValue("level"),id)) {
-        sendInformation(strprintf("I'm captured by ID %d with level %d",strength.second,strength.first));
+        tell(strprintf("I'm captured by ID %d with level %d",strength.second,strength.first));
         setSValue("state","captured");
         setIValue("parent",strength.second);
         setIValue("_parent_port",port);
         setSValue("leader","no");
         setSValue("_vertex_color","255,0,0");
-        algorithmUpdate(strprintf("capture-active:%d:%d:%d:%d",getIValue("level"),id,strength.first,strength.second));
+        event(strprintf("capture-active:%d:%d:%d:%d",getIValue("level"),id,strength.first,strength.second));
         exitProgram("false");
         sendMessage(port, "{accept}");
     }
     else if(getSValue("state")=="captured") {
-        sendInformation(strprintf("I need help from my leader"));
-        algorithmUpdate(strprintf("capture-capture:%d:%d:%d:%d",strength.first,strength.second,id,getIValue("parent")));
+        tell(strprintf("I need help from my leader"));
+        event(strprintf("capture-capture:%d:%d:%d:%d",strength.first,strength.second,id,getIValue("parent")));
         sendMessage(getIValue("_parent_port"),strprintf("{help %d,%d} %d",strength.first,strength.second,port));
     }
 }
@@ -39,14 +39,14 @@ void recieveCapture(int port, pair<int,int> strength) {
 void recieveAccept(int port) {
     if(getSValue("state")!="active") return;
     setIValue("level",getIValue("level")+1);
-    sendInformation(strprintf("I get subordinate, my actual level is %d",getIValue("level")));
-    algorithmUpdate(strprintf("level:%d",getIValue("level")));
-    algorithmUpdate(strprintf("accept:%d:%d",id,getIValue("level")));
+    tell(strprintf("I get subordinate, my actual level is %d",getIValue("level")));
+    update(strprintf("level:%d",getIValue("level")));
+    event(strprintf("accept:%d:%d",id,getIValue("level")));
     setSValue("_vertex_size",strprintf("%d",100+50*getIValue("level")));
     if(getIValue("level")==ports.size()) {
         setSValue("_vertex_color","0,0,255");
         setSValue("leader","yes");
-        sendInformation("I'm the leader");
+        tell("I'm the leader");
         exitProgram("true");
         return;
     }
@@ -56,23 +56,23 @@ void recieveAccept(int port) {
 
 void recieveHelp(int port, pair<int,int> strength, int port1) {
     if(strength < make_pair(getIValue("level"),id)) {
-        sendInformation("We won");
-        algorithmUpdate(strprintf("help-win:%d:%d:%d:%d",getIValue("level"),id,strength.first,strength.second));
+        tell("We won");
+        event(strprintf("help-win:%d:%d:%d:%d",getIValue("level"),id,strength.first,strength.second));
         sendMessage(port,"{victory}");
         return ;
     }
     if(getSValue("state") == "active") setSValue("state","killed");
     setSValue("leader","no");
     setSValue("_vertex_color","255,0,0");
-    sendInformation("I'm defeated");
-    algorithmUpdate(strprintf("help-defeat:%d:%d:%d:%d",getIValue("level"),id,strength.first,strength.second));
+    tell("I'm defeated");
+    event(strprintf("help-defeat:%d:%d:%d:%d",getIValue("level"),id,strength.first,strength.second));
     exitProgram("false");
     sendMessage(port,strprintf("{defeat} %d,%d",port1,strength.second));
 }
 
 void recieveDefeat(int port, int port1, int newParent) {
-    sendInformation(strprintf("I'm captured"));
-    algorithmUpdate(strprintf("Defeat:%d:%d",id,newParent));
+    tell(strprintf("I'm captured"));
+    event(strprintf("Defeat:%d:%d",id,newParent));
     setIValue("parent",newParent);
     setIValue("_parent_port",port1);
     sendMessage(port1,"{accept}");

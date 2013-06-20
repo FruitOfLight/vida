@@ -1,4 +1,4 @@
-package algorithms;
+package model;
 
 import enums.InitType;
 import enums.Property;
@@ -7,28 +7,25 @@ import graph.Vertex;
 import java.util.ArrayList;
 
 import ui.Dialog;
+import algorithm.Pair;
 
 public class LeaderElectionModel extends Model {
 
     Vertex leader;
-    int deadProcessCount;
 
     public LeaderElectionModel() {
         super();
-        leader = null;
-        deadProcessCount = 0;
     }
 
     @Override
     public void defaultSettings() {
+        super.defaultSettings();
         leader = null;
-        deadProcessCount = 0;
     }
 
     @Override
-    void processExit(String exitValue, Vertex vertex) {
-        if (exitValue.equals("false"))
-            deadProcessCount++;
+    public void processExit(String exitValue, Vertex vertex) {
+        super.processExit(exitValue, vertex);
         if (exitValue.equals("true")) {
             //FIXME vyhod chybovu hlasku
             if (leader != null) {
@@ -40,17 +37,10 @@ public class LeaderElectionModel extends Model {
         }
         //FIXME vyhod chybovu hlasku
         if (deadProcessCount == player.graph.vertices.size()) {
-            Dialog.showError("There is no leader");
-            player.stop();
-            return;
-        }
-        if (deadProcessCount == player.graph.vertices.size() - 1 && leader != null) {
-            if (algorithm == null) {
-                Dialog.showMessage("Well done.");
+            if (leader == null) {
+                Dialog.showError("There is no leader");
                 player.stop();
-            } else
-                algorithm.finishAlgorithm(leader);
-            return;
+            }
         }
     }
 

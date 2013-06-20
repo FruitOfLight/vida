@@ -13,20 +13,20 @@ using namespace WatchVariables;
 
 void recieve(int port, string message) {
     if(getSValue("information")=="known") {
-        sendInformation("I already know this gossip.");
+        tell("I already know this gossip.");
         char up[100];
         sprintf(up,"old:%d",id);
-        algorithmUpdate(string(up));
+        event(string(up));
         return;
     }
    setSValue("information","known");
    setSValue("_vertex_color","100,200,255");
    char inf[100];
    sprintf(inf,"I recieved new gossip, I must tell everyone.");
-   sendInformation(string(inf));
+   tell(string(inf));
    char up[100];
    sprintf(up,"recieve:%d",id);
-   algorithmUpdate(string(up));
+   event(string(up));
    exitProgram("true");
    char buff[100];
    sprintf(buff,"I have new {gossip}.");
@@ -44,7 +44,7 @@ void init() {
    setSValue("_vertex_color","100,200,255");
    char inf[100];
    sprintf(inf,"I know new gossip, must tell to everyone.");
-   sendInformation(string(inf));
+   tell(string(inf));
    exitProgram("true");
    char buff[100];
    sprintf(buff,"I have new {gossip}.");

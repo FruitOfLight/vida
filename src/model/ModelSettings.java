@@ -1,4 +1,4 @@
-package algorithms;
+package model;
 
 import java.io.PrintStream;
 import java.util.Collection;
@@ -11,6 +11,7 @@ import ui.GUI;
 import enums.GraphType;
 import enums.InitType;
 import enums.ModelType;
+import enums.ObserverType;
 import enums.Property;
 
 /**
@@ -36,6 +37,11 @@ public class ModelSettings {
         AlgFileSetting p = new AlgFileSetting("Program");
         map.put(Property.program, p);
         model.program = p;
+        map.put(Property.observer,
+                new ComboSetting("Observer type", Setting.toStrings(ObserverType.values())));
+        /*AlgFileSetting o = new AlgFileSetting("Observer");
+        map.put(Property.observer, o);
+        model.observer = o;*/
     }
 
     //// Zakladne pracovne funkcie
@@ -86,6 +92,10 @@ public class ModelSettings {
 
     public InitType getInit() {
         return InitType.valueOf((String) getProperty(Property.initiation));
+    }
+
+    public ObserverType getObserverType() {
+        return ObserverType.valueOf((String) getProperty(Property.observer));
     }
 
     //// Zvysok

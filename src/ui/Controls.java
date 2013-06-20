@@ -11,7 +11,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import algorithms.Player;
+import model.Player;
+
 import enums.RunState;
 import enums.ToolTarget;
 import enums.ToolType;

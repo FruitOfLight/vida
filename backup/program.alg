@@ -1,14 +1,15 @@
 Version 1.00
 
 Settings
-    Anonym: [yes]
+    Anonym: no
     Synchroned: [no]
-    Graph type: [cycle]
-    Model type: [def]
-    Initiation: [multi]
+    Graph type: clique
+    Model type: [leaderElection]
+    Initiation: [no]
+    Observer type: [CliqueLE]
 
 Program
-    source: /home/jano/workspace/vida/algorithms/BFS.cpp
+    source: /home/jano/workspace/vida/algorithms/./leaderElectionCliqueNlogN.cpp
     path: 
-    name: BFS.cpp
+    name: le_cn_nlogn.alg
 

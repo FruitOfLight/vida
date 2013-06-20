@@ -6,8 +6,6 @@ import java.util.Scanner;
 
 import javax.swing.JFileChooser;
 
-import algorithms.BFSAlgorithm;
-import algorithms.CliqueLEAlgorithm;
 import enums.RunState;
 
 public class Menu {
@@ -83,21 +81,21 @@ public class Menu {
             }
             break;
         case 3:
-            if (GUI.player.state != RunState.stopped)
+            /*if (GUI.player.state != RunState.stopped)
                 break;
             switch (c) {
             case 0:
-                GUI.player.model.algorithm = null;
+                //GUI.player.model.algorithm = null;
                 break;
             case 1:
-                GUI.player.model.algorithm = new CliqueLEAlgorithm();
+                //GUI.player.model.algorithm = new CliqueLEAlgorithm();
                 break;
             case 2:
-                GUI.player.model.algorithm = new BFSAlgorithm();
+                //GUI.player.model.algorithm = new BFSAlgorithm();
                 break;
-            default:
-                Dialog.showError("Not implemented");
-            }
+            default:*/
+            Dialog.showError("Not implemented");
+            //}
             break;
         default:
             System.out.println("Invalid entry!");

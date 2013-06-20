@@ -20,7 +20,7 @@ import ui.CONST;
 import ui.Canvas;
 import ui.Dialog;
 import ui.GUI;
-import algorithms.Program;
+import algorithm.Program;
 import enums.Constrast;
 import enums.DeliverState;
 import enums.InitType;
@@ -114,6 +114,7 @@ public class Vertex implements Comparable<Vertex> {
         color = new Color(0, 255, 0);
         radius = CONST.vertexSize;
         bubble.defaultSettings();
+        watchVariables.clear();
     }
 
     // posle spravu
@@ -136,7 +137,7 @@ public class Vertex implements Comparable<Vertex> {
         bubble.addInformation(s, BubbleSet.time + duration);
     }
 
-    public Map<String, String> watchVariables;
+    private Map<String, String> watchVariables;
 
     public void setVariable(String name, String value) {
         if (name.charAt(0) == '_') {
@@ -156,6 +157,10 @@ public class Vertex implements Comparable<Vertex> {
             watchVariables.put(name, value);
         }
         GUI.gRepaint();
+    }
+
+    public String getVariable(String name) {
+        return watchVariables.get(name);
     }
 
     public void draw(Graphics2D g) {

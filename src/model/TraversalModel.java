@@ -1,4 +1,4 @@
-package algorithms;
+package model;
 
 import enums.InitType;
 import enums.Property;
@@ -6,7 +6,7 @@ import graph.Vertex;
 
 import java.util.ArrayList;
 
-import ui.Dialog;
+import algorithm.Pair;
 
 public class TraversalModel extends Model {
 
@@ -21,22 +21,9 @@ public class TraversalModel extends Model {
 
     @Override
     public void defaultSettings() {
+        super.defaultSettings();
         token = null;
         tokenMessages = 0;
-        discoveredCount = 0;
-    }
-
-    @Override
-    public void processExit(String exitValue, Vertex vertex) {
-        discoveredCount++;
-        if (discoveredCount == player.graph.vertices.size()) {
-            if (algorithm == null) {
-                Dialog.showMessage("Well done.");
-                player.stop();
-            } else {
-                algorithm.finishAlgorithm(null);
-            }
-        }
     }
 
     @Override

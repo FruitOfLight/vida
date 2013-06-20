@@ -1,4 +1,4 @@
-package algorithms;
+package model;
 
 import java.io.File;
 import java.io.FileNotFoundException;

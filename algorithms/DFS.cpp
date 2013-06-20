@@ -17,7 +17,7 @@ int wait;
 void recieve(int port, string message) {
     if(getSValue("discovered")=="true" && wait!=port) {
         For(i,ports.size()) if(ports[i]==port) T[i]=-1;
-        sendInformation("I have been already discovered, lets return token.");
+        tell("I have been already discovered, lets return token.");
         sendMessage(port, "Here is {token}");
         return;
     }
@@ -26,7 +26,7 @@ void recieve(int port, string message) {
    setSValue("_vertex_color","255,255,50");
    char inf[100];
    sprintf(inf,"I have token, lets find unused edge");
-   sendInformation(string(inf));
+   tell(string(inf));
    int p=-1;
    For(i,ports.size()) if(T[i]==0) p=i;
    if(p==-1) {
@@ -35,13 +35,13 @@ void recieve(int port, string message) {
             char inf[100];
             sprintf(inf,"All my edges are used, I send token to parent.");
             setSValue("_vertex_color","255,0,0");
-            sendInformation(string(inf));
+            tell(string(inf));
             sendMessage(ports[p], "Here is {token}");
        }
        else {
             char inf[100];
             sprintf(inf,"All vertices are discovered.");
-            sendInformation(string(inf));
+            tell(string(inf));
        }
        exitProgram("true");
        return ;
@@ -63,7 +63,7 @@ void init() {
    setSValue("_vertex_color","255,255,50");
    char inf[100];
    sprintf(inf,"I have token, lets find unesed edge");
-   sendInformation(string(inf));
+   tell(string(inf));
    char buff[100];
    sprintf(buff,"Here is {token}.");
    for(int i=0; i<ports.size(); i++) {
