@@ -71,7 +71,7 @@ public class Program extends Thread {
                     while (line.charAt(p) == '#')
                         p++;
                     GUI.informationPanel.printInformation(vertex, line.substring(p).trim());
-                    vertex.shout(line.substring(p).trim(), p);
+                    vertex.shout(line.substring(p).trim(), p + 1);
                 }
                 if (command == '$') {
                     String parts[] = line.split(":", 2);

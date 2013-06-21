@@ -5,6 +5,7 @@
 #include<cstdio>
 #include<cstdarg>
 #include<iostream>
+#include<sstream>
 #include<cstring>
 #include<algorithm>
 #include<vector>
@@ -39,6 +40,7 @@ string strprintf(const char *format, ...){
     va_end (args);
     return string(buffer);
 }
+
 
 namespace Property {//{{{
     vi ports;
