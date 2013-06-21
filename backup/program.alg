@@ -1,15 +1,15 @@
 Version 1.00
 
 Settings
-    Anonym: [no]
+    Anonym: no
     Synchroned: [no]
     Graph type: [any]
-    Model type: [broadcast]
-    Initiation: [one]
+    Model type: [leaderElection]
+    Initiation: [no]
     Observer type: [none]
 
 Program
-    source: /home/jano/workspace/vida/algorithms/BFS.cpp
+    source: /home/jano/workspace/vida/algorithms/GHS.cpp
     path: 
-    name: BFS.cpp
+    name: GHS.cpp
 

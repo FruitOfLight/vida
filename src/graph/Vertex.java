@@ -26,6 +26,7 @@ import enums.DeliverState;
 import enums.InitType;
 import enums.Preference;
 import enums.Property;
+import enums.RunState;
 
 public class Vertex implements Comparable<Vertex> {
     public static TreeSet<Vertex> initialSet = new TreeSet<Vertex>();
@@ -211,10 +212,13 @@ public class Vertex implements Comparable<Vertex> {
         g.drawLine(indent, indent + edgeHeight, width + indent, indent + edgeHeight);
         g.drawLine(indent, height + indent - edgeHeight, width + indent, height + indent
                 - edgeHeight);
-        ArrayList<Vertex> neigh = new ArrayList<Vertex>();
-        for (Edge edge : edges) {
-            if (!neigh.contains(edge.to))
-                neigh.add(edge.to);
+        ArrayList<String> neigh = new ArrayList<String>();
+        for (int i = 0; i < edges.size(); ++i) {
+            String cap = "" + edges.get(i).to.getID();
+            if (GUI.player.state != RunState.stopped) {
+                cap += ":" + program.ports.get(i);
+            }
+            neigh.add(cap);
         }
         int n = neigh.size();
         int up = n / 2, down = n / 2 + n % 2;
@@ -228,29 +232,26 @@ public class Vertex implements Comparable<Vertex> {
                     - indent);
         }
         int fontSize = 1000;
-        for (Vertex vertex : neigh) {
-            fontSize = Math
-                    .min(fontSize,
-                            findFontSize(g, width / down, edgeHeight,
-                                    ((Integer) vertex.getID()).toString()));
+        for (String cap : neigh) {
+            fontSize = Math.min(fontSize, findFontSize(g, width / down, edgeHeight, cap));
         }
         for (int i = 0; i < up; i++) {
             int boxWidth = width / up;
-            String caption = ((Integer) neigh.get(i).getID()).toString();
+            String caption = neigh.get(i);
             g.setFont(new Font(null, Font.PLAIN, fontSize));
             int textWidth = g.getFontMetrics().stringWidth(caption);
-            g.drawString(((Integer) neigh.get(i).getID()).toString(), indent + i * boxWidth
-                    + (boxWidth - textWidth) / 2, indent + edgeHeight - 1);
+            g.drawString(neigh.get(i), indent + i * boxWidth + (boxWidth - textWidth) / 2, indent
+                    + edgeHeight - 1);
             g.drawLine(indent + i * boxWidth + boxWidth / 2, indent, indent + i * boxWidth
                     + boxWidth / 2, 0);
         }
         for (int i = 0; i < down; i++) {
             int boxWidth = width / down;
-            String caption = ((Integer) neigh.get(up + i).getID()).toString();
+            String caption = neigh.get(up + i);
             g.setFont(new Font(null, Font.PLAIN, fontSize));
             int textWidth = g.getFontMetrics().stringWidth(caption);
-            g.drawString(((Integer) neigh.get(up + i).getID()).toString(), indent + i * boxWidth
-                    + (boxWidth - textWidth) / 2, CONST.zoomWindowHeight - indent - 1);
+            g.drawString(neigh.get(up + i), indent + i * boxWidth + (boxWidth - textWidth) / 2,
+                    CONST.zoomWindowHeight - indent - 1);
             g.drawLine(indent + i * boxWidth + boxWidth / 2, CONST.zoomWindowHeight - indent,
                     indent + i * boxWidth + boxWidth / 2, CONST.zoomWindowHeight);
         }

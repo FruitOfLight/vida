@@ -9,6 +9,7 @@
 #include<cstring>
 #include<algorithm>
 #include<vector>
+#include<queue>
 #include<map>
 
 using namespace std;
