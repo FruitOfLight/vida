@@ -1,6 +1,7 @@
 /*
  anonym no
  graphType clique
+ Observer type: [CliqueLE]
 */
 
 //Fruit of Light

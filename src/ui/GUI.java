@@ -26,11 +26,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 
-
 import model.AlgReader;
 import model.ModelSettings;
 import model.Player;
-
 
 public class GUI {
     public static Random random = new Random();
@@ -68,6 +66,7 @@ public class GUI {
             graphSaver = new JFileChooser("./");
 
             menu = new JMenuBar();
+            Menu.init();
 
             for (int i = 0; i < Menu.menuItems.length; i++) {
                 final JMenu item = new JMenu(Menu.menuItems[i]);
