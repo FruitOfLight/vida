@@ -11,11 +11,11 @@
 #include<vector>
 #include<queue>
 #include<map>
+#include<set>
 
 using namespace std;
 
 #define For(i, n) for(int i = 0; i<(n); ++i)
-#define ForEach(it, i) for(typeof i.begin() it = i.begin(); it!=i.end(); ++it)
 #define pass 
 
 typedef long long ll;
