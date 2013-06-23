@@ -159,7 +159,7 @@ public class Program extends Thread {
 
     public void receive(Message message) {
         player.model.statisticMessage();
-        System.out.println("@ " + ports.get(message.toPort) + " : " + message.rawContent);
+        //System.out.println("@ " + ports.get(message.toPort) + " : " + message.rawContent);
         in.println("@ " + ports.get(message.toPort) + " : " + message.rawContent);
         in.flush();
     }
