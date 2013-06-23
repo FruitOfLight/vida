@@ -33,6 +33,7 @@ public class Program extends Thread {
     Process process;
     InputStream output;
     OutputStream input;
+    InputStream error;
     PrintWriter in;
 
     boolean exited;
@@ -95,6 +96,7 @@ public class Program extends Thread {
                     }
                 }
             }
+            System.out.println("Program " + id + " has finished.");
             out.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,10 +105,11 @@ public class Program extends Thread {
 
     public void load(String path, int initValue) {
         try {
-            System.err.println("Loading... " + path);
+            System.err.println("Loading (" + id + ")... " + path);
             process = Runtime.getRuntime().exec(path);
             output = process.getInputStream();
             input = process.getOutputStream();
+            error = process.getErrorStream();
             in = new PrintWriter(input);
         } catch (Exception e) {
             e.printStackTrace();
@@ -156,6 +159,7 @@ public class Program extends Thread {
 
     public void receive(Message message) {
         player.model.statisticMessage();
+        System.out.println("@ " + ports.get(message.toPort) + " : " + message.rawContent);
         in.println("@ " + ports.get(message.toPort) + " : " + message.rawContent);
         in.flush();
     }
