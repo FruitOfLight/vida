@@ -3,13 +3,13 @@ Version 1.00
 Settings
     Anonym: [no]
     Synchroned: [no]
-    Graph type: [any]
-    Model type: [broadcast]
-    Initiation: [one]
-    Observer type: [BFS]
+    Graph type: [clique]
+    Model type: [leaderElection]
+    Initiation: [no]
+    Observer type: [none]
 
 Program
-    source: /home/zaba/workspace/vida/algorithms/BFS.cpp
+    source: /home/zaba/workspace/vida/algorithms/leaderElectionCliqueNlogN.cpp
     path: 
-    name: BFS.cpp
+    name: leaderElectionCliqueNlogN.cpp
 

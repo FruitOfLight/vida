@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import model.Player;
 import ui.GUI;
+import ui.TextBook;
 
 public class CliqueLEObserver extends Observer {
 
@@ -16,6 +17,7 @@ public class CliqueLEObserver extends Observer {
 
     public CliqueLEObserver(Player player) {
         super(player);
+        textBook = new TextBook("cliqueLE-observer");
     }
 
     @Override
@@ -31,10 +33,7 @@ public class CliqueLEObserver extends Observer {
         for (int i = 0; i < player.graph.vertices.size(); i++)
             levelCounter.add(0);
         levelCounter.set(0, player.graph.vertices.size());
-        generalInfo
-                .addInformation(
-                        "When algorithm begins, all processes will try to capture all other processes. Each process has own ID and current level. Process is stronger than other, if it has bigger level or when levels are equal, bigger ID.",
-                        -2);
+        generalInfo.addInformation(textBook.getText("start"), -2);
         player.pause();
     }
 
@@ -46,24 +45,11 @@ public class CliqueLEObserver extends Observer {
                 leader = v;
         if (leader == null)
             return;
-        generalInfo
-                .addInformation(
-                        "Leader is process with ID "
-                                + leader.getID()
-                                + ". Total number of send messages is "
-                                + player.model.overallMessageCount
-                                + ". Algorithm should send O(N logN) messages, where N is number of vertices."
-                                + "If we want verify effectivity of our algorithm notice this thing. On each level L,"
-                                + "the number of active processes on that level is at most N/(L+1), because"
-                                + " each vertex needs own unique set of L subordinates. And for each vertex, we"
-                                + "need only constant number of messages to get to another level, or get killed."
-                                + "This means, that total number of send message is equal (in O-notation) to sum N/(L+1) for L from 1 to"
-                                + +player.graph.vertices.size()
-                                + ". So thats N times harmonic number. Whats in roughly logN. So complexity is really O(N logN). "
-                                + "Press key 'R' to finish algorithm.", -1);
+        Object[] values = { leader.getID(), player.model.overallMessageCount,
+                player.graph.vertices.size() };
+        generalInfo.addInformation(textBook.getText("finish", values), -1);
         levelInfo.transparency = 0f;
-        lastLevelInfo.addInformation(
-                "Number of process / maximal possible number of process on level:", -1);
+        lastLevelInfo.addInformation(textBook.getText("process_number_end"), -1);
         for (int i = 0; i < levelCounter.size(); i++) {
             lastLevelInfo.addInformation(
                     i + ": " + levelCounter.get(i) + " / "
@@ -81,92 +67,27 @@ public class CliqueLEObserver extends Observer {
 
     @Override
     public void onEvent(Vertex vertex, String s) {
-        System.out.println(s);
-        if (matchNotification(s, "capture-active")) {
-            GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
-            String values[] = s.split(":");
-            generalInfo.addInformation("Process with level " + values[3] + " and id " + values[4]
-                    + " is trying to capture active process with level " + values[1] + " and id "
-                    + values[2]
-                    + ". Defender is defeated so it sends acceptance message to attacker.", -2);
-            player.pause();
-        }
-        if (matchNotification(s, "capture-capture")) {
-            GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
-            String values[] = s.split(":");
-            generalInfo.addInformation("Process with id " + values[3]
-                    + " is attacked by process with level " + values[1] + " and id " + values[2]
-                    + ". But this process is already captured by another process with id "
-                    + values[4] + ". So it sends message to its leader for help.", -2);
-            player.pause();
-        }
-        if (matchNotification(s, "help-win")) {
-            GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
-            String values[] = s.split(":");
-            generalInfo
-                    .addInformation(
-                            "Process with level "
-                                    + values[1]
-                                    + " and id "
-                                    + values[2]
-                                    + " recieve help message from its subordinate. Subordinate is attacked by process with level "
-                                    + values[3]
-                                    + " and id "
-                                    + values[4]
-                                    + ". However, process "
-                                    + values[2]
-                                    + " is stronger, so it sends message to subordinate, that it can ignore "
-                                    + values[4] + ".", -2);
-            player.pause();
-        }
-        if (matchNotification(s, "help-defeat")) {
-            GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
-            String values[] = s.split(":");
-            generalInfo
-                    .addInformation(
-                            "Process with level "
-                                    + values[1]
-                                    + " and id "
-                                    + values[2]
-                                    + " recieve help message from its subordinate. Subordinate is attacked by process with level "
-                                    + values[3]
-                                    + " and id "
-                                    + values[4]
-                                    + ". However, process "
-                                    + values[2]
-                                    + " is weaker, so it is killed and it sends message to subordinate to surrender.",
-                            -2);
-            player.pause();
-        }
-        if (matchNotification(s, "accept")) {
-            GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
-            String values[] = s.split(":");
-            generalInfo.addInformation("Process " + values[1]
-                    + " won battle, it gain new subordinate and go to level " + values[2], -2);
-            player.pause();
-        }
-        if (matchNotification(s, "Defeat")) {
-            GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
-            String values[] = s.split(":");
-            generalInfo
-                    .addInformation("Leader of process " + values[1]
-                            + " is defeated. New leader for this process is process " + values[2]
-                            + ".", -2);
-            player.pause();
-        }
-        //GUI.gRepaint();
+        String[] help = s.split(":");
+        Object[] values = new Object[help.length - 1];
+        for (int i = 1; i < help.length; i++)
+            values[i - 1] = help[i];
+        String event = help[0];
+        if (!firstTime(event))
+            return;
+        GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
+        generalInfo.addInformation(textBook.getText(event, values), -2);
+        player.pause();
     }
 
     @Override
     public void step(long time) {
         if (player.state != RunState.stopped) {
             levelInfo.defaultSettings();
-            levelInfo.addInformation("Number of process on", -1);
+            levelInfo.addInformation(textBook.getText("process_number"), -1);
             for (int i = 0; i < player.graph.vertices.size(); i++) {
-                levelInfo.addInformation("level " + ((Integer) i).toString() + ": "
-                        + levelCounter.get(i).toString(), -1);
+                levelInfo.addInformation(textBook.getText("level") + ((Integer) i).toString()
+                        + ": " + levelCounter.get(i).toString(), -1);
             }
         }
     }
-
 }

@@ -1,7 +1,6 @@
 /*
  anonym no
  graphType clique
- Observer type: [CliqueLE]
 */
 
 //Fruit of Light
@@ -73,7 +72,7 @@ void recieveHelp(int port, pair<int,int> strength, int port1) {
 
 void recieveDefeat(int port, int port1, int newParent) {
     tell(strprintf("I'm captured"));
-    event(strprintf("Defeat:%d:%d",id,newParent));
+    event(strprintf("defeat:%d:%d",id,newParent));
     setIValue("parent",newParent);
     setIValue("_parent_port",port1);
     sendMessage(port1,"{accept}");
