@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.TreeSet;
 
 import model.Player;
+import ui.TextBook;
 
 /*
  * Zivotny cyklus:
@@ -29,6 +30,7 @@ import model.Player;
 
 public class Observer {
     Player player;
+    TextBook textBook;
 
     private ArrayList<Bubble> allBubbles = new ArrayList<Bubble>();
     private TreeSet<String> events = new TreeSet<String>();

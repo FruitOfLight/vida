@@ -9,38 +9,32 @@ public class BFSObserver extends Observer {
 
     public BFSObserver(Player player) {
         super(player);
+        textBook = new TextBook("bfs-observer");
     }
 
     @Override
     public void onStart() {
-        generalInfo.addInformation(TextBook.getLanguageString("bfs-start"), -2);
+        generalInfo.addInformation(textBook.getText("start"), -2);
         player.pause();
     }
 
     @Override
     public void onFinish() {
         Object[] value = { player.model.overallMessageCount };
-        generalInfo.addInformation(TextBook.getLanguageString("bfs-finish", value), -1);
+        generalInfo.addInformation(textBook.getText("finish", value), -1);
     }
 
     @Override
     public void onEvent(Vertex vertex, String s) {
-        String[] ids = TextBook.getLanguageArray("bfs-event-id");
-        String[] texts = TextBook.getLanguageArray("bfs-event");
-        if (matchNotification(s, "recieve")) {
-            GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
-            String[] values = s.split(":");
-            generalInfo.addInformation(TextBook.getMatchedString(ids, texts, "recieve",
-                    TextBook.editValues(values, 1)), -2);
-            player.pause();
-        }
-        if (matchNotification(s, "old")) {
-            GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
-            String[] values = s.split(":");
-            generalInfo.addInformation(
-                    TextBook.getMatchedString(ids, texts, "old", TextBook.editValues(values, 1)),
-                    -2);
-            player.pause();
-        }
+        String[] help = s.split(":");
+        Object[] values = new Object[help.length - 1];
+        for (int i = 1; i < help.length; i++)
+            values[i - 1] = help[i];
+        String event = help[0];
+        if (!firstTime(event))
+            return;
+        GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
+        generalInfo.addInformation(textBook.getText(event, values), -2);
+        player.pause();
     }
 }
