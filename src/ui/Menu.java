@@ -10,9 +10,16 @@ import enums.RunState;
 
 public class Menu {
 
-    static final String[] menuItems = { "App", "Graph", "Program", "Algorithm" };
-    static final String[][] allMenuItems = { { "Configure", "Quit" }, { "New", "Open", "Save" },
-            { "Open", "Settings" }, { "None", "LE on clique", "BFS" } };
+    static String[] menuItems;
+    static String[][] allMenuItems;
+
+    public static void init() {
+        menuItems = TextBook.getLanguageArray("menuItems");
+        String[] help = TextBook.getLanguageArray("allMenuItems");
+        allMenuItems = new String[help.length][];
+        for (int i = 0; i < help.length; i++)
+            allMenuItems[i] = help[i].split("##");
+    }
 
     static void performAction(int r, int c) {
         switch (r) {
