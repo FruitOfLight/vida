@@ -17,7 +17,7 @@ public class TextBook {
         ids = new ArrayList<String>();
         content = new ArrayList<String>();
         this.file = file;
-        this.language = GUI.language;
+        this.language = GUI.getLanguage();
         loadTextBook();
     }
 
@@ -37,9 +37,9 @@ public class TextBook {
     }
 
     public void change() {
-        if (this.language == GUI.language)
+        if (this.language == GUI.getLanguage())
             return;
-        this.language = GUI.language;
+        this.language = GUI.getLanguage();
         loadTextBook();
     }
 
@@ -66,7 +66,7 @@ public class TextBook {
 
     public static String[] getLanguageArray(String name) {
         try {
-            Scanner in = new Scanner(new File("texts/" + GUI.language + "/" + name));
+            Scanner in = new Scanner(new File("texts/" + GUI.getLanguage() + "/" + name));
             String result = "";
             while (in.hasNextLine()) {
                 result += in.nextLine();

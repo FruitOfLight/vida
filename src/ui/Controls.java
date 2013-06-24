@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import model.Player;
-
+import enums.Language;
 import enums.RunState;
 import enums.ToolTarget;
 import enums.ToolType;
@@ -79,6 +79,10 @@ public class Controls implements Drawable {
             Menu.performAction(1, 2);
         } else if (name.equals("g_new")) {
             Menu.performAction(1, 0);
+        } else if (name.equals("l_en")) {
+            GUI.setLanguage(Language.english);
+        } else if (name.equals("l_sk")) {
+            GUI.setLanguage(Language.slovak);
         } else {
             System.err.println("Unknown action " + name);
         }

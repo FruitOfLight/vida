@@ -115,6 +115,14 @@ class ControlBuilder {
             csb.addRadio("tools", -1);
             box.addElement(box2);
             getBox("gtoolBox").addElement(box);
+            box = new ControlBox(c, null);
+            box.addElement(new ControlSeparator(c, "thin_dark"));
+            box.addElement(csb = new ControlSwitchButton(c, "l_en", null));
+            csb.addRadio("language", -2);
+            csb.setSelected(true);
+            box.addElement(csb = new ControlSwitchButton(c, "l_sk", null));
+            csb.addRadio("language", -2);
+            getBox("bottomBox").addElement(box);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -309,6 +317,13 @@ class ControlSwitchButton extends ControlClickButton {
         this(controls, name, name, key);
     }
 
+    /*
+     * Standard: ked mam level x a zapnem sa, vypnem vsetkych s rovnakym levelom a 
+     *                                        zapnem tych s vacsim levelom
+     *                             vypnem sa, vypnem vsetkych s mensim levelom
+     * Special: level -1 - tlacitko musi mat priradeny klaves - klavesom sa postupne chodi po klavesoch
+     *          level -2 - vzdy je aspon jedno tlacidlo zapnute - nedaju sa vypinat iba prepinat
+     */
     public void addRadio(String name, int level) {
         radioName = name;
         radioLevel = level;
@@ -329,6 +344,8 @@ class ControlSwitchButton extends ControlClickButton {
     @Override
     public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e);
+        if (radioLevel == -2 && isSelected())
+            return;
         setSelected(!isSelected());
         if (radioName != null) {
             for (ControlSwitchButton button : radioGroups.get(radioName))

@@ -50,8 +50,6 @@ public class GUI {
     public static JLayeredPane layeredPane;
     public static Timer globalTimer;
 
-    static Language language;
-
     static class Window implements Runnable {
         @Override
         public void run() {
@@ -218,6 +216,17 @@ public class GUI {
         } catch (Exception e) {
             System.out.println(e.toString());
         }
+    }
+
+    private static Language language;
+
+    public static void setLanguage(Language lang) {
+        language = lang;
+        System.out.println("language is now " + language.name());
+    }
+
+    public static Language getLanguage() {
+        return language;
     }
 
     public static void main(String[] args) {
