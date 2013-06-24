@@ -1,0 +1,11 @@
+start#When algorithm begins, all processes will try to capture all other processes. Each process has own ID and current level. Process is stronger than other, if it has bigger level or when levels are equal, bigger ID.
+finish#Leader is process with ID %$1%$. Total number of send messages is %$2%$. Algorithm should send O(N logN) messages, where N is number of vertices. If we want verify effectivity of our algorithm notice this thing. On each level L, the number of active processes on that level is at most N/(L+1), because each vertex needs own unique set of L subordinates. And for each vertex, we need only constant number of messages to get to another level, or get killed. This means, that total number of send message is equal (in O-notation) to sum N/(L+1) for L from 1 to %$3%$. So thats N times harmonic number. Whats in roughly logN. So complexity is really O(N logN). Press key 'R' to finish algorithm.
+process_number_end#Number of process / maximal possible number of process on level:
+capture-active#Process with level %$3%$ and id %$4%$ is trying to capture active process with level %$1%$ and id %$2%$. Defender is defeated so it sends acceptance message to attacker.
+capture-capture#Process with id %$3%$ is attacked by process with level %$1%$ and id %$2%$. But this process is already captured by another process with id %$4%$. So it sends message to its leader for help.
+help-win#Process with level %$1%$ and id %$2%$ recieve help message from its subordinate. Subordinate is attacked by process with level %$3%$ and id %$4%$. However, process %$2%$ is stronger, so it sends message to subordinate, that it can ignore %$4%$.
+help-defeat#Process with level %$1%$ and id %$2%$ recieve help message from its subordinate. Subordinate is attacked by process with level %$3%$ and id %$4%$. However, process %$2%$ is weaker, so it is killed and it sends message to subordinate to surrender.
+accept#Process %$1%$ won battle, it gain new subordinate and go to level %$2%$.
+defeat#Leader of process %$1%$ is defeated. New leader for this process is process %$2%$.
+process_number#Number of process on:
+level#level 

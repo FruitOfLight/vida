@@ -153,6 +153,7 @@ public class Program extends Thread {
     public void send(int port, String content) {
         // svoj port zmenim na port vrchola
         // TODO spravit efektivnejsie nez cez indexOf
+        System.out.println("@ " + port + " : " + content);
         port = ports.indexOf(port);
         vertex.send(new Message(port, content));
     }

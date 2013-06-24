@@ -17,22 +17,27 @@ using namespace WatchVariables;
 
 typedef pair<int, int> Value;
 typedef pair<Value, int> Edge;
-typedef pair<Edge, int> Request;
+typedef pair<int, Edge> DRequest;
+typedef pair<int, int> WRequest;
 
 #define INF 1023456789
+#define PUNDEF INF
 const Value INFV = Value(INF,INF);
 //}}}
 
 priority_queue<Edge, vector<Edge>, greater<Edge>> unknown;
-priority_queue<Request, vector<Request>, greater<Request>> waitingRequests;
+priority_queue<DRequest, vector<DRequest>, greater<DRequest>> discoverRequests;
+priority_queue<WRequest, vector<WRequest>, greater<WRequest>> whoRequests;
+
 map<int, Edge> edges;
 
-set<Edge> sons;
+int parent = PUNDEF;
+set<int> sons;
+set<int> waitForSons;
 
-Edge parent = Edge(INFV,INF);
-bool cheapestIsActual;
-
-int waitForSons = -1;
+bool cheapestIsActual = 0;
+bool waitingForWho = 0;
+///{{{ stats
 namespace my_details{
     Edge cheapest = Edge(INFV,INF);
 }
@@ -42,12 +47,13 @@ void setCheapest(Edge e){
         setSValue("cheapest-edge", "undef");
     }
     setSValue("cheapest-edge", strprintf("%s<%d, %d> %d",
-                cheapestIsActual?"":"so far ",
+                (cheapestIsActual)?"":"so far ",
                 e.first.first, e.first.second, e.second));
 }
 Edge getCheapest(){
     return my_details::cheapest;
 }
+//}}}
 
 // function declarations
 
@@ -59,10 +65,12 @@ void foundCheapest();
 void findCheapestUnknown();
 void receiveCheapest(int port, istringstream& iss);
 void receiveIAm(int port, istringstream& iss);
+void receiveWho(int port, istringstream& iss);
+void checkWhoRequests();
 
 void discover();
 void receiveDiscover(int port, istringstream& iss);
-void checkWaiting();
+void checkDiscoverRequests();
 
 void eatFragment(int port);
 void becomeNewBoss();
@@ -96,42 +104,50 @@ void resetCheapest(){
 }
 void findCheapest(){
     tell("Let's find cheapest edge");
-    if (waitForSons>=0){
-        tell("error");
-    }
     resetCheapest();
-    waitForSons = sons.size();
-    for(auto son : sons)
-        sendMessage(son.second,"{find-cheapest}");
+    for(auto son : sons){
+        waitForSons.insert(son);
+        sendMessage(son,"{find-cheapest}");
+    }
+    waitingForWho = 0;
 }
 void foundCheapest(){
-    if (getCheapest().first == INFV && parent.second==INF){
-        becomeLeader();
-        return;
-    }
-    tell(strprintf("Cheapest edge found: <%d %d> %d",
-                getCheapest().first.first, getCheapest().first.second, getCheapest().second));
+/*    if (cheapestIsActual)
+        return;*/
     cheapestIsActual = 1;
-    if (parent.second==INF){
-        discover();
+    waitingForWho = -1;
+    if (getCheapest().first == INFV){
+        tell("No output edge found");
+        if (parent==PUNDEF){
+            becomeLeader();
+            return;
+        }
+    }else{
+        tell(strprintf("Cheapest edge found: <%d %d> %d",
+                getCheapest().first.first, getCheapest().first.second, getCheapest().second));
+    }
+    if (parent==PUNDEF){
         tell("I found cheapest edge in whole fragment");
         tell("Let's discover the next fragment");
+        discover();
     }else{
-        sendMessage(parent.second,strprintf("{my-cheapest} %d %d",
+        tell("Let's send it to my parent");
+        sendMessage(parent,strprintf("{my-cheapest} %d %d",
                     getCheapest().first.first, getCheapest().first.second));
     }
 }
 void findCheapestUnknown(){
-    while (unknown.size()>0 && (unknown.top()==parent))
+    while (unknown.size()>0 && (unknown.top().second==parent))
         unknown.pop();
-    if (unknown.size()>0 && sons.count(unknown.top())){
-        waitForSons = 1;
+    if (unknown.size()>0 && sons.count(unknown.top().second)){
+        waitForSons.insert(unknown.top().second);
         sendMessage(unknown.top().second,"{find-cheapest}");
         unknown.pop();
         return;
     }
     if(unknown.size()>0 && unknown.top()<getCheapest()){
-        sendMessage(unknown.top().second,"{who}");
+        waitingForWho = 1;
+        sendMessage(unknown.top().second,strprintf("{who} %d", getIValue("level")));
     }else{
         foundCheapest();
     }
@@ -139,19 +155,33 @@ void findCheapestUnknown(){
 void receiveCheapest(int port, istringstream& iss){
     int a,b;
     iss >> a >> b;
-    waitForSons--;
     Edge e = Edge(Value(a,b), port);
     setCheapest(min(getCheapest(),e));
+    waitForSons.erase(e.second);
 }
 void receiveIAm(int port, istringstream& iss){
     int hisBossID;
     iss >> hisBossID;
+    waitingForWho = 0;
     if (hisBossID==getIValue("boss-id")){
         unknown.pop();
         findCheapestUnknown();
     }else{
         setCheapest(min(getCheapest(),unknown.top()));
         foundCheapest();
+    }
+}
+void receiveWho(int port, istringstream& iss){
+    int hisLevel;
+    iss >> hisLevel;
+    whoRequests.push(WRequest(hisLevel, port));
+}
+void checkWhoRequests(){
+    int myLevel = getIValue("level");
+    WRequest r;
+    while (!whoRequests.empty() && (r=whoRequests.top()).first<=myLevel){
+        whoRequests.pop();
+        sendMessage(r.second, strprintf("{i-am} %d", getIValue("boss-id")));
     }
 }
 //}}} 
@@ -163,37 +193,40 @@ void discover(){
     setSValue("doing", "discovering");
 }
 void receiveDiscover(int port, istringstream& iss){
-    int hisLevel, myLevel, hisBoss, myBoss;
+    int hisLevel, hisBoss, myBoss;
     iss >> hisLevel >> hisBoss;
     myBoss = getIValue("boss-id");
-    myLevel = getIValue("level");
     if (myBoss == hisBoss){
         discover();
         return;
     }
-    waitingRequests.push(Request(edges[port],hisLevel));
+    discoverRequests.push(DRequest(hisLevel,edges[port]));
 }
-void checkWaiting(){
-    while (!waitingRequests.empty()) {
-        setSValue("w-req", strprintf("(%d %d)",waitingRequests.top().first.second,
-                    waitingRequests.top().second));
+void checkDiscoverRequests(){
+    while (!discoverRequests.empty()) {
+        setSValue("w-req", strprintf("(%d %d)",discoverRequests.top().second.second,
+                    discoverRequests.top().first));
    
-        Request r = waitingRequests.top();
-        if (r.first == parent || sons.count(r.first)){
-            waitingRequests.pop();
+        DRequest r = discoverRequests.top();
+        if (r.second.second == parent || sons.count(r.second.second)){
+            discoverRequests.pop();
             continue;
         }
-        if (getIValue("level") > r.second) {
-            eatFragment(r.first.second);
-            waitingRequests.pop();
+        if (getIValue("level") > r.first) {
+            eatFragment(r.second.second);
+            discoverRequests.pop();
             continue;
         }        
+        if (getIValue("level") < r.first) {
+            return;
+        }
         if (getSValue("doing")!="discovering") return;
         if (unknown.top()!=getCheapest()) return;
 
-        if (getCheapest() == r.first && id == getCheapest().first.first){
-            sons.insert(unknown.top());
+        if (getCheapest() == r.second && id == getCheapest().first.first){
+            sons.insert(unknown.top().second);
             unknown.pop();
+            discoverRequests.pop();
             becomeNewBoss();
         }
         return;
@@ -204,23 +237,22 @@ void checkWaiting(){
 //{{{ rebuild
 void eatFragment(int port){
     tell("I win, let's eat his fragment");
-    sons.insert(edges[port]);
+    sons.insert(port);
     sendRebuild(port);
 }
 void becomeNewBoss(){
+    setSValue("_vertex_color","100,255,255");
     setIValue("level", getIValue("level")+1);
     setIValue("_parent_port", -1);
     setIValue("boss-id",id);
     setSValue("state","boss");
-    if (parent.second!=INF){
-        sons.insert(parent);
-    }
-    parent = Edge(INFV, INF);
+    if (parent!=PUNDEF) sons.insert(parent);
+    parent = PUNDEF;
     
     tell(strprintf("I am boss of my fragment with level %d", getIValue("level")));
 
     for(auto son : sons) 
-        sendRebuild(son.second);
+        sendRebuild(son);
 
     setSValue("doing", "finding cheapest edge");
     findCheapest();
@@ -231,20 +263,21 @@ void sendRebuild(int port){
 void receiveRebuild(int port, istringstream& iss){
     int hisLevel, hisBoss;
     iss >> hisLevel >> hisBoss;
+    setSValue("_vertex_color","255,200,50");
     setIValue("_parent_port", port);
     setIValue("level", hisLevel);
     setIValue("boss-id", hisBoss);
     setSValue("state", "slave");
     setSValue("doing", "forwarding messages");
-    if (parent.second!=INF)
+    if (parent!=PUNDEF)
         sons.insert(parent);
-    parent = edges[port];
+    parent = port;
     sons.erase(parent);
     
     tell(strprintf("My new boss is %d", getIValue("boss-id")));
 
-    for(auto son : sons) 
-        sendRebuild(son.second);
+    for(auto son : sons)
+        sendRebuild(son);
 }
 
 //}}}
@@ -253,17 +286,19 @@ void receiveRebuild(int port, istringstream& iss){
 void becomeLeader(){
     tell("I am the leader");
     setIValue("leader", id);
+    setSValue("_vertex_color","50,50,255");
     spreadLeader();
     exitProgram("true");
 }
 void spreadLeader(){
     for(auto son : sons)
-        sendMessage(son.second, strprintf("{leader} %d", getIValue("leader")));
+        sendMessage(son, strprintf("{leader} %d", getIValue("leader")));
 }
 void receiveLeader(int port, istringstream& iss){
     int leader;
     iss >> leader;
     setIValue("leader", leader);
+    setSValue("_vertex_color","255,0,0");
     spreadLeader();
     exitProgram("false");
 }
@@ -280,29 +315,32 @@ void receive(int port, string message) { //{{{
     if (s=="id") receiveID(port, iss);
     if (s=="find-cheapest") findCheapest();
     if (s=="my-cheapest") receiveCheapest(port, iss);
-    if (s=="who") sendMessage(port, strprintf("{i-am} %d", getIValue("boss-id")));
+    if (s=="who") receiveWho(port,iss);
     if (s=="i-am") receiveIAm(port, iss);
     if (s=="discovery") receiveDiscover(port,iss);
     if (s=="rebuild") receiveRebuild(port,iss);
     if (s=="leader") receiveLeader(port,iss);
 
-    checkWaiting();
-    setIValue("waiting-requests", waitingRequests.size());
+    checkWhoRequests();
+    checkDiscoverRequests();
+    setIValue("discover-requests", discoverRequests.size());
+    setIValue("who-requests", whoRequests.size());
+    if (!waitForSons.size() && !waitingForWho) findCheapestUnknown();
 
-    if (waitForSons==0){
-        waitForSons--;
-        findCheapestUnknown();
-    }
     string ssons = "";
     for(auto son : sons) 
-        ssons+=strprintf("%d, ",son.second);
+        ssons+=strprintf("%d, ",son);
     setSValue("sons", ssons);
-    string sreq = "";
+    ssons = "";
+    for(auto son : waitForSons) 
+        ssons+=strprintf("%d, ",son);
+    setSValue("waiting-sons", ssons);
+    setIValue("unknown", unknown.size());
 }//}}}
 
 void init(){ //{{{
     cheapestIsActual = 0;
-    waitForSons = -1;
+    waitingForWho = -1;
     setIValue("level", -1); //level fragmentu
     setIValue("boss-id",id); // sef fragmentu
     setIValue("_parent_port", -1); //ktorym smerom je kostrovy otec 

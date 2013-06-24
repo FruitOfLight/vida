@@ -4,7 +4,7 @@ Settings
     Anonym: no
     Synchroned: [no]
     Graph type: [any]
-    Model type: [leaderElection]
+    Model type: [def]
     Initiation: [no]
     Observer type: [none]
 

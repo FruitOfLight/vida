@@ -1,4 +1,4 @@
-recieve#!Process with id %d recieved new gossip. He wants to spread it, so he sends gossip to each neighbor except the one, who sent him this gossip.
-old#!Process %d recieved gossip. But he seen this gossip before. He ignores this message, because he has already sent the gossip to his neighbors.
-finish#!All processes know the new gossip. Total number of send messages is %d. Press 'R' to continue.
-start#!At the begining of this algorithm, one process know new gossip. He wants to share gossip with everyone else. That means, he sends message to each neighbor.
+recieve#Process with id %$1%$ recieved new gossip. He wants to spread it, so he sends gossip to each neighbor except the one, who sent him this gossip.
+old#Process %$1%$ recieved gossip. But he seen this gossip before. He ignores this message, because he has already sent the gossip to his neighbors.
+finish#All processes know the new gossip. Total number of send messages is %$1%$. Press 'R' to continue.
+start#At the begining of this algorithm, one process know new gossip. He wants to share gossip with everyone else. That means, he sends message to each neighbor.
