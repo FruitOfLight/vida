@@ -1,0 +1,4 @@
+receive#Proces %$1%$ dostal klebetu. Chce ju rozšíriť, tak ju pošle všetkým susedom, okrem toho ktoý mu klebetu poslal.
+old#Proces %$1%$ dostal klebetu, ale už ju pred tým videl. Správu ignoruje, lebo už klebetu predtým rozšíril.
+finish#Všetky procesy poznajú klebetu. Dokopy sa poslalo %$1%$ správ. Stlačne 'R' pre koniec.
+start#Na začiatku algoritmu, jeden proces pozná klebetu a chce ju povedať ostatným. To znamená, že ju pošle všetkým susedom.

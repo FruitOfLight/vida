@@ -66,6 +66,7 @@ public class Player {
             }
             load();
             model.load();
+            observer.init();
             start = true;
         }
         timerid++;
@@ -81,7 +82,7 @@ public class Player {
 
     void load() {
         observer = ObserverType.getNewInstance(this, model.settings.getObserverType());
-        observer.init();
+
         Vertex.randomInit.autoInitial();
         savedRandomInitiation = Vertex.randomInit.getInitial() != 0;
 
@@ -133,10 +134,10 @@ public class Player {
     }
 
     public void pause() {
-        GUI.controls.refresh();
         if (state == RunState.stopped)
             return;
         state = RunState.paused;
+        GUI.controls.refresh();
     }
 
     public void pauseFromProcess(Vertex vertex) {

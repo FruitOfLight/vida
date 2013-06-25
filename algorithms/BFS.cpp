@@ -11,28 +11,20 @@ using namespace Messager;
 using namespace Property;
 using namespace WatchVariables;
 
-void recieve(int port, string message) {
+void receive(int port, string message) {
     if(getSValue("information")=="known") {
         tell("I already know this gossip.");
-        char up[100];
-        sprintf(up,"old:%d",id);
-        event(string(up));
+        event(strprintf("old:%d",id));
         return;
     }
    setSValue("information","known");
    setSValue("_vertex_color","100,200,255");
-   char inf[100];
-   sprintf(inf,"I recieved new gossip, I must tell everyone.");
-   tell(string(inf));
-   char up[100];
-   sprintf(up,"recieve:%d",id);
-   event(string(up));
+   tell("I received new gossip, I must tell everyone.");
+   event(strprintf("receive:%d",id));
    exitProgram("true");
-   char buff[100];
-   sprintf(buff,"I have new {gossip}.");
    for(int i=0; i<ports.size(); i++) {
        if(ports[i]==port) continue;
-       sendMessage(ports[i],string(buff));
+       sendMessage(ports[i],"I have a new {gossip}");
    }
 }
 
@@ -42,14 +34,10 @@ void init() {
    if(initValue == 0) return;
    setSValue("information","known");
    setSValue("_vertex_color","100,200,255");
-   char inf[100];
-   sprintf(inf,"I know new gossip, must tell to everyone.");
-   tell(string(inf));
+   tell("I received new gossip, I must tell everyone.");
    exitProgram("true");
-   char buff[100];
-   sprintf(buff,"I have new {gossip}.");
    for(int i=0; i<ports.size(); i++) {
-       sendMessage(ports[i],string(buff));
+       sendMessage(ports[i],"I have a new {gossip}");
    }
 }
 
@@ -58,7 +46,7 @@ int main(){
     int randid = rand()%1000;
 
     setInitListener(init);
-    setMessageListener(recieve);
+    setMessageListener(receive);
 
     run();
 }

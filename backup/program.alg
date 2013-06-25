@@ -4,12 +4,12 @@ Settings
     Anonym: [no]
     Synchroned: [no]
     Graph type: [any]
-    Model type: [def]
-    Initiation: [no]
-    Observer type: [none]
+    Model type: [broadcast]
+    Initiation: [one]
+    Observer type: [BFS]
 
 Program
-    source: backup/#undef
+    source: /home/jano/workspace/vida/algorithms/BFS.cpp
     path: 
-    name: program.alg
+    name: BFS.cpp
 

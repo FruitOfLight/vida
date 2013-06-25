@@ -14,8 +14,8 @@ public class BFSObserver extends Observer {
 
     @Override
     public void onStart() {
-        generalInfo.addInformation(textBook.getText("start"), -2);
         player.pause();
+        generalInfo.addInformation(textBook.getText("start"), -2);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class BFSObserver extends Observer {
         if (!firstTime(event))
             return;
         GUI.globalTimer.schedule(new Player.AuraEvent(vertex, 7), 0);
-        generalInfo.addInformation(textBook.getText(event, values), -2);
         player.pause();
+        generalInfo.addInformation(textBook.getText(event, values), -2);
     }
 }

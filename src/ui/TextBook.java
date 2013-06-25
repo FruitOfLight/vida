@@ -3,19 +3,20 @@ package ui;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 import enums.Language;
 
 public class TextBook {
 
+    TreeMap<String, String> dictionary;
     ArrayList<String> ids;
     ArrayList<String> content;
     String file;
     Language language;
 
     public TextBook(String file) {
-        ids = new ArrayList<String>();
-        content = new ArrayList<String>();
+        dictionary = new TreeMap<String, String>();
         this.file = file;
         this.language = GUI.getLanguage();
         loadTextBook();
@@ -23,12 +24,11 @@ public class TextBook {
 
     public void loadTextBook() {
         try {
-            Scanner in = new Scanner(new File("texts/" + this.language + "/" + file));
+            Scanner in = new Scanner(new File("texts/" + this.language.name() + "/" + file));
             while (in.hasNextLine()) {
                 String line = in.nextLine();
                 String[] help = line.split("#", 2);
-                ids.add(help[0]);
-                content.add(help[1]);
+                dictionary.put(help[0], help[1]);
             }
             in.close();
         } catch (Exception e) {
@@ -44,10 +44,8 @@ public class TextBook {
     }
 
     public String getMatchingString(String name) {
-        for (int i = 0; i < ids.size(); i++)
-            if (name.equals(ids.get(i)))
-                return content.get(i);
-        return "";
+        String s = dictionary.get(name);
+        return (s == null) ? "*" + name + "*" : s;
     }
 
     public String getText(String name) {
