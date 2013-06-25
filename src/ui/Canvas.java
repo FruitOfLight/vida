@@ -38,9 +38,9 @@ public class Canvas extends JPanel {
     protected void paintComponent(Graphics2D g) {
         super.paintComponent(g);
 
-        boldStroke = new BasicStroke((float) Math.max(5.0 / Math.sqrt(zoom), 5.0 / zoom));
-        normalStroke = new BasicStroke((float) (2.0 / Math.sqrt(zoom)));
-        thinStroke = new BasicStroke((float) (1.0 / Math.sqrt(zoom)));
+        boldStroke = new BasicStroke((float) Math.max(4.0 / Math.sqrt(zoom), 4.0 / zoom));
+        normalStroke = new BasicStroke((float) (1.6 / Math.sqrt(zoom)));
+        thinStroke = new BasicStroke((float) (0.8 / Math.sqrt(zoom)));
 
         g.setStroke(new BasicStroke((float) 1.0));
         g.setColor(repaintColor);

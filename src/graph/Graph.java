@@ -376,6 +376,7 @@ public class Graph implements Drawable {
         }
         checking = false;
         edited();
+        fitToScreen();
         GUI.gRepaint();
     }
 
@@ -434,6 +435,7 @@ public class Graph implements Drawable {
             break;
         }
         checking = false;
+        fitToScreen();
         GUI.gRepaint();
     }
 
@@ -441,6 +443,24 @@ public class Graph implements Drawable {
         canvas.offX += (w - canvas.getWidth()) * 0.5;
         canvas.offY += (h - canvas.getHeight()) * 0.5;
         canvas.setSize(w, h);
+    }
+
+    public void fitToScreen() {
+        if (vertices.size() == 0)
+            return;
+        double minx = vertices.get(0).getX(), maxx = vertices.get(0).getX(), miny = vertices.get(0)
+                .getY(), maxy = vertices.get(0).getY();
+        for (Vertex v : vertices) {
+            minx = Math.min(minx, v.getX());
+            maxx = Math.max(maxx, v.getX());
+            miny = Math.min(miny, v.getY());
+            maxy = Math.max(maxy, v.getY());
+        }
+        double border = 20;
+        double w = maxx - minx + 2 * border, h = maxy - miny + 2 * border;
+        canvas.zoom = Math.min(canvas.getWidth() / w, canvas.getHeight() / h);
+        canvas.offX = -(minx + maxx) / 2.0 * canvas.zoom + canvas.getWidth() / 2;
+        canvas.offY = -(miny + maxy) / 2.0 * canvas.zoom + canvas.getHeight() / 2;
     }
 
     public void emptyGraph() {
@@ -453,7 +473,7 @@ public class Graph implements Drawable {
     }
 
     private void createClique(int n, boolean edges) {
-        double d = canvas.getHeight() / 3;
+        double d = canvas.getHeight() / 3.0 * Math.sqrt(n) / 5;
 
         for (int i = 0; i < n; ++i) {
             createVertex(d * Math.sin(i * 2 * Math.PI / n), -d * Math.cos(i * 2 * Math.PI / n),
@@ -470,7 +490,7 @@ public class Graph implements Drawable {
     }
 
     private void createCycle(int n, boolean edges) {
-        int d = canvas.getHeight() / 3;
+        double d = canvas.getHeight() / 3 * Math.sqrt(n) / 5;
 
         for (int i = 0; i < n; ++i) {
             createVertex(d * Math.sin(i * 2 * Math.PI / n), -d * Math.cos(i * 2 * Math.PI / n),
@@ -485,7 +505,7 @@ public class Graph implements Drawable {
     }
 
     private void createWheel(int n, boolean edges) {
-        int d = canvas.getHeight() / 3;
+        double d = canvas.getHeight() / 3 * Math.sqrt(n) / 5;
 
         createVertex(0.0, 0.0, getNewVertexID());
         for (int i = 0; i < n; ++i) {
@@ -502,14 +522,12 @@ public class Graph implements Drawable {
     }
 
     private void createGrid(int m, int n, boolean edges) {
-        canvas.offX = 0;
-        canvas.offY = 0;
-        double dy = (canvas.getHeight() - 30) / (double) (m - 1);
-        double dx = (canvas.getWidth() - 30) / (double) (n - 1);
+        double dy = 20 + 50 / Math.sqrt(m);
+        double dx = 20 + 50 / Math.sqrt(n);
         System.out.println(dx + " " + dy);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                createVertex(15 + j * dx, 15 + i * dy, getNewVertexID());
+                createVertex(j * dx, i * dy, getNewVertexID());
             }
         }
         if (edges) {

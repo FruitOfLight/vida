@@ -214,10 +214,10 @@ public class Vertex implements Comparable<Vertex> {
                 - edgeHeight);
         ArrayList<String> neigh = new ArrayList<String>();
         for (int i = 0; i < edges.size(); ++i) {
-            String cap = "" + edges.get(i).to.getID();
-            if (GUI.player.state != RunState.stopped) {
-                cap += ":" + program.ports.get(i);
-            }
+            String cap = "";
+            if (GUI.player.state != RunState.stopped && program != null)
+                cap += program.ports.get(i) + ":";
+            cap += edges.get(i).to.getID();
             neigh.add(cap);
         }
         int n = neigh.size();

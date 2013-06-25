@@ -96,7 +96,7 @@ public class Program extends Thread {
                     }
                 }
             }
-            System.out.println("Program " + id + " has finished.");
+            //System.out.println("Program " + id + " has finished.");
             out.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -151,9 +151,9 @@ public class Program extends Thread {
     }
 
     public void send(int port, String content) {
+        //System.out.println("@ " + port + " : " + content);
         // svoj port zmenim na port vrchola
         // TODO spravit efektivnejsie nez cez indexOf
-        System.out.println("@ " + port + " : " + content);
         port = ports.indexOf(port);
         vertex.send(new Message(port, content));
     }

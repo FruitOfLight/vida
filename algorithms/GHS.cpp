@@ -1,6 +1,8 @@
 /*
     anonym: no
     graph type: [any]
+    Model type: leaderElection
+    Observer type: [none]
 */
 
 //{{{Fruit of Light
