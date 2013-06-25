@@ -1,15 +1,15 @@
 Version 1.00
 
 Settings
-    Anonym: no
+    Anonym: [no]
     Synchroned: [no]
     Graph type: [any]
-    Model type: leaderElection
+    Model type: [def]
     Initiation: [no]
     Observer type: [none]
 
 Program
-    source: /home/jano/workspace/vida/algorithms/GHS.cpp
+    source: backup/#undef
     path: 
-    name: GHS.cpp
+    name: program.alg
 

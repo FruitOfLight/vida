@@ -446,8 +446,12 @@ public class Graph implements Drawable {
     }
 
     public void fitToScreen() {
-        if (vertices.size() == 0)
+        if (vertices.size() == 0 || canvas.getWidth() <= 0 || canvas.getHeight() <= 0) {
+            canvas.offX = canvas.getWidth() / 2;
+            canvas.offY = canvas.getHeight() / 2;
+            canvas.zoom = 1.0;
             return;
+        }
         double minx = vertices.get(0).getX(), maxx = vertices.get(0).getX(), miny = vertices.get(0)
                 .getY(), maxy = vertices.get(0).getY();
         for (Vertex v : vertices) {
@@ -456,7 +460,7 @@ public class Graph implements Drawable {
             miny = Math.min(miny, v.getY());
             maxy = Math.max(maxy, v.getY());
         }
-        double border = 20;
+        double border = 20.0;
         double w = maxx - minx + 2 * border, h = maxy - miny + 2 * border;
         canvas.zoom = Math.min(canvas.getWidth() / w, canvas.getHeight() / h);
         canvas.offX = -(minx + maxx) / 2.0 * canvas.zoom + canvas.getWidth() / 2;
@@ -555,7 +559,6 @@ public class Graph implements Drawable {
         boolean fix = (GUI.controls != null && GUI.controls.get("g_lock-type") != null && GUI.controls
                 .get("g_lock-type").isActive());
         boolean correct = true;
-        print(System.out);
         switch (type) {
         case any:
             break;
@@ -634,7 +637,6 @@ public class Graph implements Drawable {
         if (!correct) {
             type = GraphType.any;
         }
-        print(System.out);
         checking = false;
     }
 

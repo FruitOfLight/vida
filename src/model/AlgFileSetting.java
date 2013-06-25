@@ -14,7 +14,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 
-
 import ui.Dialog;
 
 public class AlgFileSetting extends Setting implements ActionListener {
@@ -65,7 +64,8 @@ public class AlgFileSetting extends Setting implements ActionListener {
             setString("");
             return;
         }
-        String ext = source.substring(source.lastIndexOf('.'));
+        int index = source.lastIndexOf('.');
+        String ext = (index < 0) ? "" : source.substring(index);
         if (ext.equals(".cpp") || ext.equals(".cc"))
             compileCommand = "g++ " + source + " -o " + Model.binaryPath
                     + " -O2 -std=c++0x -Wno-unused-result";

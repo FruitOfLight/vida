@@ -135,9 +135,10 @@ public class GUI {
             frame.setMinimumSize(new Dimension(CONST.minWindowWidth + dw, CONST.minWindowHeight
                     + dh));
             gRepaint();
-
         }
     }
+
+    static boolean fitGraph = true;
 
     public static void refreshLayout() {
         int gw = frame.getContentPane().getWidth() - CONST.popupwidth;
@@ -158,6 +159,10 @@ public class GUI {
         popupZoomWindow.setBounds(gw, CONST.menuHeight + gh - CONST.zoomWindowHeight,
                 CONST.popupwidth, CONST.zoomWindowHeight);
         controls.refresh();
+        if (fitGraph) {
+            player.graph.fitToScreen();
+            fitGraph = false;
+        }
         gRepaint();
     }
 
@@ -195,26 +200,27 @@ public class GUI {
             out.close();*/
         } catch (Exception e) {
             System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
 
     public static void loadApp() {
         try {
             File file = new File("backup/graf.in");
-            Scanner in = new Scanner(file);
-            player.graph.read(in);
-            in.close();
+            if (file.exists()) {
+                Scanner in = new Scanner(file);
+                player.graph.read(in);
+                in.close();
+            } else {
+                player.graph.emptyGraph();
+            }
             AlgReader algReader = new AlgReader(new File("backup/program.alg"));
             player.model.read(algReader);
             acceptSettings(player.model.settings);
             player.model.program.compile();
-            in.close();
-            /*file = new File("backup/settings.in");
-            in = new Scanner(file);
-            player.model.settings.read(in);
-            in.close();*/
         } catch (Exception e) {
             System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
 
